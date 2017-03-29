@@ -1,0 +1,32 @@
+Package: splendid
+Title: SuPervised Learning ENsemble for Diagnostic IDentification
+Version: 0.0.0.9000
+Date: 2017-03-29
+Authors@R: c(
+    person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
+    person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"))
+Description: Provides a bootstrapping and ensemble framework for supervised
+    learning analyses using multiple classification algorithms. 
+Depends: R (>= 3.3.3)
+Imports:
+    dplyr,
+    purrr,
+    tidyr,
+    tibble,
+    modelr,
+    magrittr,
+    MASS,
+    randomForest,
+    nnet,
+    class,
+    e1071,
+    pamr,
+    maboost,
+    glmnet,
+    RankAggreg
+License: MIT + file LICENSE
+URL: https://github.com/AlineTalhouk/splendid
+BugReports: https://github.com/AlineTalhouk/splendid/issues
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
