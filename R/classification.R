@@ -8,14 +8,19 @@
 #'   every class is greater than number of variables
 #' @author Derek Chiu
 #' @export
+#' @examples
+#' data(hgsc)
+#' data <- hgsc
+#' class <-  stringr::str_split_fixed(rownames(data), "_", n = 2)[, 2]
 classification <- function(x, y, algs) {
+  algs <- match.arg(algs, ALG.FUN)
   switch(algs,
          lda = suppressWarnings(MASS::lda(x, grouping = y)),
          qda = MASS::qda(x, grouping = y),
          rf = randomForest::randomForest(x, y = y),
          multinom = nnet::multinom(y ~ ., x, MaxNWts = 2000, trace = FALSE),
          nnet = nnet::nnet(y ~ ., x, size = 3, MaxNWts = 2000, trace = FALSE),
-         knn = NULL,
+         knn = structure(NULL, class = "knn"),
          svm = e1071::svm(y ~ ., x),
          pam = sink_output(
            pamr::pamr.train(list(x = t(x), y = y), n.threshold = 100,
