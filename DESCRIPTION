@@ -1,7 +1,7 @@
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.0.0.9000
-Date: 2017-03-29
+Version: 0.0.0.9001
+Date: 2017-03-30
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"))
@@ -24,6 +24,8 @@ Imports:
     maboost,
     glmnet,
     RankAggreg
+Suggests:
+    stringr
 License: MIT + file LICENSE
 URL: https://github.com/AlineTalhouk/splendid
 BugReports: https://github.com/AlineTalhouk/splendid/issues
