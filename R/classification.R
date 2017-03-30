@@ -8,10 +8,6 @@
 #'   every class is greater than number of variables
 #' @author Derek Chiu
 #' @export
-#' @examples
-#' data(hgsc)
-#' data <- hgsc
-#' class <-  stringr::str_split_fixed(rownames(data), "_", n = 2)[, 2]
 classification <- function(x, y, algs) {
   algs <- match.arg(algs, ALG.FUN)
   switch(algs,

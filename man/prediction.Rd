@@ -2,25 +2,29 @@
 % Please edit documentation in R/prediction.R
 \name{prediction}
 \alias{prediction}
-\title{Predict using mod onto test set indicated by indices in test.id
-If model is of class "lda", the predictions are accessed in the "class" name}
+\title{Prediction on OOB set}
 \usage{
-prediction(mod, train.id, test.id, data, class)
+prediction(mod, data, test.id, ...)
 }
 \arguments{
 \item{mod}{model}
 
-\item{train.id}{training set ID}
+\item{data}{data}
 
 \item{test.id}{test set ID}
 
-\item{data}{data}
+\item{...}{additional arguments to be passed to or from methods}
+
+\item{train.id}{training set ID}
 
 \item{class}{class}
 }
+\value{
+A factor of predicted values with levels in the same order as true
+  class
+}
 \description{
-Predict using mod onto test set indicated by indices in test.id
-If model is of class "lda", the predictions are accessed in the "class" name
+Functions to predict class labels on the Out-Of-Bag set for different models.
 }
 \author{
 Derek Chiu

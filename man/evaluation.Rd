@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluation.R
 \name{evaluation}
 \alias{evaluation}
-\title{Evaluate class prediction labels}
+\title{Evaluation of prediction performance}
 \usage{
 evaluation(x, y)
 }
@@ -11,8 +11,18 @@ evaluation(x, y)
 
 \item{y}{predicted class labels}
 }
+\value{
+A tibble with one row per algorithm, one column per evaluation
+  measure plus a column for the algorithm name.
+}
 \description{
-Evaluate class prediction labels
+Evaluation of prediction performance on the OOB set is done using various
+measure for classification problems.
+}
+\details{
+The currently supported evaluation measures include overall accuracy, average
+accuracy across all One-vs-all confusion matrices, and macro-averaged 
+precision, recall, and F1-score.
 }
 \references{
 https://github.com/saidbleik/Evaluation/blob/master/eval.R

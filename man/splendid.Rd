@@ -19,20 +19,20 @@ splendid(data, class, n, seed = 1, algorithms = NULL)
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
 \item{algorithms}{character vector of algorithm names to use for supervised 
-learning. Currently supports "lda", "rf", "multinom", "nnet", "svm", "pam",
-"adaboost", and "nb".}
+learning. See Details for possible options. This argument is \code{NULL} by
+default, meaning all implemented algorithms will be used.}
 }
 \value{
-A nested list with two elements: "model", "pred", and "eval". 
-  Elements "model" and "pred" show the models and predictions respectively 
-  across the algorithms used and each bootstrap replicate. Element "eval" is 
-  a tibble indicating the median of the aggregate evaluation measures for 
-  each algorithm and measure used. Evaluation measures include accuracy, 
-  average accuracy, average precision, average recall, and average F1-score. 
-  The average is taken across the number of classes in \code{class}, and 
-  there is one average for ebery bootstrap replicate. We arrive at the final 
-  tibble by calculating the median of these measures across replicates, 
-  omitting any missing entries.
+A nested list with five elements: "model", "pred", "eval", 
+  "best.algs", and "ensemble". Elements "model" and "pred" show the models 
+  and predictions respectively across the algorithms used and each bootstrap 
+  replicate. Element "eval" is a tibble indicating the median of the 
+  aggregate evaluation measures for each algorithm and measure used. 
+  Evaluation measures include accuracy, average accuracy, average precision,
+  average recall, and average F1-score. The average is taken across the
+  number of classes in \code{class}, and there is one average for ebery
+  bootstrap replicate. We arrive at the final tibble by calculating the
+  median of these measures across replicates, omitting any missing entries.
 }
 \description{
 splendid.
@@ -42,7 +42,22 @@ replicates.
 }
 \details{
 Training sets are bootstrap replicates, and test sets comprise of remaining 
-samples not chosen for each training set.
+samples not chosen for each training set. This framework uses the 0.632 
+bootstrap rule for large n.
+
+The classification algorithms currently supported are: Linear Discriminant
+Analysis ("lda"), Random Forests ("rf"), Multinomial Classification
+("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"),
+Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
+Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear
+Models using Elastic Net model paths ("glmnet").
+}
+\examples{
+data(hgsc)
+data <- hgsc
+class <- stringr::str_split_fixed(rownames(data), "_", n = 2)[, 2]
+sl_result <- splendid(data, class, n = 3, algorithms = c("lda", "knn",
+"svm"))
 }
 \author{
 Derek Chiu
