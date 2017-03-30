@@ -4,27 +4,41 @@
 #' replicates.
 #' 
 #' Training sets are bootstrap replicates, and test sets comprise of remaining 
-#' samples not chosen for each training set.
+#' samples not chosen for each training set. This framework uses the 0.632 
+#' bootstrap rule for large n.
+#' 
+#' The classification algorithms currently supported are: Linear Discriminant
+#' Analysis ("lda"), Random Forests ("rf"), Multinomial Classification
+#' ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"),
+#' Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
+#' Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear
+#' Models using Elastic Net model paths ("glmnet").
 #' 
 #' @param data data object with rows as samples, columns as features
 #' @param class reference class used for supervised learning
 #' @param n number of bootstrap replicates to generate
 #' @param seed random seed used for reproducibility in bootstrapping results
 #' @param algorithms character vector of algorithm names to use for supervised 
-#'   learning. Currently supports "lda", "rf", "multinom", "nnet", "svm", "pam",
-#'   "adaboost", and "nb".
-#' @return A nested list with two elements: "model", "pred", and "eval". 
-#'   Elements "model" and "pred" show the models and predictions respectively 
-#'   across the algorithms used and each bootstrap replicate. Element "eval" is 
-#'   a tibble indicating the median of the aggregate evaluation measures for 
-#'   each algorithm and measure used. Evaluation measures include accuracy, 
-#'   average accuracy, average precision, average recall, and average F1-score. 
-#'   The average is taken across the number of classes in \code{class}, and 
-#'   there is one average for ebery bootstrap replicate. We arrive at the final 
-#'   tibble by calculating the median of these measures across replicates, 
-#'   omitting any missing entries.
+#'   learning. See Details for possible options. This argument is \code{NULL} by
+#'   default, meaning all implemented algorithms will be used.
+#' @return A nested list with five elements: "model", "pred", "eval", 
+#'   "best.algs", and "ensemble". Elements "model" and "pred" show the models 
+#'   and predictions respectively across the algorithms used and each bootstrap 
+#'   replicate. Element "eval" is a tibble indicating the median of the 
+#'   aggregate evaluation measures for each algorithm and measure used. 
+#'   Evaluation measures include accuracy, average accuracy, average precision,
+#'   average recall, and average F1-score. The average is taken across the
+#'   number of classes in \code{class}, and there is one average for ebery
+#'   bootstrap replicate. We arrive at the final tibble by calculating the
+#'   median of these measures across replicates, omitting any missing entries.
 #' @author Derek Chiu
 #' @export
+#' @examples 
+#' data(hgsc)
+#' data <- hgsc
+#' class <- stringr::str_split_fixed(rownames(data), "_", n = 2)[, 2]
+#' sl_result <- splendid(data, class, n = 3, algorithms = c("lda", "knn",
+#' "svm"))
 splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
   
   # Generate bootstrap resamples; test samples are those not chosen in training
@@ -34,9 +48,8 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
   test.idx <- purrr::map(train.idx, ~ which(!seq_len(nrow(data)) %in% .x))
   
   # Classification algorithms to use and their model function calls
-  alg.nms <- c("lda", "rf", "multinom", "nnet", "knn", "svm", "pam",
-               "adaboost", "nb", "glmnet")
-  algs <- algorithms %||% stats::setNames(alg.nms, alg.nms)  # if null, use all
+  algs <- algorithms %||% ALG.NAME %>%
+    stats::setNames(., .)  # if null, use all
   
   # Apply training sets to models and predict on the test sets
   name <- NULL
@@ -44,7 +57,7 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
                        ~ purrr::map(train.idx, function(id) 
                          classification(data[id, ], class[id], .x)))
   preds <- purrr::map(models,
-                      ~ purrr::pmap(list(.x, train.idx, test.idx),
+                      ~ purrr::pmap(list(.x, test.idx, train.idx),
                                     prediction, data = data, class = class))
   evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
     purrr::map(~ purrr::map2_df(.x, test.idx, ~ evaluation(.x, class[.y]))) %>% 
@@ -52,11 +65,12 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
     tidyr::unnest() %>% 
     dplyr::group_by(name) %>% 
     dplyr::summarise_all(stats::median, na.rm = TRUE) %>% 
-    dplyr::arrange(match(name, alg.nms))
+    dplyr::arrange(match(name, ALG.NAME))
   best.algs <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
     purrr::transpose() %>% 
-    purrr::map2(test.idx, ~ map_df(.x, function(d) evaluation(d, class[.y]))) %>% 
-    purrr::map(~ as.data.frame(t(unnest(.x)))) %>% 
+    purrr::map2(test.idx, ~ purrr::map_df(.x, function(d)
+      evaluation(d, class[.y]))) %>% 
+    purrr::map(~ as.data.frame(t(tidyr::unnest(.x)))) %>% 
     purrr::map(~ purrr::map(.x, ~ algs[order(
       rank(-.x, ties.method = "random"))])) %>% 
     purrr::map(~ purrr::invoke(rbind, .x)) %>% 
@@ -65,8 +79,8 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
                      magrittr::use_series("top.list") %>% 
                      head(1))
   ensemble <- purrr::map(best.algs, ~ classification(data, class, .x)) %>% 
-    purrr::map(~ prediction(.x, seq_along(class), seq_along(class),
-                            data, class)) %>% 
+    purrr::map(~ prediction(.x, data, seq_along(class), seq_along(class),
+                            class)) %>% 
     purrr::map(as.character) %>% 
     purrr::invoke(cbind, .) %>% 
     apply(1, function(x) names(which.max(table(x))))
