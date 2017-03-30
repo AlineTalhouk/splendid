@@ -2,6 +2,6 @@
 #'
 #' @name splendid
 #' @docType package
-#' @import dplyr
+#' @importFrom magrittr "%>%"
 #' @importFrom purrr "%||%"
 NULL
