@@ -9,7 +9,7 @@
 #' @author Derek Chiu
 #' @export
 classification <- function(x, y, algs) {
-  algs <- match.arg(algs, ALG.FUN)
+  algs <- match.arg(algs, ALG.NAME)
   switch(algs,
          lda = suppressWarnings(MASS::lda(x, grouping = y)),
          qda = MASS::qda(x, grouping = y),
