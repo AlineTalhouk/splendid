@@ -2,6 +2,10 @@
 #' 
 #' Functions to predict class labels on the Out-Of-Bag set for different models.
 #' 
+#' Only the \code{knn} and \code{pamr} prediction methods require the additional
+#' \code{train.id} and \code{class} arguments. The other prediction methods 
+#' make use of the default method.
+#' 
 #' @param mod model
 #' @param data data
 #' @param test.id test set ID
@@ -21,6 +25,7 @@ prediction <- function(mod, data, test.id, ...) {
   }
 }
 
+#' @rdname prediction
 #' @export
 prediction.default <- function(mod, data, test.id, ...) {
   stats::predict(mod, data[test.id, ], ...)
@@ -46,6 +51,7 @@ prediction.nnet.formula <- function(mod, data, test.id, ...) {
   factor(prediction.default(mod, data, test.id, type = "class"))
 }
 
+#' @rdname prediction
 #' @export
 prediction.knn <- function(mod, data, test.id, train.id, class, ...) {
   class::knn(train = data[train.id, ], test = data[test.id, ],
@@ -57,6 +63,7 @@ prediction.svm <- function(mod, data, test.id, ...) {
   unname(prediction.default(mod, data, test.id))
 }
 
+#' @rdname prediction
 #' @export
 prediction.pamrtrained <- function(mod, data, test.id, train.id, class, ...) {
   model.cv <- sink_output(

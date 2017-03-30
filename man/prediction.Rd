@@ -2,9 +2,18 @@
 % Please edit documentation in R/prediction.R
 \name{prediction}
 \alias{prediction}
+\alias{prediction.default}
+\alias{prediction.knn}
+\alias{prediction.pamrtrained}
 \title{Prediction on OOB set}
 \usage{
 prediction(mod, data, test.id, ...)
+
+\method{prediction}{default}(mod, data, test.id, ...)
+
+\method{prediction}{knn}(mod, data, test.id, train.id, class, ...)
+
+\method{prediction}{pamrtrained}(mod, data, test.id, train.id, class, ...)
 }
 \arguments{
 \item{mod}{model}
@@ -25,6 +34,11 @@ A factor of predicted values with levels in the same order as true
 }
 \description{
 Functions to predict class labels on the Out-Of-Bag set for different models.
+}
+\details{
+Only the \code{knn} and \code{pamr} prediction methods require the additional
+\code{train.id} and \code{class} arguments. The other prediction methods 
+make use of the default method.
 }
 \author{
 Derek Chiu
