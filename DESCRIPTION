@@ -25,7 +25,8 @@ Imports:
     glmnet,
     RankAggreg
 Suggests:
-    stringr
+    stringr,
+    testthat
 License: MIT + file LICENSE
 URL: https://github.com/AlineTalhouk/splendid
 BugReports: https://github.com/AlineTalhouk/splendid/issues
