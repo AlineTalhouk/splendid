@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^README\.md$
 ^data-raw$
+^_pkgdown\.yaml$
+^docs$

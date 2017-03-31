@@ -1,0 +1,29 @@
+template:
+  params:
+    bootswatch: cerulean
+
+navbar:
+  title: ~
+  type: default
+  left:
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    href: articles/index.html
+  right:
+  - icon: fa-github
+    href: https://github.com/AlineTalhouk/splendid
+    
+reference:
+- title: Functions
+  contents:
+  - classification
+  - prediction
+  - evaluation
+  - splendid
+- title: Data
+  contents:
+  - hgsc
+- title: Package Doc
+  contents:
+  - matches("splendid-package")
