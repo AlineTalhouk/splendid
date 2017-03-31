@@ -1,0 +1,98 @@
+---
+title: "Ensemble Classification using `splendid`"
+author: "Derek Chiu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ensemble Classification using `splendid`}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	collapse = TRUE,
+	comment = "#>"
+)
+```
+
+## Introduction
+
+Supervised learning is the branch of statistical learning where we construct a predictive model with the goal of regression or classification. The `splendid` package focuses on classification with an ensemble framework: many classification algorithms are used, and prediction is done across bootstrap replicates of the data. An ensemble classifier is built from the best performing algorithms according to evaluation measures. No single classifier always performs the best for every data set that exists, so there is increasing utility to come up with ensemble classifiers. The objective is to use this classifier to obtain highly accurate predictions in independent data sets for the purposes of diagnostic identification. In genomic studies for example, one might be interested in using the class labels of a cancer subtype in one cohort to predict the subtypes in an independent cohort.
+
+`splendid` is currently only available on GitHub (*the second line below will be uncommented once the repository becomes public*).
+
+```{r load}
+# install.packages("devtools")
+# devtools::install_github("AlineTalhouk/splendid")
+library(splendid)
+library(knitr)
+data(hgsc)
+```
+
+## Ensemble Classification
+
+The main workhorse function of `splendid` is `splendid()`, and the usage is intuitive:
+  - `data` takes in your rectangular data in standard form (rows as samples/observations, columns as variables/features)
+  - `class` takes in the true/reference class labels with length equal to the number of samples
+  - `n` is the number of bootstrap replicates to generate as training sets
+  - `seed` is used for reproducibility in the bootstrapping
+  - `algorithms` takes in the desired classification algorithms to use
+  
+```{r splendid}
+class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+table(class)
+sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn", "svm"))
+```
+
+The resulting object is list with the following elements:
+  - `model` gives the model fits for each of the algorithms used. The fits are themselves nested based on the number of bootstrap replicates.
+  - `pred` has the same hierarchical structure as `model`, except the metadata consists of the predicted class labels
+  - `eval` is a tibble that shows a summary of the algorithms on some evaluation measures. More details on this element will be provided later.
+  - `best.algs` is a vector that shows the best-performing algorithm for each bootstrapped replicate of the data
+  - `ensemble` is the predicted class using the ensemble classifier
+  
+```{r splendid_output}
+str(sl_result, max.level = 2)
+```
+  
+## Classification Algorithms
+
+The currently supported classification algorithms in `splendid` are:
+  - Linear Discriminant Analysis (`"lda"`)
+  - Random Forests (`"rf"`)
+  - Multinomial Classification (`"multinom"`)
+  - Neural Networks (`"nnet"`)
+  - K-Nearest Neighbours (`"knn"`)
+  - Support Vector Machines (`"svm"`)
+  - Prediction Analysis for Microarrays (`"pam"`)
+  - Adaptive Boosting (`"adaboost"`)
+  - Naive Bayes (`"nb"`)
+  - Generalized Linear Models using an Elastic Net model path (`"glmnet"`)
+  
+These algorithms are implemented in `classification()`.
+
+## Prediction Methods
+
+There is a different prediction method for each classifier, since they are all imported from an external package. The `prediction()` function calls each method based on the class of the model output from `classification()`. `prediction()` also performs some manipulations so that the results all have the same data structure: unnamed factors, with labels given in the same order as the true class labels.
+
+The method for `"pam"` is an exception: the output from `prediction()` not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set.
+
+```{r prediction}
+str(sl_result$pred)
+```
+
+## Evaluation Measures
+
+```{r evaluation, results='asis'}
+kable(sl_result$eval)
+```
+
+## Constructing the Ensemble
+
+
+
+## References
+
