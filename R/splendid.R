@@ -1,36 +1,51 @@
-#' Bootstrap framework for Supervised Learning
+#' Ensemble framework for Supervised Learning classification problems
 #' 
-#' Supervised learning classification algorithms performed on bootstrap 
-#' replicates.
+#' Supervised learning classification algorithms are performed on bootstrap 
+#' replicates and an ensemble classifier is built and evaluated across these 
+#' variants.
 #' 
-#' Training sets are bootstrap replicates, and test sets comprise of remaining 
-#' samples not chosen for each training set. This framework uses the 0.632 
+#' Training sets are bootstrap replicates of the original data sampled with 
+#' replacement. Test sets comprise of all remaining samples left out from each 
+#' training set, also called Out-Of-Bag samples. This framework uses the 0.632
 #' bootstrap rule for large n.
 #' 
-#' The classification algorithms currently supported are: Linear Discriminant
-#' Analysis ("lda"), Random Forests ("rf"), Multinomial Classification
-#' ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"),
+#' The classification algorithms currently supported are: Linear Discriminant 
+#' Analysis ("lda"), Random Forests ("rf"), Multinomial Classification 
+#' ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"), 
 #' Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
-#' Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear
+#' Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear 
 #' Models using Elastic Net model paths ("glmnet").
 #' 
+#' An ensemble classifier is constructed using Rank Aggregation across multiple
+#' evaluation measures such as accuracy, precision, recall, and F1-score.
+#' 
 #' @param data data object with rows as samples, columns as features
-#' @param class reference class used for supervised learning
+#' @param class true/reference class vector used for supervised learning
 #' @param n number of bootstrap replicates to generate
 #' @param seed random seed used for reproducibility in bootstrapping results
 #' @param algorithms character vector of algorithm names to use for supervised 
 #'   learning. See Details for possible options. This argument is \code{NULL} by
-#'   default, meaning all implemented algorithms will be used.
-#' @return A nested list with five elements: "model", "pred", "eval", 
-#'   "best.algs", and "ensemble". Elements "model" and "pred" show the models 
-#'   and predictions respectively across the algorithms used and each bootstrap 
-#'   replicate. Element "eval" is a tibble indicating the median of the 
-#'   aggregate evaluation measures for each algorithm and measure used. 
-#'   Evaluation measures include accuracy, average accuracy, average precision,
-#'   average recall, and average F1-score. The average is taken across the
-#'   number of classes in \code{class}, and there is one average for ebery
-#'   bootstrap replicate. We arrive at the final tibble by calculating the
-#'   median of these measures across replicates, omitting any missing entries.
+#'   default, in which case uses all implemented algorithms.
+#' @return A nested list with five elements
+#' \item{model}{A list with an element for each algorithm, each of which is a 
+#' list with length \code{n}. Shows the model object for each algorithm and
+#' bootstrap replicate on the training set.}
+#' \item{pred}{A list with an element for each algorithm, each of which is a 
+#' list with length \code{n}. Shows the predicted classes for each algorithm and
+#' bootstrap replicate on the test set.}
+#' \item{eval}{For each bootstrap sample, we can calculate various evaluation 
+#' measures for the predicted classes from each algorithm. Evaluation measures 
+#' include overall accuracy, average accuracy, and micro-averaged precision, 
+#' recall, and F1-score. The micro-averaged measures are computed from the sum 
+#' of all One-Vs-All confusion matrices. The return value of \code{eval} is a 
+#' tibble that shows the median of the evaluation measures across bootstrap
+#' samples, for each classification algorithm.}
+#' \item{best.alg}{A length \code{n} vector of the top performing algorithms in
+#' each bootstrap sample as defined by the evaluation measures and using Rank
+#' Aggregation.}
+#' \item{ensemble}{A predicted class vector of the entire dataset using the 
+#' ensemble classifier: majority voting is used for class representation of each
+#' sample across different algortithms used.}
 #' @author Derek Chiu
 #' @export
 #' @examples 
