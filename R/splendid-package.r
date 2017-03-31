@@ -5,7 +5,7 @@
 #' across bootstrap resamples as well as across different machine learning
 #' classification algorithms.
 #' 
-#' @name splendid
+#' @name splendid-package
 #' @docType package
 #' @importFrom magrittr "%>%"
 #' @importFrom purrr "%||%"
