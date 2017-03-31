@@ -4,21 +4,52 @@
 \alias{classification}
 \title{Machine learning classification algorithms}
 \usage{
-classification(x, y, algs)
+classification(data, class, algs)
 }
 \arguments{
-\item{x}{data}
+\item{data}{data object with rows as samples, columns as features}
 
-\item{y}{class}
+\item{class}{true/reference class vector used for supervised learning}
 
-\item{algs}{algorithms}
+\item{algs}{character string of classification algorithm to use. See Details 
+in \code{\link{splendid}} for a list of choices.}
+}
+\value{
+The model object from running the classification algorithm 
+  \code{"alg"}
 }
 \description{
-Machine learning classification algorithms
+Runs a classification algorithm on a given dataset and reference class.
+}
+\details{
+Some of the classification algorithms implemented use pre-defined values that
+specify hyperparameters, settings, options, etc. \code{"multinom"} and 
+\code{"nnet"} increase the maximum number of weights used to 2000, in case 
+\code{data} is high dimensional and classification is time-consuming. 
+\code{"nnet"} uses 3 nodes in its hidden layer, a choice that hopefully 
+promotes sufficient complexity in many datasets. \code{"pamr"} considers 100 
+thresholds when training, and uses a uniform prior. \code{"adaboost"} 
+actually calls \code{\link[maboost]{maboost}} instead of 
+\code{\link[adabag]{boosting}} because of faster performance. As a result, we
+use the "entrop" option, which uses the KL-divergence method and mimics 
+adaboost.
+
+When \code{alg = "knn"}, the result is \code{NULL} because the
+\code{\link[class]{knn}} does not have output an intermediate model object.
+The modelling and prediction is done in one step. However, a class attribute
+is still assigned to the result in order to enact the corresponding method in
+\code{\link{prediction}}.
 }
 \note{
-qda errors because there are too many columns; need to reduce so that 
-  every class is greater than number of variables
+\code{"qda"} gives errors when using the \code{hgsc} dataset because 
+  there are too many variables The algorithm requires the size of every class
+  to be greater than the number of features. A feature selection framework 
+  and certain assertion checks need to be built for this algorithm to work.
+}
+\examples{
+data(hgsc)
+class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+classification(hgsc, class, "rf")
 }
 \author{
 Derek Chiu
