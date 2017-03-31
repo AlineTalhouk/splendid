@@ -12,17 +12,26 @@ evaluation(x, y)
 \item{y}{predicted class labels}
 }
 \value{
-A tibble with one row per algorithm, one column per evaluation
-  measure plus a column for the algorithm name.
+A list with one element per evaluation measure
 }
 \description{
-Evaluation of prediction performance on the OOB set is done using various
+Evaluation of prediction performance on the OOB set is done using various 
 measure for classification problems.
 }
 \details{
 The currently supported evaluation measures include overall accuracy, average
-accuracy across all One-vs-all confusion matrices, and macro-averaged 
+accuracy across all One-Vs-All confusion matrices, and macro-averaged 
 precision, recall, and F1-score.
+}
+\examples{
+data(hgsc)
+class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+set.seed(1)
+training.id <- sample(seq_along(class), replace = TRUE)
+test.id <- which(!seq_along(class) \%in\% training.id)
+mod <- classification(hgsc[training.id, ], class[training.id], "lda")
+pred <- prediction(mod, hgsc, test.id)
+evaluation(class[test.id], pred)
 }
 \references{
 https://github.com/saidbleik/Evaluation/blob/master/eval.R

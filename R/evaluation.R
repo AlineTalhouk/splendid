@@ -1,19 +1,27 @@
 #' Evaluation of prediction performance
 #' 
-#' Evaluation of prediction performance on the OOB set is done using various
+#' Evaluation of prediction performance on the OOB set is done using various 
 #' measure for classification problems.
 #' 
 #' The currently supported evaluation measures include overall accuracy, average
-#' accuracy across all One-vs-all confusion matrices, and macro-averaged 
+#' accuracy across all One-Vs-All confusion matrices, and macro-averaged 
 #' precision, recall, and F1-score.
 #' 
 #' @param x actual class labels
 #' @param y predicted class labels
-#' @return A tibble with one row per algorithm, one column per evaluation
-#'   measure plus a column for the algorithm name.
+#' @return A list with one element per evaluation measure
 #' @references https://github.com/saidbleik/Evaluation/blob/master/eval.R
 #' @author Derek Chiu
 #' @export
+#' @examples 
+#' data(hgsc)
+#' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+#' set.seed(1)
+#' training.id <- sample(seq_along(class), replace = TRUE)
+#' test.id <- which(!seq_along(class) %in% training.id)
+#' mod <- classification(hgsc[training.id, ], class[training.id], "lda")
+#' pred <- prediction(mod, hgsc, test.id)
+#' evaluation(class[test.id], pred)
 evaluation <- function(x, y) {
   cm <- as.matrix(table(Actual = x, Predicted = y))
   n <- sum(cm) # number of instances
