@@ -5,7 +5,7 @@
 \alias{prediction.default}
 \alias{prediction.knn}
 \alias{prediction.pamrtrained}
-\title{Prediction on OOB set}
+\title{Class prediction on OOB set}
 \usage{
 prediction(mod, data, test.id, ...)
 
@@ -16,29 +16,46 @@ prediction(mod, data, test.id, ...)
 \method{prediction}{pamrtrained}(mod, data, test.id, train.id, class, ...)
 }
 \arguments{
-\item{mod}{model}
+\item{mod}{model object from \code{\link{classification}}}
 
-\item{data}{data}
+\item{data}{data object with rows as samples, columns as features}
 
-\item{test.id}{test set ID}
+\item{test.id}{integer vector of indices for test set}
 
 \item{...}{additional arguments to be passed to or from methods}
 
-\item{train.id}{training set ID}
+\item{train.id}{integer vector of indices for training set ID. Only used for
+\code{knn} and \code{pamr} prediction methods.}
 
-\item{class}{class}
+\item{class}{true/reference class vector used for supervised learning}
 }
 \value{
-A factor of predicted values with levels in the same order as true
-  class
+A factor of predicted classes with labels in the same order as true 
+  class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
+  list of length 2: the predicted class, and the threshold value.
 }
 \description{
-Functions to predict class labels on the Out-Of-Bag set for different models.
+Functions to predict class labels on the Out-Of-Bag (test) set for different
+classifiers.
 }
 \details{
 Only the \code{knn} and \code{pamr} prediction methods require the additional
-\code{train.id} and \code{class} arguments. The other prediction methods 
-make use of the default method.
+\code{train.id} and \code{class} arguments. For \code{knn}, the modelling and
+prediction are performed in one step, so the function takes in both training
+and test set identifiers. For \code{pamr}, the classifier needs to be
+cross-validated on the training set in order to find a shrinkage threshold
+with the minimum CV error to use in prediction on the test set. The other
+prediction methods make use of the default method.
+}
+\examples{
+data(hgsc)
+class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+set.seed(1)
+training.id <- sample(seq_along(class), replace = TRUE)
+test.id <- which(!seq_along(class) \%in\% training.id)
+mod <- classification(hgsc[training.id, ], class[training.id], "lda")
+pred <- prediction(mod, hgsc, test.id)
+table(true = class[test.id], pred)
 }
 \author{
 Derek Chiu
