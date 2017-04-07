@@ -12,16 +12,19 @@ evaluation(x, y)
 \item{y}{predicted class labels}
 }
 \value{
-A list with one element per evaluation measure
+A list with one element per evaluation measure except for the
+  \code{cs} element, which returns a list of class-specific evaluation
+  measures.
 }
 \description{
 Evaluation of prediction performance on the OOB set is done using various 
 measure for classification problems.
 }
 \details{
-The currently supported evaluation measures include overall accuracy, average
-accuracy across all One-Vs-All confusion matrices, and macro-averaged 
-precision, recall, and F1-score.
+The currently supported evaluation measures include macro-averaged 
+precision/recall/F1-score, micro-averaged precision (which is the same as 
+recall/F1-score), Matthew's Correlation Coefficient (and its micro-averaged 
+analog), and class-specific precision/recall/F1-score/MCC.
 }
 \examples{
 data(hgsc)
@@ -32,9 +35,6 @@ test.id <- which(!seq_along(class) \%in\% training.id)
 mod <- classification(hgsc[training.id, ], class[training.id], "lda")
 pred <- prediction(mod, hgsc, test.id)
 evaluation(class[test.id], pred)
-}
-\references{
-https://github.com/saidbleik/Evaluation/blob/master/eval.R
 }
 \author{
 Derek Chiu
