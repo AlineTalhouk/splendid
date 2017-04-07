@@ -17,7 +17,8 @@
 #' Models using Elastic Net model paths ("glmnet").
 #' 
 #' An ensemble classifier is constructed using Rank Aggregation across multiple
-#' evaluation measures such as accuracy, precision, recall, and F1-score.
+#' evaluation measures such as precision, recall, F1-score, and Matthew's 
+#' Correlation Coefficient (MCC).
 #' 
 #' @param data data object with rows as samples, columns as features
 #' @param class true/reference class vector used for supervised learning
@@ -26,6 +27,8 @@
 #' @param algorithms character vector of algorithm names to use for supervised 
 #'   learning. See Details for possible options. This argument is \code{NULL} by
 #'   default, in which case uses all implemented algorithms.
+#' @param conf.level confidence level for bootstrapped estimates of evaluation
+#'   measures
 #' @return A nested list with five elements
 #' \item{model}{A list with an element for each algorithm, each of which is a 
 #' list with length \code{n}. Shows the model object for each algorithm and
@@ -35,11 +38,10 @@
 #' bootstrap replicate on the test set.}
 #' \item{eval}{For each bootstrap sample, we can calculate various evaluation 
 #' measures for the predicted classes from each algorithm. Evaluation measures 
-#' include overall accuracy, average accuracy, and micro-averaged precision, 
-#' recall, and F1-score. The micro-averaged measures are computed from the sum 
-#' of all One-Vs-All confusion matrices. The return value of \code{eval} is a 
-#' tibble that shows the median of the evaluation measures across bootstrap
-#' samples, for each classification algorithm.}
+#' include macro-averaged precision/recall/F1-score, micro-averaged precision, 
+#' and (micro-averaged MCC) The return value of \code{eval} is a tibble that 
+#' shows some summary statistics (e.g. mean, median) of the evaluation measures
+#' across bootstrap samples, for each classification algorithm.}
 #' \item{best.alg}{A length \code{n} vector of the top performing algorithms in
 #' each bootstrap sample as defined by the evaluation measures and using Rank
 #' Aggregation.}
@@ -53,7 +55,8 @@
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "svm"))
-splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
+splendid <- function(data, class, n, seed = 1, algorithms = NULL,
+                     conf.level = 0.95) {
   
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
@@ -74,11 +77,20 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL) {
                       ~ purrr::pmap(list(.x, test.idx, train.idx),
                                     prediction, data = data, class = class))
   evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
-    purrr::map(~ purrr::map2_df(.x, test.idx, ~ evaluation(.x, class[.y]))) %>% 
+    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y)) %>%
+                 purrr::map_df(purrr::flatten)) %>% 
     tibble::enframe() %>% 
     tidyr::unnest() %>% 
-    dplyr::group_by(name) %>% 
-    dplyr::summarise_all(stats::median, na.rm = TRUE) %>% 
+    tidyr::gather(measure, value, -name) %>% 
+    dplyr::mutate(measure = factor(measure, levels = unique(measure))) %>% 
+    dplyr::group_by(name, measure) %>% 
+    dplyr::summarise_all(funs(min = min,
+                              lower = quantile(., probs = (1 - conf.level) / 2),
+                              mean = mean,
+                              median = median,
+                              upper = quantile(., prob = (1 - (1 - conf.level) / 2)),
+                              max = max),
+                         na.rm = TRUE) %>% 
     dplyr::arrange(match(name, ALG.NAME))
   best.algs <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
     purrr::transpose() %>% 
