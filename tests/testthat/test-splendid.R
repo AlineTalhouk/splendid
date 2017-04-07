@@ -7,7 +7,7 @@ test_that("missing algorithm parameter means use all", {
   sl_result <- splendid(hgsc, class, n = 1)
   expect_length(sl_result$model, 10)
   expect_length(sl_result$pred, 10)
-  expect_equal(nrow(sl_result$eval), 10)
+  expect_equal(nrow(sl_result$eval), 220)
 })
 
 test_that("unsupported algorithm call causes error", {
