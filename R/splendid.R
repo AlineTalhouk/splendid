@@ -85,12 +85,12 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL,
     dplyr::mutate(measure = factor(measure, levels = unique(measure))) %>% 
     dplyr::group_by(name, measure) %>% 
     dplyr::summarise_all(
-      funs(min = min,
-           lower = quantile(., probs = (1 - conf.level) / 2),
-           mean = mean,
-           median = median,
-           upper = quantile(., prob = (1 - (1 - conf.level) / 2)),
-           max = max),
+      dplyr::funs(min = min,
+                  lower = quantile(., probs = (1 - conf.level) / 2),
+                  mean = mean,
+                  median = median,
+                  upper = quantile(., prob = (1 - (1 - conf.level) / 2)),
+                  max = max),
       na.rm = TRUE) %>% 
     dplyr::arrange(match(name, ALG.NAME))
   best.algs <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
@@ -99,7 +99,7 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL,
       evaluation(class[.y], d)) %>% 
         purrr::map(`[`, 1:6) %>% 
         purrr::invoke(rbind, .)) %>% 
-    purrr::map(~ unnest(as.data.frame(.x))) %>% 
+    purrr::map(~ tidyr::unnest(as.data.frame(.x))) %>% 
     purrr::map(~ purrr::map(.x, ~ algs[order(
       rank(-.x, ties.method = "random"))])) %>% 
     purrr::map(~ purrr::invoke(rbind, .x)) %>% 

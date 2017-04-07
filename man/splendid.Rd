@@ -4,7 +4,7 @@
 \alias{splendid}
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
-splendid(data, class, n, seed = 1, algorithms = NULL)
+splendid(data, class, n, seed = 1, algorithms = NULL, conf.level = 0.95)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -18,6 +18,9 @@ splendid(data, class, n, seed = 1, algorithms = NULL)
 \item{algorithms}{character vector of algorithm names to use for supervised 
 learning. See Details for possible options. This argument is \code{NULL} by
 default, in which case uses all implemented algorithms.}
+
+\item{conf.level}{confidence level for bootstrapped estimates of evaluation
+measures}
 }
 \value{
 A nested list with five elements
@@ -29,11 +32,10 @@ list with length \code{n}. Shows the predicted classes for each algorithm and
 bootstrap replicate on the test set.}
 \item{eval}{For each bootstrap sample, we can calculate various evaluation 
 measures for the predicted classes from each algorithm. Evaluation measures 
-include overall accuracy, average accuracy, and micro-averaged precision, 
-recall, and F1-score. The micro-averaged measures are computed from the sum 
-of all One-Vs-All confusion matrices. The return value of \code{eval} is a 
-tibble that shows the median of the evaluation measures across bootstrap
-samples, for each classification algorithm.}
+include macro-averaged precision/recall/F1-score, micro-averaged precision, 
+and (micro-averaged MCC) The return value of \code{eval} is a tibble that 
+shows some summary statistics (e.g. mean, median) of the evaluation measures
+across bootstrap samples, for each classification algorithm.}
 \item{best.alg}{A length \code{n} vector of the top performing algorithms in
 each bootstrap sample as defined by the evaluation measures and using Rank
 Aggregation.}
@@ -60,7 +62,8 @@ Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear
 Models using Elastic Net model paths ("glmnet").
 
 An ensemble classifier is constructed using Rank Aggregation across multiple
-evaluation measures such as accuracy, precision, recall, and F1-score.
+evaluation measures such as precision, recall, F1-score, and Matthew's 
+Correlation Coefficient (MCC).
 }
 \examples{
 data(hgsc)
