@@ -93,6 +93,7 @@ ova <- function(C) {
     nm <- seq_len(nrow(C))
   else
     nm <- dimnames(C)[[1]]
+  n <- sum(C)
   purrr::map(purrr::set_names(seq_len(nrow(C)), nm), ~ {
     m <- C[.x, .x]
     cs <- colsums[.x]
