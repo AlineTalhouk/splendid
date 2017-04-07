@@ -35,7 +35,7 @@ evaluation <- function(x, y) {
   cs_r <- purrr::map_dbl(ocm, recall)
   cs_f <- purrr::map_dbl(ocm, f1)
   cs_m <- purrr::map_dbl(ocm, mcc)
-  cs <- list(precision = cs_p, recall = cs_r, f1 = cs_f, MCC = cs_m)
+  cs <- c(precision = cs_p, recall = cs_r, f1 = cs_f, MCC = cs_m)
   
   # Macro-averaged precision/recall/F1-score
   macro_p <- mean(cs_p)
