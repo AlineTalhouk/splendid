@@ -96,8 +96,8 @@ ova <- function(C) {
   n <- sum(C)
   purrr::map(purrr::set_names(seq_len(nrow(C)), nm), ~ {
     m <- C[.x, .x]
-    cs <- colsums[.x]
-    rs <- rowsums[.x]
+    cs <- sum(C[, .x])
+    rs <- sum(C[.x, ])
     matrix(c(m, cs - m, rs - m, n - cs - rs + m), nrow = 2)
   })
 }
