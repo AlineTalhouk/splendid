@@ -69,7 +69,7 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL,
     stats::setNames(., .)  # if null, use all
   
   # Apply training sets to models and predict on the test sets
-  name <- NULL
+  name <- measure <- value <- NULL
   models <- purrr::map(algs,
                        ~ purrr::map(train.idx, function(id) 
                          classification(data[id, ], class[id], .x)))
@@ -86,10 +86,10 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL,
     dplyr::group_by(name, measure) %>% 
     dplyr::summarise_all(
       dplyr::funs(min = min,
-                  lower = quantile(., probs = (1 - conf.level) / 2),
+                  lower = stats::quantile(., probs = (1 - conf.level) / 2),
                   mean = mean,
-                  median = median,
-                  upper = quantile(., prob = (1 - (1 - conf.level) / 2)),
+                  median = stats::median(.),
+                  upper = stats::quantile(., prob = (1 - (1 - conf.level) / 2)),
                   max = max),
       na.rm = TRUE) %>% 
     dplyr::arrange(match(name, ALG.NAME))
