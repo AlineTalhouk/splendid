@@ -58,8 +58,9 @@ The classification algorithms currently supported are: Linear Discriminant
 Analysis ("lda"), Random Forests ("rf"), Multinomial Classification 
 ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"), 
 Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
-Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear 
-Models using Elastic Net model paths ("glmnet").
+Adaptive Boosting ("adaboost"), Extreme Gradient Boosting ("xgboost"), Naive 
+Bayes ("nb"), and Generalized Linear Models using Elastic Net model paths 
+("glmnet").
 
 An ensemble classifier is constructed using Rank Aggregation across multiple
 evaluation measures such as precision, recall, F1-score, and Matthew's 

@@ -96,6 +96,14 @@ prediction.maboost <- function(mod, data, test.id, ...) {
 }
 
 #' @export
+prediction.xgb.Booster <- function(mod, data, test.id, ...) {
+  prediction.default(mod, as.matrix(data), test.id) %>% 
+    matrix(ncol = 4, byrow = TRUE) %>%
+    data.frame() %>%
+    max.col()
+}
+
+#' @export
 prediction.naiveBayes <- function(mod, data, test.id, ...) {
   prediction.default(mod, data, test.id)
 }

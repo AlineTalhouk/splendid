@@ -55,6 +55,13 @@ classification <- function(data, class, algs) {
                             prior = rep(1 / dplyr::n_distinct(class),
                                         dplyr::n_distinct(class)))),
          adaboost = sink_output(maboost::maboost(data, class, breg = "entrop")),
+         xgboost = xgboost::xgb.train(
+           params = list("objective" = "multi:softprob",
+                         "eval_metric" = "mlogloss",
+                         "num_class" = dplyr::n_distinct(class)),
+           data = xgboost::xgb.DMatrix(data = as.matrix(data),
+                                       label = as.integer(class) - 1),
+           nrounds = 2),
          nb = e1071::naiveBayes(data, class),
          glmnet = glmnet::cv.glmnet(as.matrix(data), class,
                                     family = "multinomial")
