@@ -7,7 +7,7 @@ Authors@R: c(
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"))
 Description: Provides a bootstrapping and ensemble framework for supervised
     learning analyses using multiple classification algorithms. 
-Depends: R (>= 3.3.3)
+Depends: R (>= 3.2.0)
 Imports:
     dplyr,
     purrr,
