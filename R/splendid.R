@@ -103,10 +103,15 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL,
     purrr::map(~ purrr::map(.x, ~ algs[order(
       rank(-.x, ties.method = "random"))])) %>% 
     purrr::map(~ purrr::invoke(rbind, .x)) %>% 
-    purrr::map_chr(~ RankAggreg::RankAggreg(.x, ncol(.x), seed = seed,
-                                            verbose = FALSE) %>% 
-                     magrittr::use_series("top.list") %>% 
-                     head(1))
+    purrr::map_chr(~ {
+      if (ncol(.x) > 1) {
+        RankAggreg::RankAggreg(.x, ncol(.x), seed = seed, verbose = FALSE) %>% 
+          magrittr::use_series("top.list") %>% 
+          head(1)
+      } else {
+        colnames(.x)
+      }
+    })
   ensemble <- purrr::map(best.algs, ~ classification(data, class, .x)) %>% 
     purrr::map(~ prediction(.x, data, seq_along(class), seq_along(class),
                             class)) %>% 
