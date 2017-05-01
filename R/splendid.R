@@ -13,8 +13,9 @@
 #' Analysis ("lda"), Random Forests ("rf"), Multinomial Classification 
 #' ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"), 
 #' Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
-#' Adaptive Boosting ("adaboost"), Naive Bayes ("nb"), and Generalized Linear 
-#' Models using Elastic Net model paths ("glmnet").
+#' Adaptive Boosting ("adaboost"), Extreme Gradient Boosting ("xgboost"), Naive 
+#' Bayes ("nb"), and Generalized Linear Models using Elastic Net model paths 
+#' ("glmnet").
 #' 
 #' An ensemble classifier is constructed using Rank Aggregation across multiple
 #' evaluation measures such as precision, recall, F1-score, and Matthew's 
@@ -105,7 +106,8 @@ splendid <- function(data, class, n, seed = 1, algorithms = NULL,
     purrr::map(~ purrr::invoke(rbind, .x)) %>% 
     purrr::map_chr(~ {
       if (ncol(.x) > 1) {
-        RankAggreg::RankAggreg(.x, ncol(.x), seed = seed, verbose = FALSE) %>% 
+        RankAggreg::RankAggreg(.x, ncol(.x), method = "GA",
+                               seed = seed, verbose = FALSE) %>% 
           magrittr::use_series("top.list") %>% 
           head(1)
       } else {
