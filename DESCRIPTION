@@ -22,6 +22,7 @@ Imports:
     e1071,
     pamr,
     maboost,
+    xgboost,
     glmnet,
     RankAggreg
 Suggests:

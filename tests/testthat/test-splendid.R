@@ -5,9 +5,9 @@ class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 
 test_that("missing algorithm parameter means use all", {
   sl_result <- splendid(hgsc, class, n = 1)
-  expect_length(sl_result$model, 10)
-  expect_length(sl_result$pred, 10)
-  expect_equal(nrow(sl_result$eval), 220)
+  expect_length(sl_result$model, 11)
+  expect_length(sl_result$pred, 11)
+  expect_equal(nrow(sl_result$eval), 242)
 })
 
 test_that("unsupported algorithm call causes error", {
