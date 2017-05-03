@@ -58,82 +58,8 @@
 #' "svm"))
 splendid <- function(data, class, n, seed = 1, algorithms = NULL,
                      conf.level = 0.95) {
-  
-  # Generate bootstrap resamples; test samples are those not chosen in training
-  set.seed(seed)
-  class <- as.factor(class)  # ensure class is a factor
-  train.idx <- training_id(data = data, class = class, n = n)
-  test.idx <- purrr::map(train.idx, ~ which(!seq_len(nrow(data)) %in% .x))
-  
-  # Classification algorithms to use and their model function calls
-  algs <- algorithms %||% ALG.NAME %>%
-    stats::setNames(., .)  # if null, use all
-  
-  # Apply training sets to models and predict on the test sets
-  name <- measure <- value <- NULL
-  models <- purrr::map(algs,
-                       ~ purrr::map(train.idx, function(id) 
-                         classification(data[id, ], class[id], .x)))
-  preds <- purrr::map(models,
-                      ~ purrr::pmap(list(.x, test.idx, train.idx),
-                                    prediction, data = data, class = class))
-  evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
-    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y)) %>%
-                 purrr::map_df(purrr::flatten)) %>% 
-    tibble::enframe() %>% 
-    tidyr::unnest() %>% 
-    tidyr::gather(measure, value, -name) %>% 
-    dplyr::mutate(measure = factor(measure, levels = unique(measure))) %>% 
-    dplyr::group_by(name, measure) %>% 
-    dplyr::summarise_all(
-      dplyr::funs(min = min,
-                  lower = stats::quantile(., probs = (1 - conf.level) / 2),
-                  mean = mean,
-                  median = stats::median(.),
-                  upper = stats::quantile(., prob = (1 - (1 - conf.level) / 2)),
-                  max = max),
-      na.rm = TRUE) %>% 
-    dplyr::arrange(match(name, ALG.NAME))
-  best.algs <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
-    purrr::transpose() %>% 
-    purrr::map2(test.idx, ~ purrr::map(.x, function(d)
-      evaluation(class[.y], d)) %>% 
-        purrr::map(`[`, 1:6) %>% 
-        purrr::invoke(rbind, .)) %>% 
-    purrr::map(~ tidyr::unnest(as.data.frame(.x))) %>% 
-    purrr::map(~ purrr::map(.x, ~ algs[order(
-      rank(-.x, ties.method = "random"))])) %>% 
-    purrr::map(~ purrr::invoke(rbind, .x)) %>% 
-    purrr::map_chr(~ {
-      if (ncol(.x) > 1) {
-        RankAggreg::RankAggreg(.x, ncol(.x), method = "GA",
-                               seed = seed, verbose = FALSE) %>% 
-          magrittr::use_series("top.list") %>% 
-          head(1)
-      } else {
-        colnames(.x)
-      }
-    })
-  ensemble <- purrr::map(best.algs, ~ classification(data, class, .x)) %>% 
-    purrr::map(~ prediction(.x, data, seq_along(class), seq_along(class),
-                            class)) %>% 
-    purrr::map(as.character) %>% 
-    purrr::invoke(cbind, .) %>% 
-    apply(1, function(x) names(which.max(table(x))))
-  return(list(model = models, pred = preds, eval = evals,
-              best.algs = best.algs, ensemble = ensemble))
-}
-
-#' Recurrsively create training set indices ensuring class representation
-#' in every bootstrap resample
-#' @noRd
-training_id <- function(data, class, n) {
-  boot <- modelr::bootstrap(data, n)
-  train.idx <- purrr::map(boot$strap, "idx")
-  nc <- purrr::map_int(train.idx, ~ dplyr::n_distinct(class[.x]))
-  all.cl <- nc == nlevels(class)
-  if (any(!all.cl))
-    return(c(train.idx[all.cl], training_id(data, class, sum(!all.cl))))
-  else
-    return(train.idx[all.cl])
+  sm <- splendid_model(data = data, class = class, n = n,
+                       algorithms = algorithms, conf.level = conf.level)
+  se <- splendid_ensemble(sm = sm, data = data, class = class)
+  c(sm, se)
 }
