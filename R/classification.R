@@ -37,11 +37,19 @@
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' classification(hgsc, class, "rf")
-classification <- function(data, class, algs) {
+classification <- function(data, class, algs, rfe) {
   algs <- match.arg(algs, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   switch(algs,
-         lda = suppressWarnings(MASS::lda(data, grouping = class)),
+         lda = {
+           if (!rfe)
+             suppressWarnings(MASS::lda(data, grouping = class))
+           else
+             suppressPackageStartupMessages(suppressWarnings(
+               caret::rfe(data, class, sizes = seq_len(30),
+                          rfeControl = rfeControl(functions = caret::ldaFuncs,
+                                                  method = "cv"))))
+         },
          qda = MASS::qda(data, grouping = class),
          rf = randomForest::randomForest(data, y = class),
          multinom = nnet::multinom(class ~ ., data, MaxNWts = 2000,

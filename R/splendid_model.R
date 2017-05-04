@@ -4,7 +4,7 @@
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "svm")
 splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
-                           conf.level = 0.95) {
+                           conf.level = 0.95, rfe = FALSE) {
   
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
@@ -17,10 +17,9 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
     stats::setNames(., .)  # if null, use all
   
   # Apply training sets to models and predict on the test sets
-  name <- measure <- value <- NULL
   models <- purrr::map(algs,
                        ~ purrr::map(train.idx, function(id) 
-                         classification(data[id, ], class[id], .x)))
+                         classification(data[id, ], class[id], .x, rfe)))
   preds <- purrr::map(models,
                       ~ purrr::pmap(list(.x, test.idx, train.idx),
                                     prediction, data = data, class = class))

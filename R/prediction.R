@@ -52,6 +52,11 @@ prediction.lda <- function(mod, data, test.id, ...) {
 }
 
 #' @export
+prediction.rfe <- function(mod, data, test.id, ...) {
+  prediction.default(mod, data[, mod$optVariables], test.id)$pred
+}
+
+#' @export
 prediction.randomForest <- function(mod, data, test.id, ...) {
   unname(prediction.default(mod, data, test.id))
 }
