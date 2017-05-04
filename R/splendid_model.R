@@ -9,7 +9,7 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
   class <- as.factor(class)  # ensure class is a factor
-  train.idx <- splendid:::training_id(data = data, class = class, n = n)
+  train.idx <- training_id(data = data, class = class, n = n)
   test.idx <- purrr::map(train.idx, ~ which(!seq_len(nrow(data)) %in% .x))
   
   # Classification algorithms to use and their model function calls
