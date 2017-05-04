@@ -18,7 +18,7 @@
 #' 
 #' @param data data object with rows as samples, columns as features
 #' @param class true/reference class vector used for supervised learning
-#' @param n number of bootstrap replicates to generate (currently set to 1)
+#' @param n number of bootstrap replicates to generate 
 #' @param seed random seed used for reproducibility in bootstrapping results
 #' @param algorithms character vector of algorithm names to use for supervised 
 #'   learning. See Details for possible options. This argument is \code{NULL} by
@@ -56,16 +56,16 @@ bootstrap_train <- function(data, class, n, seed = 1, algorithms=NULL) {
                          classification(data[id, ], class[id], .x)))
   preds <- purrr::map(models,
                       ~ purrr::pmap(list(.x, test.idx, train.idx),
-                                    prediction, data = data, class = class))
+                                    prediction, data = data, class = class)) 
   
   evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
-    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y)) %>%
-                 purrr::map_df(purrr::flatten)) %>% 
-    tibble::enframe() %>% 
-    tidyr::unnest()  %>% 
-    as.data.frame() %>% 
-    `rownames<-`(.$name) %>% 
-    extract(.,-1)
+    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>% 
+    purrr::at_depth(2, ~purrr::flatten(.x) %>% 
+    unlist() %>% 
+      data.frame()) %>% 
+    purrr::at_depth(1,~data.frame(.x) %>% 
+                      set_colnames(as.character(1:n)))
+
   return(list(model = models, pred = preds,evals = evals))
   }
 
