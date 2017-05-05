@@ -1,3 +1,5 @@
+#' Combine classification models into an ensemble
+#' 
 #' @export
 #' @examples 
 #' data(hgsc)

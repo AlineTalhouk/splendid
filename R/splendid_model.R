@@ -1,3 +1,5 @@
+#' Train, predict, and evaluate classification models
+#' 
 #' @export
 #' @examples 
 #' data(hgsc)
