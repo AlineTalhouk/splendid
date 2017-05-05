@@ -65,7 +65,10 @@ classification <- function(data, class, algs, rfe) {
          nnet = nnet::nnet(class ~ ., data, size = 3, MaxNWts = 2000,
                            trace = FALSE),
          knn = structure(NULL, class = "knn"),
-         svm = e1071::svm(class ~ ., data),
+         svm = e1071::best.svm(x = data, y = class,
+                               gamma = 1 / ncol(data) * 2 ^ (0:4),
+                               cost = 2 ^ (0:4),
+                               tunecontrol = tune.control(sampling = "fix")),
          pam = sink_output(
            pamr::pamr.train(list(x = t(data), y = class), n.threshold = 100,
                             prior = rep(1 / dplyr::n_distinct(class),
