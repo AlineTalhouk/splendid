@@ -65,7 +65,7 @@ classification <- function(data, class, algs, rfe) {
          nnet = nnet::nnet(class ~ ., data, size = 3, MaxNWts = 2000,
                            trace = FALSE),
          knn = structure(NULL, class = "knn"),
-         svm = e1071::best.svm(x = data, y = class,
+         svm = e1071::best.svm(x = data, y = class, probability = TRUE,
                                gamma = 1 / ncol(data) * 2 ^ (0:4),
                                cost = 2 ^ (0:4),
                                tunecontrol = tune.control(sampling = "fix")),

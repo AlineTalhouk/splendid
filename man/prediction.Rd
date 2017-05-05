@@ -28,6 +28,9 @@ prediction(mod, data, test.id, ...)
 \code{knn} and \code{pamr} prediction methods.}
 
 \item{class}{true/reference class vector used for supervised learning}
+
+\item{probability}{\code{svm} parameter; logical; if \code{TRUE}, returns
+posterior probabilities in addition to class labels.}
 }
 \value{
 A factor of predicted classes with labels in the same order as true 

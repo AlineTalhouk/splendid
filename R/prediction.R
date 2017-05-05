@@ -17,6 +17,8 @@
 #' @param ... additional arguments to be passed to or from methods
 #' @param train.id integer vector of indices for training set ID. Only used for
 #' \code{knn} and \code{pamr} prediction methods.
+#' @param probability \code{svm} parameter; logical; if \code{TRUE}, returns
+#'   posterior probabilities in addition to class labels.
 #' @return A factor of predicted classes with labels in the same order as true 
 #'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
 #'   list of length 2: the predicted class, and the threshold value.
@@ -79,8 +81,8 @@ prediction.knn <- function(mod, data, test.id, train.id, class, ...) {
 }
 
 #' @export
-prediction.svm <- function(mod, data, test.id, ...) {
-  unname(prediction.default(mod, data, test.id))
+prediction.svm <- function(mod, data, test.id, probability = FALSE, ...) {
+  unname(prediction.default(mod, data, test.id, probability = probability))
 }
 
 #' @rdname prediction
