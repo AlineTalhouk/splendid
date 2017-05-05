@@ -24,7 +24,7 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1) {
           magrittr::use_series("top.list") %>% 
           head(1)
       } else {
-        colnames(.x)
+        .x[1]
       }
     })
   ensemble_algs <- bests %>% 
