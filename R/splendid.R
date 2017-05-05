@@ -14,8 +14,8 @@
 #' ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"), 
 #' Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
 #' Adaptive Boosting ("adaboost"), Extreme Gradient Boosting ("xgboost"), Naive 
-#' Bayes ("nb"), and Generalized Linear Models using Elastic Net model paths 
-#' ("glmnet").
+#' Bayes ("nb"), and Generalized Linear Models using the LASSO ("lasso") or 
+#' ridge ("ridge") penalty.
 #' 
 #' An ensemble classifier is constructed using Rank Aggregation across multiple
 #' evaluation measures such as precision, recall, F1-score, and Matthew's 

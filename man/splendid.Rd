@@ -4,7 +4,8 @@
 \alias{splendid}
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
-splendid(data, class, n, seed = 1, algorithms = NULL, conf.level = 0.95)
+splendid(data, class, n, seed = 1, algorithms = NULL, conf.level = 0.95,
+  rfe = FALSE)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -59,8 +60,8 @@ Analysis ("lda"), Random Forests ("rf"), Multinomial Classification
 ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"), 
 Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
 Adaptive Boosting ("adaboost"), Extreme Gradient Boosting ("xgboost"), Naive 
-Bayes ("nb"), and Generalized Linear Models using Elastic Net model paths 
-("glmnet").
+Bayes ("nb"), and Generalized Linear Models using the LASSO ("lasso") or 
+ridge ("ridge") penalty.
 
 An ensemble classifier is constructed using Rank Aggregation across multiple
 evaluation measures such as precision, recall, F1-score, and Matthew's 
@@ -69,8 +70,12 @@ Correlation Coefficient (MCC).
 \examples{
 data(hgsc)
 class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
-sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
+sl_result1 <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 "svm"))
+
+# With RFE feature selection
+sl_result2 <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
+"svm"), rfe = TRUE)
 }
 \author{
 Derek Chiu

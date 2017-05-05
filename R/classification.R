@@ -82,7 +82,9 @@ classification <- function(data, class, algs, rfe) {
                                        label = as.integer(class) - 1),
            nrounds = 2),
          nb = e1071::naiveBayes(data, class),
-         glmnet = glmnet::cv.glmnet(as.matrix(data), class,
-                                    family = "multinomial")
+         lasso = glmnet::cv.glmnet(as.matrix(data), class, alpha = 1,
+                                   family = "multinomial"),
+         ridge = glmnet::cv.glmnet(as.matrix(data), class, alpha = 0,
+                                   family = "multinomial")
   )
 }
