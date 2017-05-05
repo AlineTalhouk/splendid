@@ -11,7 +11,7 @@ bootstrap_train(data, class, n, seed = 1, algorithms = NULL)
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{n}{number of bootstrap replicates to generate (currently set to 1)}
+\item{n}{number of bootstrap replicates to generate}
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
