@@ -52,6 +52,14 @@ classification <- function(data, class, algs, rfe) {
          },
          qda = MASS::qda(data, grouping = class),
          rf = randomForest::randomForest(data, y = class),
+         rf = {
+           if (!rfe)
+             randomForest::randomForest(data, y = class)
+           else
+             caret::rfe(data, class, sizes = seq_len(30),
+                        rfeControl = rfeControl(functions = caret::rfFuncs,
+                                                method = "cv"))
+         },
          multinom = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                    trace = FALSE),
          nnet = nnet::nnet(class ~ ., data, size = 3, MaxNWts = 2000,
