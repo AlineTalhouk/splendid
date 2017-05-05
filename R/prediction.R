@@ -77,7 +77,7 @@ prediction.nnet.formula <- function(mod, data, test.id, ...) {
 #' @export
 prediction.knn <- function(mod, data, test.id, train.id, class,
                            probability = FALSE, ...) {
-  kdist <- knnflex::knn.dist(rbind(data[train.id, ], data[test.id, ]))
+  kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
                   y = class[train.id], dist.matrix = kdist, k = 5)
