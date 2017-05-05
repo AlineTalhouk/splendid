@@ -75,9 +75,17 @@ prediction.nnet.formula <- function(mod, data, test.id, ...) {
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, test.id, train.id, class, ...) {
-  class::knn(train = data[train.id, ], test = data[test.id, ],
-             cl = class[train.id], k = 5, l = 3)
+prediction.knn <- function(mod, data, test.id, train.id, class,
+                           probability = FALSE, ...) {
+  kdist <- knnflex::knn.dist(rbind(data[train.id, ], data[test.id, ]))
+  kparams <- list(train = seq_along(train.id),
+                  test = length(train.id) + seq_along(test.id),
+                  y = class[train.id], dist.matrix = kdist, k = 5)
+  cl <- purrr::invoke(knnflex::knn.predict, kparams)
+  if (probability) {
+    attr(cl, "prob") <- purrr::invoke(knnflex::knn.probability, kparams) %>% t()
+  }
+  cl
 }
 
 #' @export

@@ -5,7 +5,7 @@
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
 splendid(data, class, n, seed = 1, algorithms = NULL, conf.level = 0.95,
-  rfe = FALSE)
+  rfe = FALSE, ...)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}

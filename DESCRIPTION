@@ -24,12 +24,14 @@ Imports:
     maboost,
     xgboost,
     glmnet,
-    RankAggreg
+    RankAggreg,
+    knnflex
 Suggests:
     stringr,
     testthat,
     knitr,
     rmarkdown
+Remotes: Dasonk/knnflex
 License: MIT + file LICENSE
 URL: https://github.com/AlineTalhouk/splendid
 BugReports: https://github.com/AlineTalhouk/splendid/issues

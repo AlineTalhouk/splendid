@@ -5,7 +5,7 @@
 \title{Train, predict, and evaluate classification models}
 \usage{
 splendid_model(data, class, n, seed = 1, algorithms = NULL,
-  conf.level = 0.95, rfe = FALSE)
+  conf.level = 0.95, rfe = FALSE, ...)
 }
 \description{
 Train, predict, and evaluate classification models

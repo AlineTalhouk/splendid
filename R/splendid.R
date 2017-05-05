@@ -61,10 +61,10 @@
 #' sl_result2 <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "svm"), rfe = TRUE)
 splendid <- function(data, class, n, seed = 1, algorithms = NULL,
-                     conf.level = 0.95, rfe = FALSE) {
+                     conf.level = 0.95, rfe = FALSE, ...) {
   sm <- splendid_model(data = data, class = class, n = n,
                        algorithms = algorithms, conf.level = conf.level,
-                       rfe = rfe)
+                       rfe = rfe, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class)
   c(sm, se)
 }

@@ -11,7 +11,8 @@ prediction(mod, data, test.id, ...)
 
 \method{prediction}{default}(mod, data, test.id, ...)
 
-\method{prediction}{knn}(mod, data, test.id, train.id, class, ...)
+\method{prediction}{knn}(mod, data, test.id, train.id, class,
+  probability = FALSE, ...)
 
 \method{prediction}{pamrtrained}(mod, data, test.id, train.id, class, ...)
 }
