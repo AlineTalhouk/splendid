@@ -4,7 +4,7 @@
 \alias{splendid_ensemble}
 \title{Combine classification models into an ensemble}
 \usage{
-splendid_ensemble(sm, data, class, top = 3, seed = 1)
+splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE)
 }
 \description{
 Combine classification models into an ensemble
