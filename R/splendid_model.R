@@ -26,11 +26,11 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
                       ~ purrr::pmap(list(.x, test.idx, train.idx),
                                     prediction, data = data, class = class, ...))
   evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>% 
-    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y)) %>%
-                 purrr::map_df(purrr::flatten)) %>% 
-    tibble::enframe() %>% 
-    tidyr::unnest() %>% 
-    dplyr::mutate(boot = rep(seq_len(n), length(algs)))
+    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>% 
+    purrr::at_depth(2, ~ purrr::flatten(.x) %>% 
+                      unlist() %>% 
+                      data.frame()) %>% 
+    purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n)))
   dplyr::lst(models, preds, evals)
 }
 
