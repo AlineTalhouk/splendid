@@ -37,26 +37,40 @@
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' classification(hgsc, class, "rf")
-classification <- function(data, class, algs, rfe) {
+classification <- function(data, class, algs, rfe, sizes = NULL) {
   algs <- match.arg(algs, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
+  sizes <- sizes %||% seq_len(round(min(table(class)) / 2))
   switch(algs,
          lda = {
            if (!rfe)
              suppressWarnings(MASS::lda(data, grouping = class))
            else
              suppressPackageStartupMessages(suppressWarnings(
-               caret::rfe(data, class, sizes = seq_len(30),
+               caret::rfe(data, class, sizes = sizes,
                           rfeControl = rfeControl(functions = caret::ldaFuncs,
                                                   method = "cv"))))
          },
-         qda = MASS::qda(data, grouping = class),
-         rf = randomForest::randomForest(data, y = class),
+         qda = {
+           data <- data %>%  # Use the variables with the largest variance
+             magrittr::extract(, apply(., 2, var) %>% 
+                                 unlist() %>% 
+                                 sort() %>% 
+                                 tail(min(table(class)) - 1) %>% 
+                                 names())
+           if (!rfe)
+             MASS::qda(data, grouping = class)
+           else
+             suppressPackageStartupMessages(suppressWarnings(
+               caret::rfe(data, class, sizes = sizes,
+                          rfeControl = rfeControl(functions = qdaFuncs,
+                                                  method = "cv"))))
+         },
          rf = {
            if (!rfe)
              randomForest::randomForest(data, y = class)
            else
-             caret::rfe(data, class, sizes = seq_len(30),
+             caret::rfe(data, class, sizes = sizes,
                         rfeControl = rfeControl(functions = caret::rfFuncs,
                                                 method = "cv"))
          },
@@ -87,4 +101,11 @@ classification <- function(data, class, algs, rfe) {
          ridge = glmnet::cv.glmnet(as.matrix(data), class, alpha = 0,
                                    family = "multinomial")
   )
+}
+
+#' QDA functions
+#' @noRd
+qdaFuncs <- caret::ldaFuncs
+qdaFuncs$fit <- function(x, y, first, last, ...) {
+  MASS::qda(x, y, ...)
 }

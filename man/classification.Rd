@@ -4,7 +4,7 @@
 \alias{classification}
 \title{Machine learning classification algorithms}
 \usage{
-classification(data, class, algs, rfe)
+classification(data, class, algs, rfe, sizes = NULL)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
