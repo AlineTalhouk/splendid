@@ -72,9 +72,10 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
            if (!rfe)
              randomForest::randomForest(data, y = class)
            else
-             caret::rfe(data, class, sizes = sizes,
-                        rfeControl = caret::rfeControl(
-                          functions = caret::rfFuncs, method = "cv"))
+             suppressPackageStartupMessages(suppressWarnings(
+               caret::rfe(data, class, sizes = sizes,
+                          rfeControl = caret::rfeControl(
+                            functions = caret::rfFuncs, method = "cv"))))
          },
          multinom = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                    trace = FALSE),
