@@ -37,8 +37,9 @@ evaluation <- function(x, y) {
   cs_m <- purrr::map_dbl(ocm, mcc)
   cs <- c(precision = cs_p, recall = cs_r, f1 = cs_f, MCC = cs_m)
   
-  # Logloss
+  # Discriminatory measures
   log_loss <- logloss(x, attr(y, "prob"))
+  auc <- auc(x, attr(y, "prob"))
   
   # Macro-averaged precision/recall/F1-score
   macro_p <- mean(cs_p)
@@ -52,10 +53,9 @@ evaluation <- function(x, y) {
   MCC <- mcc(cm)
   micro_MCC <- mcc(socm)
   
-  return(list(Logloss = log_loss,
-              Macro_Precision = macro_p, Macro_Recall = macro_r,
-              Macro_F1 = macro_f, Micro_Precision = micro_p, MCC = MCC,
-              Micro_MCC = micro_MCC, CS = cs))
+  list(Logloss = log_loss, AUC = auc,
+       Macro_Precision = macro_p, Macro_Recall = macro_r, Macro_F1 = macro_f,
+       Micro_Precision = micro_p, MCC = MCC, Micro_MCC = micro_MCC, CS = cs)
 }
 
 #' Precision for 2 by 2 confusion matrix
@@ -121,4 +121,19 @@ logloss <- function(x, pred.probs)
   pred.probs <- t(apply(pred.probs, 1, function(x) pmax(pmin(x, 1 - eps), eps)))
   MultiLogLoss <- (-1/N) * sum(x * log(pred.probs))
   return(MultiLogLoss)
+}
+
+#' AUC/M-index: Multiple Class Area under ROC Curve
+#' @param x actual class labels
+#' @param pred.probs predicted probabilities for each class
+#' @references http://link.springer.com/article/10.1023/A:1010920819831
+#' @noRd
+auc <- function(x, pred.probs) {
+  # ui-constructor for multicap class
+  mcap.construct <- HandTill2001::multcap(response = x,
+                                          predicted = as.matrix(pred.probs))	
+  
+  # multi-class auc metric	
+  auc.out <- HandTill2001::auc(mcap.construct)
+  return(auc.out)
 }

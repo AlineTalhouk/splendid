@@ -1,17 +1,3 @@
-#' AUC/M-index: Multiple Class Area under ROC Curve
-#' @references http://link.springer.com/article/10.1023/A:1010920819831
-#' @noRd
-auc <- function(x, pred.probs)
-{
-	# ui-constructor for multicap class
-	mcap.construct <- HandTill2001::multcap(response = x, predicted = as.matrix(pred.probs))	
-	
-	# multi-class auc metric	
-	auc.out <- HandTill2001::auc(mcap.construct)
-
-	return(auc.out)
-}
-
 #' Polytomous discrimination index (PDI)
 #' @references http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract
 #' @noRd
