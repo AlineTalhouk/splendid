@@ -25,7 +25,8 @@ Imports:
     xgboost,
     glmnet,
     RankAggreg,
-    knnflex
+    knnflex,
+    caret
 Suggests:
     stringr,
     testthat,
