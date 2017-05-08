@@ -134,8 +134,11 @@ prediction.maboost <- function(mod, data, test.id, ...) {
 
 #' @export
 prediction.xgb.Booster <- function(mod, data, test.id, class, ...) {
-  prob <-  prediction.default(mod, as.matrix(data), test.id) %>% 
-    matrix(ncol = mod$params$num_class, byrow = TRUE)
+  prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>% 
+    magrittr::set_colnames(levels(class)) %>% 
+    round(6)
+  eps <- rowSums(prob) - 1
+  prob[, 1] <- prob[, 1] - eps  # make sure every row sums to 1
   pred <- factor(levels(class)[max.col(data.frame(prob))])
   attr(pred, "prob") <- prob
   pred
