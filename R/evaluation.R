@@ -118,8 +118,7 @@ logloss <- function(x, pred.probs)
   }
   eps <- 1e-15
   N <- nrow(pred.probs)
-  pred.probs <- pmax(pmin(pred.probs, 1 - eps), eps)
-  # pred.probs <- t(apply(pred.probs, 1, function(x) pmax(pmin(x, 1 - eps), eps)))
+  pred.probs <- t(apply(pred.probs, 1, function(x) pmax(pmin(x, 1 - eps), eps)))
   MultiLogLoss <- (-1/N) * sum(x * log(pred.probs))
   return(MultiLogLoss)
 }
