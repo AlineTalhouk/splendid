@@ -7,11 +7,13 @@
 splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE)
 }
 \arguments{
-\item{sm}{a \code{}}
+\item{sm}{a \code{splendid_model} object}
 
 \item{data}{data object with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
+
+\item{top}{the number of highest-performing algorithms to retain for ensemble}
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
