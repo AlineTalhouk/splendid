@@ -17,8 +17,6 @@
 #' @param ... additional arguments to be passed to or from methods
 #' @param train.id integer vector of indices for training set ID. Only used for
 #' \code{knn} and \code{pamr} prediction methods.
-#' @param probability \code{svm} parameter; logical; if \code{TRUE}, returns
-#'   posterior probabilities in addition to class labels.
 #' @return A factor of predicted classes with labels in the same order as true 
 #'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
 #'   list of length 2: the predicted class, and the threshold value.
@@ -50,52 +48,65 @@ prediction.default <- function(mod, data, test.id, ...) {
 
 #' @export
 prediction.lda <- function(mod, data, test.id, ...) {
-  prediction.default(mod, data, test.id)$class
+  p <- prediction.default(mod, data, test.id)
+  attr(p$class, "prob") <- p$posterior
+  p$class
 }
 
 #' @export
 prediction.qda <- function(mod, data, test.id, ...) {
-  prediction.default(mod, data[, colnames(mod$means)], test.id)$class
+  p <- prediction.default(mod, data[, colnames(mod$means)], test.id)
+  attr(p$class, "prob") <- p$posterior
+  p$class
 }
 
 #' @export
 prediction.rfe <- function(mod, data, test.id, ...) {
-  prediction.default(mod, data[, mod$optVariables], test.id)$pred
+  p <- prediction.default(mod, data[, mod$optVariables], test.id)
+  attr(p$pred, "prob") <- dplyr::select(p, -dplyr::contains("pred"))
+  p$pred
 }
 
 #' @export
 prediction.randomForest <- function(mod, data, test.id, ...) {
-  unname(prediction.default(mod, data, test.id))
+  pred <- unname(prediction.default(mod, data, test.id, type = "response"))
+  prob <- prediction.default(mod, data, test.id, type = "prob")
+  attr(pred, "prob") <- prob
+  pred
 }
 
 #' @export
 prediction.multinom <- function(mod, data, test.id, ...) {
-  prediction.default(mod, data, test.id)
+  pred <- prediction.default(mod, data, test.id, type = "class")
+  prob <- prediction.default(mod, data, test.id, type = "probs")
+  attr(pred, "prob") <- prob
+  pred
 }
 
 #' @export
 prediction.nnet.formula <- function(mod, data, test.id, ...) {
-  factor(prediction.default(mod, data, test.id, type = "class"))
+  pred <- factor(prediction.default(mod, data, test.id, type = "class"))
+  prob <- prediction.default(mod, data, test.id, type = "raw")
+  attr(pred, "prob") <- prob
+  pred
 }
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, test.id, train.id, class,
-                           probability = FALSE, ...) {
+prediction.knn <- function(mod, data, test.id, train.id, class, ...) {
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
                   y = class[train.id], dist.matrix = kdist, k = 5)
-  cl <- purrr::invoke(knnflex::knn.predict, kparams)
-  if (probability) {
-    attr(cl, "prob") <- purrr::invoke(knnflex::knn.probability, kparams) %>% t()
-  }
-  cl
+  pred <- unname(factor(purrr::invoke(knnflex::knn.predict, kparams)))
+  prob <- t(purrr::invoke(knnflex::knn.probability, kparams))
+  attr(pred, "prob") <- prob
+  pred
 }
 
 #' @export
-prediction.svm <- function(mod, data, test.id, probability = FALSE, ...) {
-  unname(prediction.default(mod, data, test.id, probability = probability))
+prediction.svm <- function(mod, data, test.id, ...) {
+  unname(prediction.default(mod, data, test.id, probability = TRUE))
 }
 
 #' @rdname prediction
@@ -105,30 +116,45 @@ prediction.pamrtrained <- function(mod, data, test.id, train.id, class, ...) {
     pamr::pamr.cv(mod, list(x = t(data[train.id, ]), y = class[train.id]),
                   nfold = 5))
   delta <- model.cv$threshold[which.min(model.cv$error)]
-  list(pred = pamr::pamr.predict(mod, t(data[test.id, ]), threshold = delta),
-       delta = delta)
+  pred <- pamr::pamr.predict(mod, t(data[test.id, ]), threshold = delta,
+                             type = "class")
+  prob <- pamr::pamr.predict(mod, t(data[test.id, ]), threshold = delta,
+                             type = "posterior")
+  attr(pred, "prob") <- prob
+  dplyr::lst(pred, delta)
 }
 
 #' @export
 prediction.maboost <- function(mod, data, test.id, ...) {
   names(data) <- make.names(names(data))
-  prediction.default(mod, data, test.id)
+  both <- prediction.default(mod, data, test.id, type = "both")
+  attr(both$class, "prob") <- both$probs
+  both$class
 }
 
 #' @export
-prediction.xgb.Booster <- function(mod, data, test.id, ...) {
-  prediction.default(mod, as.matrix(data), test.id) %>% 
-    matrix(ncol = mod$params$num_class, byrow = TRUE) %>%
-    data.frame() %>%
-    max.col()
+prediction.xgb.Booster <- function(mod, data, test.id, class, ...) {
+  prob <-  prediction.default(mod, as.matrix(data), test.id) %>% 
+    matrix(ncol = mod$params$num_class, byrow = TRUE)
+  pred <- factor(levels(class)[max.col(data.frame(prob))])
+  attr(pred, "prob") <- prob
+  pred
 }
 
 #' @export
 prediction.naiveBayes <- function(mod, data, test.id, ...) {
-  prediction.default(mod, data, test.id)
+  pred <- prediction.default(mod, data, test.id, "class")
+  prob <- prediction.default(mod, data, test.id, "raw")
+  attr(pred, "prob") <- prob
+  pred
 }
 
 #' @export
 prediction.cv.glmnet <- function(mod, data, test.id, ...) {
-  factor(prediction.default(mod, as.matrix(data), test.id, type = "class"))
+  pred <- factor(prediction.default(mod, as.matrix(data), test.id,
+                                    type = "class"))
+  prob <- prediction.default(mod, as.matrix(data), test.id,
+                             type = "response")[, , 1]
+  attr(pred, "prob") <- prob
+  pred
 }

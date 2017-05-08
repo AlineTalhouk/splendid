@@ -1,22 +1,3 @@
-# dchiu911: please update metrics below into evaluations.R as necessary.
-# 			discrimination plot may not be necessary. Inputs required
-#			include observed labels (x)  and predicted probabilities.
-
-#' Multi-class Log/cross-entropy Loss 
-#' @references https://cran.r-project.org/web/packages/MLmetrics/MLmetrics.pdf 
-#' @noRd
-logloss <- function(x, pred.probs)
-{
-    if (is.matrix(x) == FALSE) {
-        x <- model.matrix(~0 + ., data.frame(as.character(x)))
-    }
-    eps <- 1e-15
-    N <- nrow(pred.probs)
-    pred.probs <- pmax(pmin(pred.probs, 1 - eps), eps)
-    MultiLogLoss <- (-1/N) * sum(x * log(pred.probs))
-    return(MultiLogLoss)
-}
-
 #' AUC/M-index: Multiple Class Area under ROC Curve
 #' @references http://link.springer.com/article/10.1023/A:1010920819831
 #' @noRd
