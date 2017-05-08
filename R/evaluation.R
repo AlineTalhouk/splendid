@@ -37,6 +37,9 @@ evaluation <- function(x, y) {
   cs_m <- purrr::map_dbl(ocm, mcc)
   cs <- c(precision = cs_p, recall = cs_r, f1 = cs_f, MCC = cs_m)
   
+  # Logloss
+  log_loss <- logloss(x, attr(y, "prob"))
+  
   # Macro-averaged precision/recall/F1-score
   macro_p <- mean(cs_p)
   macro_r <- mean(cs_r)
@@ -49,7 +52,8 @@ evaluation <- function(x, y) {
   MCC <- mcc(cm)
   micro_MCC <- mcc(socm)
   
-  return(list(Macro_Precision = macro_p, Macro_Recall = macro_r,
+  return(list(Logloss = log_loss,
+              Macro_Precision = macro_p, Macro_Recall = macro_r,
               Macro_F1 = macro_f, Micro_Precision = micro_p, MCC = MCC,
               Micro_MCC = micro_MCC, CS = cs))
 }
@@ -100,4 +104,22 @@ ova <- function(C) {
     rs <- sum(C[.x, ])
     matrix(c(m, cs - m, rs - m, n - cs - rs + m), nrow = 2)
   })
+}
+
+#' Multi-class Log/cross-entropy Loss
+#' @param x actual class labels
+#' @param pred.probs predicted probabilities for each class
+#' @references https://cran.r-project.org/web/packages/MLmetrics/MLmetrics.pdf 
+#' @noRd
+logloss <- function(x, pred.probs)
+{
+  if (!is.matrix(x)) {
+    x <- stats::model.matrix(~ 0 + ., data.frame(as.character(x)))
+  }
+  eps <- 1e-15
+  N <- nrow(pred.probs)
+  pred.probs <- pmax(pmin(pred.probs, 1 - eps), eps)
+  # pred.probs <- t(apply(pred.probs, 1, function(x) pmax(pmin(x, 1 - eps), eps)))
+  MultiLogLoss <- (-1/N) * sum(x * log(pred.probs))
+  return(MultiLogLoss)
 }
