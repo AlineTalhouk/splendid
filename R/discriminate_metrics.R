@@ -1,3 +1,7 @@
+# dchiu911: please update metrics below into evaluations.R as necessary.
+# 			discrimination plot may not be necessary. Inputs required
+#			include observed labels (x)  and predicted probabilities.
+
 #' Multi-class Log/cross-entropy Loss 
 #' @references https://cran.r-project.org/web/packages/MLmetrics/MLmetrics.pdf 
 #' @noRd
