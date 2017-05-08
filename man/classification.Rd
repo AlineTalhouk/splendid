@@ -4,7 +4,7 @@
 \alias{classification}
 \title{Machine learning classification algorithms}
 \usage{
-classification(data, class, algs, rfe, sizes = NULL)
+classification(data, class, algs, rfe = FALSE, sizes = NULL)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -13,6 +13,11 @@ classification(data, class, algs, rfe, sizes = NULL)
 
 \item{algs}{character string of classification algorithm to use. See Details 
 in \code{\link{splendid}} for a list of choices.}
+
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+feature selection method for "lda", "qda", and "rf" algorithms.}
+
+\item{sizes}{the range of sizes of features to test RFE algorithm}
 }
 \value{
 The model object from running the classification algorithm 

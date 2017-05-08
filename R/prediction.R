@@ -54,6 +54,11 @@ prediction.lda <- function(mod, data, test.id, ...) {
 }
 
 #' @export
+prediction.qda <- function(mod, data, test.id, ...) {
+  prediction.default(mod, data[, colnames(mod$means)], test.id)$class
+}
+
+#' @export
 prediction.rfe <- function(mod, data, test.id, ...) {
   prediction.default(mod, data[, mod$optVariables], test.id)$pred
 }

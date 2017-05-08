@@ -23,6 +23,7 @@
 #' @inheritParams splendid
 #' @param algs character string of classification algorithm to use. See Details 
 #'   in \code{\link{splendid}} for a list of choices.
+#' @param sizes the range of sizes of features to test RFE algorithm
 #' @return The model object from running the classification algorithm 
 #'   \code{"alg"}
 #'   
@@ -37,7 +38,7 @@
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' classification(hgsc, class, "rf")
-classification <- function(data, class, algs, rfe, sizes = NULL) {
+classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
   algs <- match.arg(algs, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- sizes %||% seq_len(round(min(table(class)) / 2))
@@ -48,31 +49,32 @@ classification <- function(data, class, algs, rfe, sizes = NULL) {
            else
              suppressPackageStartupMessages(suppressWarnings(
                caret::rfe(data, class, sizes = sizes,
-                          rfeControl = rfeControl(functions = caret::ldaFuncs,
-                                                  method = "cv"))))
+                          rfeControl = caret::rfeControl(
+                            functions = caret::ldaFuncs, method = "cv"))))
          },
          qda = {
            data <- data %>%  # Use the variables with the largest variance
-             magrittr::extract(, apply(., 2, var) %>% 
+             magrittr::extract(, apply(., 2, stats::var) %>% 
                                  unlist() %>% 
                                  sort() %>% 
-                                 tail(min(table(class)) - 1) %>% 
-                                 names())
+                                 utils::tail(min(table(class)) - 1) %>% 
+                                 names()) %>% 
+             apply(2, jitter)
            if (!rfe)
              MASS::qda(data, grouping = class)
            else
              suppressPackageStartupMessages(suppressWarnings(
                caret::rfe(data, class, sizes = sizes,
-                          rfeControl = rfeControl(functions = qdaFuncs,
-                                                  method = "cv"))))
+                          rfeControl = caret::rfeControl(
+                            functions = qdaFuncs, method = "cv"))))
          },
          rf = {
            if (!rfe)
              randomForest::randomForest(data, y = class)
            else
              caret::rfe(data, class, sizes = sizes,
-                        rfeControl = rfeControl(functions = caret::rfFuncs,
-                                                method = "cv"))
+                        rfeControl = caret::rfeControl(
+                          functions = caret::rfFuncs, method = "cv"))
          },
          multinom = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                    trace = FALSE),
@@ -82,7 +84,7 @@ classification <- function(data, class, algs, rfe, sizes = NULL) {
          svm = e1071::best.svm(x = data, y = class, probability = TRUE,
                                gamma = 1 / ncol(data) * 2 ^ (0:4),
                                cost = 2 ^ (0:4),
-                               tunecontrol = tune.control(sampling = "fix")),
+                               tunecontrol = e1071::tune.control(sampling = "fix")),
          pam = sink_output(
            pamr::pamr.train(list(x = t(data), y = class), n.threshold = 100,
                             prior = rep(1 / dplyr::n_distinct(class),
