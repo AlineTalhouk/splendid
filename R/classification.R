@@ -82,7 +82,7 @@ classification <- function(data, class, algs, rfe, sizes = NULL) {
          svm = e1071::best.svm(x = data, y = class, probability = TRUE,
                                gamma = 1 / ncol(data) * 2 ^ (0:4),
                                cost = 2 ^ (0:4),
-                               tunecontrol = tune.control(sampling = "fix")),
+                               tunecontrol = e1071::tune.control(sampling = "fix")),
          pam = sink_output(
            pamr::pamr.train(list(x = t(data), y = class), n.threshold = 100,
                             prior = rep(1 / dplyr::n_distinct(class),
