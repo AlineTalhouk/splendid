@@ -20,20 +20,15 @@ str(probs)
 Discrim_Plot(probs, class.test)
 Calib_Plot(probs, class.test)
 library(glmnet)
-load("MultinomialExample.RData")
 
 fit <-nnet::multinom(class.test ~ probs, MaxNWts = 2000,
                  trace = FALSE)
 
-str(, max.level = 2)
-str(coef(fit)[[1]])
-names(fit)
-fit$a0
-
-coef(fit)
 test <- fit
 z <- summary(test)$coefficients/summary(test)$standard.errors
 p <- (1 - pnorm(abs(z), 0, 1))*2
+
 probs2 <- predict(fit,probs,type="probs")
 Calib_Plot(probs2, class.test)
 Discrim_Plot(probs, class.test)
+
