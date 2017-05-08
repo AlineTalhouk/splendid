@@ -1,5 +1,8 @@
 #' Combine classification models into an ensemble
 #' 
+#' @inheritParams splendid
+#' @param sm a \code{splendid_model} object
+#' @param top the number of highest-performing algorithms to retain for ensemble
 #' @export
 #' @examples 
 #' data(hgsc)
@@ -22,7 +25,7 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE) {
         RankAggreg::RankAggreg(.x, ncol(.x), method = "GA",
                                seed = seed, verbose = FALSE) %>% 
           magrittr::use_series("top.list") %>% 
-          head(1)
+          utils::head(1)
       } else {
         .x[1]
       }
@@ -31,7 +34,7 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE) {
     table() %>% 
     sort() %>% 
     rev() %>% 
-    head(top) %>% 
+    utils::head(top) %>% 
     names()
   ensemble_mods <- purrr::map(ensemble_algs, ~ classification(data, class, .x,
                                                               rfe = rfe))

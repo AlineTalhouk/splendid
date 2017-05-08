@@ -30,6 +30,9 @@
 #'   default, in which case uses all implemented algorithms.
 #' @param conf.level confidence level for bootstrapped estimates of evaluation
 #'   measures
+#' @param rfe logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+#'   feature selection method for "lda", "qda", and "rf" algorithms.
+#' @param ... additional arguments to \code{splendid_model}
 #' @return A nested list with five elements
 #' \item{model}{A list with an element for each algorithm, each of which is a 
 #' list with length \code{n}. Shows the model object for each algorithm and

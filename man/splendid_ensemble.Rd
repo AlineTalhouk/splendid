@@ -6,6 +6,18 @@
 \usage{
 splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE)
 }
+\arguments{
+\item{sm}{a \code{}}
+
+\item{data}{data object with rows as samples, columns as features}
+
+\item{class}{true/reference class vector used for supervised learning}
+
+\item{seed}{random seed used for reproducibility in bootstrapping results}
+
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+feature selection method for "lda", "qda", and "rf" algorithms.}
+}
 \description{
 Combine classification models into an ensemble
 }

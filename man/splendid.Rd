@@ -22,6 +22,11 @@ default, in which case uses all implemented algorithms.}
 
 \item{conf.level}{confidence level for bootstrapped estimates of evaluation
 measures}
+
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+feature selection method for "lda", "qda", and "rf" algorithms.}
+
+\item{...}{additional arguments to \code{splendid_model}}
 }
 \value{
 A nested list with five elements
