@@ -7,13 +7,13 @@
 #' @noRd
 logloss <- function(x, pred.probs)
 {
-    if (is.matrix(y_true) == FALSE) {
-        y_true <- model.matrix(~0 + ., data.frame(as.character(y_true)))
+    if (is.matrix(x) == FALSE) {
+        x <- model.matrix(~0 + ., data.frame(as.character(x)))
     }
     eps <- 1e-15
-    N <- nrow(y_pred)
-    y_pred <- pmax(pmin(y_pred, 1 - eps), eps)
-    MultiLogLoss <- (-1/N) * sum(y_true * log(y_pred))
+    N <- nrow(pred.probs)
+    pred.probs <- pmax(pmin(pred.probs, 1 - eps), eps)
+    MultiLogLoss <- (-1/N) * sum(x * log(pred.probs))
     return(MultiLogLoss)
 }
 
