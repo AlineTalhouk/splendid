@@ -11,8 +11,9 @@ ALG.CLASS <- c("lda", "qda", "randomForest", "multinom", "nnet.formula", "knn", 
 #' Redirect any console printouts from print() or cat() to null device
 #' @noRd
 sink_output <- function(expr) {
-  sink("/dev/null")
+  sink("NUL")
   mod <- eval(expr)
   sink()
+  if (file.exists("NUL")) file.remove("NUL")
   return(mod)
 }
