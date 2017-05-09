@@ -3,15 +3,16 @@
 #' Evaluation of prediction performance on the OOB set is done using various 
 #' measure for classification problems.
 #' 
-#' The currently supported evaluation measures include macro-averaged 
-#' precision/recall/F1-score, micro-averaged precision (which is the same as 
-#' recall/F1-score), Matthew's Correlation Coefficient (and its micro-averaged 
-#' analog), and class-specific precision/recall/F1-score/MCC.
+#' The currently supported evaluation measures include discriminatory measures
+#' like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
+#' (Recall)/F1-score, accuracy (same as micro-averaged PPV
+#' Sensitivity/F1-score), Matthew's Correlation Coefficient (and its 
+#' micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
 #' 
 #' @param x actual class labels
 #' @param y predicted class labels
-#' @return A list with one element per evaluation measure except for the
-#'   \code{cs} element, which returns a list of class-specific evaluation
+#' @return A list with one element per evaluation measure except for the 
+#'   \code{cs} element, which returns a list of class-specific evaluation 
 #'   measures.
 #' @author Derek Chiu
 #' @export
@@ -30,50 +31,49 @@ evaluation <- function(x, y) {
   ocm <- ova(cm)  # One Vs. All confusion matrices
   socm <- purrr::reduce(ocm, `+`)  # Element-wise sum of ocm
   
-  # Class-specific precision/recall/F1-score/MCC
-  cs_p <- purrr::map_dbl(ocm, precision)
-  cs_r <- purrr::map_dbl(ocm, recall)
+  # Class-specific ppv/sensitivity/F1-score/MCC
+  cs_p <- purrr::map_dbl(ocm, ppv)
+  cs_s <- purrr::map_dbl(ocm, sensitivity)
   cs_f <- purrr::map_dbl(ocm, f1)
   cs_m <- purrr::map_dbl(ocm, mcc)
-  cs <- c(precision = cs_p, recall = cs_r, f1 = cs_f, MCC = cs_m)
+  cs <- c(ppv = cs_p, sensitivity = cs_s, f1 = cs_f, mcc = cs_m)
   
   # Discriminatory measures
-  log_loss <- logloss(x, attr(y, "prob"))
-  auc <- auc(x, attr(y, "prob"))
+  dm <- dplyr::lst(logloss, auc) %>% 
+    purrr::invoke_map_dbl(list(list(x = x, pred.probs = attr(y, "prob"))))
   
-  # Macro-averaged precision/recall/F1-score
-  macro_p <- mean(cs_p)
-  macro_r <- mean(cs_r)
-  macro_f <- mean(cs_f)
+  # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
+  accuracy <- sum(diag(cm)) / sum(cm)
   
-  # Micro-averaged precision (same as accuracy, micro-averaged recall/F1-score)
-  micro_p <- precision(socm)
-  
+  # Macro-averaged ppv/sensitivity/F1-score
+  macro_ppv <- mean(cs_p)
+  macro_sensitivity <- mean(cs_s)
+  macro_f1 <- mean(cs_f)
+
   # MCC and micro-averaged MCC
-  MCC <- mcc(cm)
-  micro_MCC <- mcc(socm)
+  mcc <- mcc(cm)
+  micro_mcc <- mcc(socm)
   
-  list(Logloss = log_loss, AUC = auc,
-       Macro_Precision = macro_p, Macro_Recall = macro_r, Macro_F1 = macro_f,
-       Micro_Precision = micro_p, MCC = MCC, Micro_MCC = micro_MCC, CS = cs)
+  c(dm, dplyr::lst(accuracy, macro_ppv, macro_sensitivity, macro_f1, mcc,
+                   micro_mcc, cs))
 }
 
-#' Precision for 2 by 2 confusion matrix
+#' PPV (Precision) for 2 by 2 confusion matrix
 #' @noRd
-precision <- function(C) {
+ppv <- function(C) {
   C[1, 1] / (C[1, 1] + C[2, 1])
 }
 
-#' Recall for 2 by 2 confusion matrix
+#' Sensitivity (Recall) for 2 by 2 confusion matrix
 #' @noRd
-recall <- function(C) {
+sensitivity <- function(C) {
   C[1, 1] / (C[1, 1] + C[1, 2])
 }
 
 #' F1-score for 2 by 2 confusion matrix
 #' @noRd
 f1 <- function(C) {
-  2 * precision(C) * recall(C) / (precision(C) + recall(C))
+  2 * ppv(C) * sensitivity(C) / (ppv(C) + sensitivity(C))
 }
 
 #' Matthew's Correlation Coefficient (Phi Coefficient) for multiclass case
@@ -83,8 +83,10 @@ mcc <- function(C) {
   N <- sum(C)
   Ct <- t(C)
   rc <- purrr::cross2(seq_len(nrow(C)), seq_len(nrow(C)))
-  num <- N * sum(diag(C)) - sum(purrr::map_dbl(rc, ~ C[.x[[1]], ] %*% C[, .x[[2]]]))
-  den <- sqrt(N ^ 2 - sum(purrr::map_dbl(rc, ~ C[.x[[1]], ] %*% Ct[, .x[[2]]]))) * 
+  num <- N * sum(diag(C)) - sum(purrr::map_dbl(rc,
+                                               ~ C[.x[[1]], ] %*% C[, .x[[2]]]))
+  den <- sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
+                                         ~ C[.x[[1]], ] %*% Ct[, .x[[2]]]))) * 
     sqrt(N ^ 2 - sum(purrr::map_dbl(rc, ~ Ct[.x[[1]], ] %*% C[, .x[[2]]])))
   return(num / den)
 }

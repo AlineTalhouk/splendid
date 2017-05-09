@@ -12,8 +12,8 @@ evaluation(x, y)
 \item{y}{predicted class labels}
 }
 \value{
-A list with one element per evaluation measure except for the
-  \code{cs} element, which returns a list of class-specific evaluation
+A list with one element per evaluation measure except for the 
+  \code{cs} element, which returns a list of class-specific evaluation 
   measures.
 }
 \description{
@@ -21,10 +21,11 @@ Evaluation of prediction performance on the OOB set is done using various
 measure for classification problems.
 }
 \details{
-The currently supported evaluation measures include macro-averaged 
-precision/recall/F1-score, micro-averaged precision (which is the same as 
-recall/F1-score), Matthew's Correlation Coefficient (and its micro-averaged 
-analog), and class-specific precision/recall/F1-score/MCC.
+The currently supported evaluation measures include discriminatory measures
+like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
+(Recall)/F1-score, accuracy (same as micro-averaged PPV
+Sensitivity/F1-score), Matthew's Correlation Coefficient (and its 
+micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
 }
 \examples{
 data(hgsc)
