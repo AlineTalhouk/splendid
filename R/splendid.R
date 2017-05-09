@@ -10,12 +10,13 @@
 #' bootstrap rule for large n.
 #' 
 #' The classification algorithms currently supported are: Linear Discriminant 
-#' Analysis ("lda"), Random Forests ("rf"), Multinomial Classification 
-#' ("multinom"), Neural Networks ("nnet"), K-Nearest Neighbours, ("knn"), 
-#' Support Vector Machines ("svm"), Prediction Analysis for Microarrays ("pam"),
-#' Adaptive Boosting ("adaboost"), Extreme Gradient Boosting ("xgboost"), Naive 
-#' Bayes ("nbayes"), and Generalized Linear Models using the LASSO ("lasso") or 
-#' ridge ("ridge") penalty.
+#' Analysis ("lda"), Random Forests ("rf"), Multinomial Classification using
+#' Neural Networks ("multinom_nnet"), Neural Networks ("nnet"), K-Nearest
+#' Neighbours, ("knn"), Support Vector Machines ("svm"), Prediction Analysis for
+#' Microarrays ("pam"), Adaptive Boosting ("adaboost"), Extreme Gradient
+#' Boosting ("xgboost"), Naive Bayes ("nbayes"), and Generalized Linear Models
+#' using the LASSO penalty ("lasso"), ridge ("ridge") penalty, or no
+#' regularization ("multinom_glm").
 #' 
 #' An ensemble classifier is constructed using Rank Aggregation across multiple
 #' evaluation measures such as precision, recall, F1-score, and Matthew's 

@@ -161,3 +161,8 @@ prediction.cv.glmnet <- function(mod, data, test.id, ...) {
   attr(pred, "prob") <- prob
   pred
 }
+
+#' @export
+prediction.glmnet <- function(mod, data, test.id, ...) {
+  prediction.cv.glmnet(mod, data, test.id, ...)
+} 

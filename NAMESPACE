@@ -2,6 +2,7 @@
 
 S3method(prediction,cv.glmnet)
 S3method(prediction,default)
+S3method(prediction,glmnet)
 S3method(prediction,knn)
 S3method(prediction,lda)
 S3method(prediction,maboost)

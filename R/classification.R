@@ -77,8 +77,8 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
                           rfeControl = caret::rfeControl(
                             functions = caret::rfFuncs, method = "cv"))))
          },
-         multinom = nnet::multinom(class ~ ., data, MaxNWts = 2000,
-                                   trace = FALSE),
+         multinom_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000,
+                                        trace = FALSE),
          nnet = e1071::best.nnet(class ~ ., data = cbind(data, class),
                                  size = seq_len(5),
                                  decay = seq(0, 0.5, length.out = 5),
@@ -121,7 +121,9 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
          lasso = glmnet::cv.glmnet(as.matrix(data), class, alpha = 1,
                                    family = "multinomial"),
          ridge = glmnet::cv.glmnet(as.matrix(data), class, alpha = 0,
-                                   family = "multinomial")
+                                   family = "multinomial"),
+         multinom_glm = glmnet::glmnet(as.matrix(data), class, lambda = 0,
+                                       family = "multinomial")
   )
 }
 
