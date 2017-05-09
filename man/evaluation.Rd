@@ -4,12 +4,15 @@
 \alias{evaluation}
 \title{Evaluation of prediction performance}
 \usage{
-evaluation(x, y)
+evaluation(x, y, plot = FALSE)
 }
 \arguments{
 \item{x}{actual class labels}
 
 \item{y}{predicted class labels}
+
+\item{plot}{logical; if \code{TRUE} a discrimination plot is shown for each 
+class}
 }
 \value{
 A list with one element per evaluation measure except for the 
@@ -21,9 +24,9 @@ Evaluation of prediction performance on the OOB set is done using various
 measure for classification problems.
 }
 \details{
-The currently supported evaluation measures include discriminatory measures
-like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
-(Recall)/F1-score, accuracy (same as micro-averaged PPV
+The currently supported evaluation measures include discriminatory measures 
+like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity 
+(Recall)/F1-score, accuracy (same as micro-averaged PPV 
 Sensitivity/F1-score), Matthew's Correlation Coefficient (and its 
 micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
 }
@@ -33,9 +36,9 @@ class <- factor(stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2])
 set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) \%in\% training.id)
-mod <- classification(hgsc[training.id, ], class[training.id], "lda")
-pred <- prediction(mod, hgsc, test.id)
-evaluation(class[test.id], pred)
+mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
+pred <- prediction(mod, hgsc, test.id, class)
+evaluation(class[test.id], pred, plot = TRUE)
 }
 \author{
 Derek Chiu

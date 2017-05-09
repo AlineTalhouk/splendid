@@ -3,14 +3,16 @@
 #' Evaluation of prediction performance on the OOB set is done using various 
 #' measure for classification problems.
 #' 
-#' The currently supported evaluation measures include discriminatory measures
-#' like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
-#' (Recall)/F1-score, accuracy (same as micro-averaged PPV
+#' The currently supported evaluation measures include discriminatory measures 
+#' like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity 
+#' (Recall)/F1-score, accuracy (same as micro-averaged PPV 
 #' Sensitivity/F1-score), Matthew's Correlation Coefficient (and its 
 #' micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
 #' 
 #' @param x actual class labels
 #' @param y predicted class labels
+#' @param plot logical; if \code{TRUE} a discrimination plot is shown for each 
+#'   class
 #' @return A list with one element per evaluation measure except for the 
 #'   \code{cs} element, which returns a list of class-specific evaluation 
 #'   measures.
@@ -22,10 +24,10 @@
 #' set.seed(1)
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
-#' mod <- classification(hgsc[training.id, ], class[training.id], "lda")
-#' pred <- prediction(mod, hgsc, test.id)
-#' evaluation(class[test.id], pred)
-evaluation <- function(x, y) {
+#' mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
+#' pred <- prediction(mod, hgsc, test.id, class)
+#' evaluation(class[test.id], pred, plot = TRUE)
+evaluation <- function(x, y, plot = FALSE) {
   # Multiclass confusion matrix with actual as rows, predicted as columns
   cm <- as.matrix(table(Actual = x, Predicted = y))
   ocm <- ova(cm)  # One Vs. All confusion matrices
@@ -39,8 +41,12 @@ evaluation <- function(x, y) {
   cs <- c(ppv = cs_p, sensitivity = cs_s, f1 = cs_f, mcc = cs_m)
   
   # Discriminatory measures
-  dm <- dplyr::lst(logloss, auc) %>% 
-    purrr::invoke_map_dbl(list(list(x = x, pred.probs = attr(y, "prob"))))
+  dm_funs <- dplyr::lst(logloss, auc)
+  if (plot) {
+    dm_funs <- c(dm_funs, dplyr::lst(discrimination_plot))
+  }
+  dm <- dm_funs %>% 
+    purrr::invoke_map(list(list(x = x, pred.probs = attr(y, "prob"))))
   
   # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
   accuracy <- sum(diag(cm)) / sum(cm)
@@ -54,8 +60,10 @@ evaluation <- function(x, y) {
   mcc <- mcc(cm)
   micro_mcc <- mcc(socm)
   
-  c(dm, dplyr::lst(accuracy, macro_ppv, macro_sensitivity, macro_f1, mcc,
-                   micro_mcc, cs))
+  if (plot) dm$discrimination_plot
+  
+  c(dm[c("logloss", "auc")], dplyr::lst(accuracy, macro_ppv, macro_sensitivity,
+                                        macro_f1, mcc, micro_mcc, cs))
 }
 
 #' PPV (Precision) for 2 by 2 confusion matrix
@@ -138,4 +146,34 @@ auc <- function(x, pred.probs) {
   # multi-class auc metric	
   auc.out <- HandTill2001::auc(mcap.construct)
   return(auc.out)
+}
+
+#' Discrimination plot: boxplots of the predicted probabilities for each
+#' outcome category according to each observed outcome category
+#' @references http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract
+#' @noRd
+discrimination_plot <- function(x, pred.probs) {
+  
+  # turn into long-form for plotting
+  df.long <- data.frame(trueClass = x, pred.probs) %>% 
+    tidyr::gather(key = "class", value = "prob", -1, factor_key = TRUE)
+  
+  # create prevalance (base-line) class proportion table
+  df.prevalence <- df.long %>%
+    dplyr::group_by(trueClass) %>% 
+    dplyr::summarise(classCount = length(trueClass)) %>%
+    dplyr::mutate(totalCount = sum(classCount)) %>%
+    dplyr::mutate(prevalence = classCount / totalCount)
+  
+  # discrimination plot
+  p <- ggplot(df.long, aes(x = class, y = prob, fill = class)) +
+    geom_boxplot(alpha = 0.6) + 
+    geom_hline(data = df.prevalence, aes(yintercept = prevalence),
+               colour = "lightgrey") +
+    facet_wrap(~trueClass) + 
+    labs(title = "Discrimination Plot by True Class", x = "Predicted Class",
+         y = "Risk of Predicted Class") +
+    theme_bw() + 
+    theme(panel.grid = element_blank(), legend.position = "none")
+  print(p)
 }
