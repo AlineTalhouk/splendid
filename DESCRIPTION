@@ -27,6 +27,7 @@ Imports:
     RankAggreg,
     knnflex,
     caret,
+    kernlab,
     HandTill2001,
     ggplot2
 Suggests:
