@@ -82,10 +82,25 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
          nnet = nnet::nnet(class ~ ., data, size = 3, MaxNWts = 2000,
                            trace = FALSE),
          knn = structure(list(), class = "knn"),
-         svm = e1071::best.svm(x = data, y = class, probability = TRUE,
-                               gamma = 1 / ncol(data) * 2 ^ (0:4),
-                               cost = 2 ^ (0:4),
-                               tunecontrol = e1071::tune.control(sampling = "fix")),
+         svm = {
+           if (!rfe) {
+             opt_var <- names(data)
+           } else {
+             mod <- suppressPackageStartupMessages(suppressWarnings(
+               caret::rfe(data, class, sizes = sizes[sizes %% 5 == 0],
+                          method = "svmRadial",
+                          rfeControl = caret::rfeControl(
+                            functions = caret::caretFuncs, method = "cv",
+                            number = 2))))
+             opt_var <- mod$optVariables
+           }
+           e1071::best.svm(x = data[, opt_var], y = class,
+                           probability = TRUE,
+                           gamma = 1 / ncol(data) * 2 ^ (0:4),
+                           cost = 2 ^ (0:4),
+                           tunecontrol = e1071::tune.control(
+                             sampling = "fix"))
+         },
          pam = sink_output(
            pamr::pamr.train(list(x = t(data), y = class), n.threshold = 100,
                             prior = rep(1 / dplyr::n_distinct(class),
