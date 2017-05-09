@@ -27,7 +27,8 @@ Imports:
     RankAggreg,
     knnflex,
     caret,
-    HandTill2001
+    HandTill2001,
+    ggplot2
 Suggests:
     stringr,
     testthat,
