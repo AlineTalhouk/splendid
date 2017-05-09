@@ -79,8 +79,12 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
          },
          multinom = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                    trace = FALSE),
-         nnet = nnet::nnet(class ~ ., data, size = 3, MaxNWts = 2000,
-                           trace = FALSE),
+         nnet = e1071::best.nnet(class ~ ., data = cbind(data, class),
+                                 size = seq_len(5),
+                                 decay = seq(0, 0.5, length.out = 5),
+                                 MaxNWts = 2000,
+                                 tunecontrol = e1071::tune.control(
+                                   sampling = "fix")),
          knn = structure(list(), class = "knn"),
          svm = {
            if (!rfe) {
