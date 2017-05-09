@@ -160,10 +160,10 @@ discrimination_plot <- function(x, pred.probs) {
   
   # create prevalance (base-line) class proportion table
   df.prevalence <- df.long %>%
-    dplyr::group_by(trueClass) %>% 
-    dplyr::summarise(classCount = length(trueClass)) %>%
-    dplyr::mutate(totalCount = sum(classCount)) %>%
-    dplyr::mutate(prevalence = classCount / totalCount)
+    dplyr::group_by_("trueClass") %>% 
+    dplyr::summarise_("classCount" = ~ length(trueClass)) %>% 
+    dplyr::mutate_("totalCount" = ~ sum(classCount),
+                   "prevalence" = ~ classCount / totalCount)
   
   # discrimination plot
   p <- ggplot(df.long, aes(x = class, y = prob, fill = class)) +
