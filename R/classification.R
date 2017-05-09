@@ -117,7 +117,7 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
            data = xgboost::xgb.DMatrix(data = as.matrix(data),
                                        label = as.integer(class) - 1),
            nrounds = 2),
-         nb = e1071::naiveBayes(data, class),
+         nbayes = e1071::naiveBayes(data, class),
          lasso = glmnet::cv.glmnet(as.matrix(data), class, alpha = 1,
                                    family = "multinomial"),
          ridge = glmnet::cv.glmnet(as.matrix(data), class, alpha = 0,

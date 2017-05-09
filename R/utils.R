@@ -3,7 +3,7 @@ globalVariables(".")
 
 # Algorithm functions and classes
 ALG.NAME <- c("lda", "qda", "rf", "multinom", "nnet", "knn", "svm", "pam",
-              "adaboost", "xgboost", "nb", "lasso", "ridge")
+              "adaboost", "xgboost", "nbayes", "lasso", "ridge")
 ALG.CLASS <- c("lda", "qda", "randomForest", "multinom", "nnet.formula", "knn",
                "svm", "pamrtrained", "maboost", "xgb.Booster", "naiveBayes",
                "cv.glmnet", "rfe")
