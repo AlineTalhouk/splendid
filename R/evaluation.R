@@ -177,3 +177,48 @@ discrimination_plot <- function(x, pred.probs) {
     theme(panel.grid = element_blank(), legend.position = "none")
   print(p)
 }
+
+#' Reliability plot: mean prediction vs. observed fraction on lowess smoother 
+#' for each class
+#' @noRd
+reliability_plot <- function(x, pred.probs) {
+  
+  # cut each class into probability bins of 10, fit lowess
+  df <- levels(x) %>% 
+    purrr::set_names() %>% 
+    purrr::map(~ {
+      prob <- pred.probs[, .x]
+      cl <- ifelse(x == .x, 1, 0)
+      bin.pred <- cut(prob, 10)
+      purrr::map_df(levels(bin.pred), ~ {
+        idx <- .x == bin.pred
+        data.frame(V1 = mean(prob[idx]),
+                   V2 = sum(cl[idx]) / length(cl[idx]))
+      }) %>%
+        dplyr::filter(!is.nan(V1)) %>% 
+        with(., stats::lowess(V1, V2)) 
+    }) %>% 
+    purrr::map2(names(.), ~ c(.x, class = .y)) %>% 
+    purrr::map(tibble::as.tibble) %>% 
+    dplyr::bind_rows() %>% 
+    dplyr::mutate(class = factor(class))
+  
+  # reliability plot
+  cols <- grDevices::rainbow(dplyr::n_distinct(x))
+  p <- ggplot(df, aes(x, y, group = class, colour = class)) +
+    geom_line(lwd = 2) + 
+    geom_abline(intercept = 0, slope = 1, color = "grey") +
+    scale_color_manual(values = cols) +
+    scale_x_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1)) +
+    scale_y_continuous(breaks = seq(0, 1, 0.2)) + 
+    labs(x = "Mean Prediction", y = "Observed Fraction",
+         title = "Reliability Plot") +
+    theme_bw() +
+    theme(plot.title = element_text(face = "bold"),
+          panel.grid = element_blank(),
+          legend.title = element_blank(),
+          legend.position = c(0, 1),
+          legend.justification = c(0, 1),
+          legend.box.margin = margin(5, 0, 0, 5))
+  print(p)
+}
