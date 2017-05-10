@@ -12,3 +12,8 @@ test_that("unsupported model object causes error", {
   mod <- lm(class ~ ., dat, subset = training.id)
   expect_error(prediction(mod, hgsc, test.id))
 })
+
+test_that("feature selection works", {
+  mod <- classification(hgsc, class, "lda", rfe = TRUE, sizes = 5)
+  expect_error(prediction(mod, hgsc), NA)
+})

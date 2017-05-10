@@ -17,7 +17,12 @@ test_that("unsupported algorithm call causes error", {
 
 test_that("number of best algorithms equals number of bootstraps reps", {
   n.boot <- 2
-  sl_boot <- splendid(hgsc, class, n = n.boot,
-                      algorithms = c("lda", "knn", "rf"))
+  sl_boot <- splendid(hgsc, class, n = n.boot, algorithms = c("lda", "rf"))
+  expect_length(sl_boot$bests, n.boot)
+})
+
+test_that("one algorithm means no Rank Aggregation", {
+  n.boot <- 1
+  sl_boot <- splendid(hgsc, class, n = n.boot, algorithms = "lda")
   expect_length(sl_boot$bests, n.boot)
 })
