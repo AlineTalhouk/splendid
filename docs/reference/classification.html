@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Machine learning classification algorithms — classification • splendid</title>
+<title>Machine learning classification algorithms � classification • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,7 +25,7 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -83,7 +83,7 @@
     <p>Runs a classification algorithm on a given dataset and reference class.</p>
     
 
-    <pre><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>)</pre>
+    <pre class="usage"><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -98,28 +98,37 @@
     </tr>
     <tr>
       <th>algs</th>
-      <td><p>character string of classification algorithm to use. See Details 
+      <td><p>character string of classification algorithm to use. See Details
 in <code><a href='splendid.html'>splendid</a></code> for a list of choices.</p></td>
+    </tr>
+    <tr>
+      <th>rfe</th>
+      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
+feature selection method for "lda", "qda", and "rf" algorithms.</p></td>
+    </tr>
+    <tr>
+      <th>sizes</th>
+      <td><p>the range of sizes of features to test RFE algorithm</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The model object from running the classification algorithm 
+    <p>The model object from running the classification algorithm
   <code>"alg"</code></p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Some of the classification algorithms implemented use pre-defined values that
-specify hyperparameters, settings, options, etc. <code>"multinom"</code> and 
-<code>"nnet"</code> increase the maximum number of weights used to 2000, in case 
-<code>data</code> is high dimensional and classification is time-consuming. 
-<code>"nnet"</code> uses 3 nodes in its hidden layer, a choice that hopefully 
-promotes sufficient complexity in many datasets. <code>"pamr"</code> considers 100 
-thresholds when training, and uses a uniform prior. <code>"adaboost"</code> 
-actually calls <code><a href='http://www.rdocumentation.org/packages/maboost/topics/maboost'>maboost</a></code> instead of 
+specify hyperparameters, settings, options, etc. <code>"multinom"</code> and
+<code>"nnet"</code> increase the maximum number of weights used to 2000, in case
+<code>data</code> is high dimensional and classification is time-consuming.
+<code>"nnet"</code> uses 3 nodes in its hidden layer, a choice that hopefully
+promotes sufficient complexity in many datasets. <code>"pamr"</code> considers 100
+thresholds when training, and uses a uniform prior. <code>"adaboost"</code>
+actually calls <code><a href='http://www.rdocumentation.org/packages/maboost/topics/maboost'>maboost</a></code> instead of
 <code><a href='http://www.rdocumentation.org/packages/adabag/topics/boosting'>boosting</a></code> because of faster performance. As a result, we
-use the "entrop" option, which uses the KL-divergence method and mimics 
+use the "entrop" option, which uses the KL-divergence method and mimics
 adaboost.</p>
 <p>When <code>alg = "knn"</code>, the result is <code>NULL</code> because the
 <code><a href='http://www.rdocumentation.org/packages/class/topics/knn'>knn</a></code> does not have output an intermediate model object.
@@ -129,9 +138,9 @@ is still assigned to the result in order to enact the corresponding method in
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p><code>"qda"</code> gives errors when using the <code>hgsc</code> dataset because 
+    <p><code>"qda"</code> gives errors when using the <code>hgsc</code> dataset because
   there are too many variables The algorithm requires the size of every class
-  to be greater than the number of features. A feature selection framework 
+  to be greater than the number of features. A feature selection framework
   and certain assertion checks need to be built for this algorithm to work.</p>
     
 

@@ -13,14 +13,14 @@ navbar:
   right:
   - icon: fa-github
     href: https://github.com/AlineTalhouk/splendid
-    
+
 reference:
 - title: Functions
   contents:
   - classification
   - prediction
   - evaluation
-  - splendid
+  - matches("splendid")
 - title: Data
   contents:
   - hgsc

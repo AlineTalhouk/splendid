@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluation of prediction performance — evaluation • splendid</title>
+<title>Evaluation of prediction performance � evaluation • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,7 +25,7 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -80,11 +80,11 @@
     </div>
 
     
-    <p>Evaluation of prediction performance on the OOB set is done using various 
+    <p>Evaluation of prediction performance on the OOB set is done using various
 measure for classification problems.</p>
     
 
-    <pre><span class='fu'>evaluation</span>(<span class='no'>x</span>, <span class='no'>y</span>)</pre>
+    <pre class="usage"><span class='fu'>evaluation</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -97,45 +97,69 @@ measure for classification problems.</p>
       <th>y</th>
       <td><p>predicted class labels</p></td>
     </tr>
+    <tr>
+      <th>plot</th>
+      <td><p>logical; if <code>TRUE</code> a discrimination plot and reliability
+plot are shown for each class</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with one element per evaluation measure</p>
+    <p>A list with one element per evaluation measure except for the
+  <code>cs</code> element, which returns a list of class-specific evaluation
+  measures.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The currently supported evaluation measures include overall accuracy, average
-accuracy across all One-Vs-All confusion matrices, and macro-averaged 
-precision, recall, and F1-score.</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>https://github.com/saidbleik/Evaluation/blob/master/eval.R</p>
+    <p>The currently supported evaluation measures include discriminatory measures
+like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
+(Recall)/F1-score, accuracy (same as micro-averaged PPV
+Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
+micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
-<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>]
+<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>])
 <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
 <span class='no'>training.id</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fu'>seq_along</span>(<span class='no'>class</span>), <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>test.id</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(!<span class='fu'>seq_along</span>(<span class='no'>class</span>) <span class='kw'>%in%</span> <span class='no'>training.id</span>)
-<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"lda"</span>)
-<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>test.id</span>)
-<span class='fu'>evaluation</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>)</div><div class='output co'>#&gt; $accuracy
-#&gt; [1] 0.3544974
+<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"xgboost"</span>)
+<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>test.id</span>, <span class='no'>class</span>)
+<span class='fu'>evaluation</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='evaluation-2.png' alt='' width='540' height='400' /><img src='evaluation-3.png' alt='' width='540' height='400' /><div class='output co'>#&gt; $logloss
+#&gt; [1] 0.9650858
 #&gt; 
-#&gt; $avg_accuracy
-#&gt; [1] 0.6772487
+#&gt; $auc
+#&gt; [1] 0.912119
 #&gt; 
-#&gt; $avg_precision
-#&gt; [1] 0.3780929
+#&gt; $accuracy
+#&gt; [1] 0.7089947
 #&gt; 
-#&gt; $avg_recall
-#&gt; [1] 0.3675173
+#&gt; $macro_ppv
+#&gt; [1] 0.7067206
 #&gt; 
-#&gt; $avg_F1
-#&gt; [1] 0.3474771
+#&gt; $macro_sensitivity
+#&gt; [1] 0.7132884
+#&gt; 
+#&gt; $macro_f1
+#&gt; [1] 0.7065146
+#&gt; 
+#&gt; $mcc
+#&gt; [1] 0.6136055
+#&gt; 
+#&gt; $micro_mcc
+#&gt; [1] 0.6119929
+#&gt; 
+#&gt; $cs
+#&gt;         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 
+#&gt;          0.7142857          0.5555556          0.7843137          0.7727273 
+#&gt; sensitivity.DIF.C4 sensitivity.IMM.C2 sensitivity.MES.C1 sensitivity.PRO.C5 
+#&gt;          0.6140351          0.6756757          0.8695652          0.6938776 
+#&gt;          f1.DIF.C4          f1.IMM.C2          f1.MES.C1          f1.PRO.C5 
+#&gt;          0.6603774          0.6097561          0.8247423          0.7311828 
+#&gt;         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 
+#&gt;          0.5319909          0.5068871          0.7663011          0.6454394 
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -146,8 +170,6 @@ precision, recall, and F1-score.</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
