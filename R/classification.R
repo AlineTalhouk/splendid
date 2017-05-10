@@ -80,7 +80,7 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
          multinom_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                         trace = FALSE),
          nnet = {
-           attachNamespace("nnet")
+           if (!"package:nnet" %in% search()) attachNamespace("nnet")
            e1071::best.nnet(class ~ ., data = cbind(data, class),
                             size = seq_len(5),
                             decay = seq(0, 0.5, length.out = 5),
