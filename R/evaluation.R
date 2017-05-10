@@ -166,15 +166,19 @@ discrimination_plot <- function(x, pred.probs) {
                    "prevalence" = ~ classCount / totalCount)
   
   # discrimination plot
+  cols <- grDevices::rainbow(dplyr::n_distinct(x))
   p <- ggplot(df.long, aes(x = class, y = prob, fill = class)) +
     geom_boxplot(alpha = 0.6) + 
     geom_hline(data = df.prevalence, aes(yintercept = prevalence),
                colour = "lightgrey") +
+    scale_fill_manual(values = cols) +
     facet_wrap(~trueClass) + 
     labs(title = "Discrimination Plot by True Class", x = "Predicted Class",
          y = "Risk of Predicted Class") +
     theme_bw() + 
-    theme(panel.grid = element_blank(), legend.position = "none")
+    theme(plot.title = element_text(face = "bold"),
+          panel.grid = element_blank(),
+          legend.position = "none")
   print(p)
 }
 
