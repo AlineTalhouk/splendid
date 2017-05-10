@@ -11,8 +11,8 @@
 #' 
 #' @param x actual class labels
 #' @param y predicted class labels
-#' @param plot logical; if \code{TRUE} a discrimination plot is shown for each 
-#'   class
+#' @param plot logical; if \code{TRUE} a discrimination plot and reliability
+#'   plot are shown for each class
 #' @return A list with one element per evaluation measure except for the 
 #'   \code{cs} element, which returns a list of class-specific evaluation 
 #'   measures.
@@ -43,7 +43,7 @@ evaluation <- function(x, y, plot = FALSE) {
   # Discriminatory measures
   dm_funs <- dplyr::lst(logloss, auc)
   if (plot) {
-    dm_funs <- c(dm_funs, dplyr::lst(discrimination_plot))
+    dm_funs <- c(dm_funs, dplyr::lst(discrimination_plot, reliability_plot))
   }
   dm <- dm_funs %>% 
     purrr::invoke_map(list(list(x = x, pred.probs = attr(y, "prob"))))
@@ -60,7 +60,7 @@ evaluation <- function(x, y, plot = FALSE) {
   mcc <- mcc(cm)
   micro_mcc <- mcc(socm)
   
-  if (plot) dm$discrimination_plot
+  if (plot) dm[c("discrimination_plot", "reliability_plot")]
   
   c(dm[c("logloss", "auc")], dplyr::lst(accuracy, macro_ppv, macro_sensitivity,
                                         macro_f1, mcc, micro_mcc, cs))
