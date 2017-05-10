@@ -11,8 +11,8 @@ evaluation(x, y, plot = FALSE)
 
 \item{y}{predicted class labels}
 
-\item{plot}{logical; if \code{TRUE} a discrimination plot is shown for each 
-class}
+\item{plot}{logical; if \code{TRUE} a discrimination plot and reliability
+plot are shown for each class}
 }
 \value{
 A list with one element per evaluation measure except for the 

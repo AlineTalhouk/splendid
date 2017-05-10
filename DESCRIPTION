@@ -29,7 +29,8 @@ Imports:
     caret,
     kernlab,
     HandTill2001,
-    ggplot2
+    ggplot2,
+    grDevices
 Suggests:
     stringr,
     testthat,
