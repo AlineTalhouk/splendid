@@ -167,9 +167,9 @@ discrimination_plot <- function(x, pred.probs) {
   
   # discrimination plot
   cols <- grDevices::rainbow(dplyr::n_distinct(x))
-  p <- ggplot(df.long, aes(x = class, y = prob, fill = class)) +
+  p <- ggplot(df.long, aes_(x = ~class, y = ~prob, fill = ~class)) +
     geom_boxplot(alpha = 0.6) + 
-    geom_hline(data = df.prevalence, aes(yintercept = prevalence),
+    geom_hline(data = df.prevalence, aes_(yintercept = ~prevalence),
                colour = "lightgrey") +
     scale_fill_manual(values = cols) +
     facet_wrap(~trueClass) + 
@@ -209,7 +209,7 @@ reliability_plot <- function(x, pred.probs) {
   
   # reliability plot
   cols <- grDevices::rainbow(dplyr::n_distinct(x))
-  p <- ggplot(df, aes(x, y, group = class, colour = class)) +
+  p <- ggplot(df, aes_(~x, ~y, group = ~class, colour = ~class)) +
     geom_line(lwd = 2) + 
     geom_abline(intercept = 0, slope = 1, color = "grey") +
     scale_color_manual(values = cols) +
