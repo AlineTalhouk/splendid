@@ -14,9 +14,10 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE) {
     do.call(cbind, .) %>%
     t() %>%
     as.data.frame() %>%
-    dplyr::mutate(boot = gsub(".*\\.", "\\1", rownames(.))) %>%
+    dplyr::mutate(logloss = -logloss,
+                  boot = gsub(".*\\.", "\\1", rownames(.))) %>%
     split(.$boot) %>% 
-    purrr::map(`[`, 1:6) %>% 
+    purrr::map(`[`, 1:8) %>% 
     purrr::map(~ purrr::map(.x, ~ names(sm$models)[order(
       rank(-.x, ties.method = "random"))])) %>% 
     purrr::map(~ purrr::invoke(rbind, .x)) %>% 
