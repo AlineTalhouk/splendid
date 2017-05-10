@@ -76,12 +76,8 @@ Correlation Coefficient (MCC).
 \examples{
 data(hgsc)
 class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
-sl_result1 <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
+sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 "svm"))
-
-# With RFE feature selection
-sl_result2 <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
-"svm"), rfe = TRUE)
 }
 \author{
 Derek Chiu
