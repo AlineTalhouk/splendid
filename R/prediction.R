@@ -1,8 +1,8 @@
 #' Class prediction on OOB set
-#' 
+#'
 #' Functions to predict class labels on the Out-Of-Bag (test) set for different
 #' classifiers.
-#' 
+#'
 #' Only the \code{knn} and \code{pamr} prediction methods require the additional
 #' \code{train.id} and \code{class} arguments. For \code{knn}, the modelling and
 #' prediction are performed in one step, so the function takes in both training
@@ -10,20 +10,20 @@
 #' cross-validated on the training set in order to find a shrinkage threshold
 #' with the minimum CV error to use in prediction on the test set. The other
 #' prediction methods make use of the default method.
-#' 
+#'
 #' @inheritParams splendid
 #' @param mod model object from \code{\link{classification}}
 #' @param test.id integer vector of indices for test set
 #' @param ... additional arguments to be passed to or from methods
 #' @param train.id integer vector of indices for training set ID. Only used for
 #' \code{knn} and \code{pamr} prediction methods.
-#' @return A factor of predicted classes with labels in the same order as true 
+#' @return A factor of predicted classes with labels in the same order as true
 #'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
 #'   list of length 2: the predicted class, and the threshold value.
-#'   
+#'
 #' @author Derek Chiu
 #' @export
-#' @examples 
+#' @examples
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' set.seed(1)
@@ -134,8 +134,8 @@ prediction.maboost <- function(mod, data, test.id, ...) {
 
 #' @export
 prediction.xgb.Booster <- function(mod, data, test.id, class, ...) {
-  prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>% 
-    magrittr::set_colnames(levels(class)) %>% 
+  prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
+    magrittr::set_colnames(levels(class)) %>%
     round(6)
   eps <- rowSums(prob) - 1
   prob[, 1] <- prob[, 1] - eps  # make sure every row sums to 1
@@ -165,4 +165,4 @@ prediction.cv.glmnet <- function(mod, data, test.id, ...) {
 #' @export
 prediction.glmnet <- function(mod, data, test.id, ...) {
   prediction.cv.glmnet(mod, data, test.id, ...)
-} 
+}

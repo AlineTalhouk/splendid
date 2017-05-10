@@ -30,7 +30,7 @@ prediction(mod, data, test.id, ...)
 \item{class}{true/reference class vector used for supervised learning}
 }
 \value{
-A factor of predicted classes with labels in the same order as true 
+A factor of predicted classes with labels in the same order as true
   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
   list of length 2: the predicted class, and the threshold value.
 }

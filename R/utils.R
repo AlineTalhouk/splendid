@@ -17,5 +17,5 @@ sink_output <- function(expr) {
   sink(tmp)
   on.exit(sink())
   on.exit(file.remove(tmp), add = TRUE)
-  invisible(force(expr)) 
+  invisible(force(expr))
 }

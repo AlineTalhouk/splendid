@@ -11,16 +11,16 @@ classification(data, class, algs, rfe = FALSE, sizes = NULL)
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{algs}{character string of classification algorithm to use. See Details 
+\item{algs}{character string of classification algorithm to use. See Details
 in \code{\link{splendid}} for a list of choices.}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "qda", and "rf" algorithms.}
 
 \item{sizes}{the range of sizes of features to test RFE algorithm}
 }
 \value{
-The model object from running the classification algorithm 
+The model object from running the classification algorithm
   \code{"alg"}
 }
 \description{
@@ -28,15 +28,15 @@ Runs a classification algorithm on a given dataset and reference class.
 }
 \details{
 Some of the classification algorithms implemented use pre-defined values that
-specify hyperparameters, settings, options, etc. \code{"multinom"} and 
-\code{"nnet"} increase the maximum number of weights used to 2000, in case 
-\code{data} is high dimensional and classification is time-consuming. 
-\code{"nnet"} uses 3 nodes in its hidden layer, a choice that hopefully 
-promotes sufficient complexity in many datasets. \code{"pamr"} considers 100 
-thresholds when training, and uses a uniform prior. \code{"adaboost"} 
-actually calls \code{\link[maboost]{maboost}} instead of 
+specify hyperparameters, settings, options, etc. \code{"multinom"} and
+\code{"nnet"} increase the maximum number of weights used to 2000, in case
+\code{data} is high dimensional and classification is time-consuming.
+\code{"nnet"} uses 3 nodes in its hidden layer, a choice that hopefully
+promotes sufficient complexity in many datasets. \code{"pamr"} considers 100
+thresholds when training, and uses a uniform prior. \code{"adaboost"}
+actually calls \code{\link[maboost]{maboost}} instead of
 \code{\link[adabag]{boosting}} because of faster performance. As a result, we
-use the "entrop" option, which uses the KL-divergence method and mimics 
+use the "entrop" option, which uses the KL-divergence method and mimics
 adaboost.
 
 When \code{alg = "knn"}, the result is \code{NULL} because the
@@ -46,9 +46,9 @@ is still assigned to the result in order to enact the corresponding method in
 \code{\link{prediction}}.
 }
 \note{
-\code{"qda"} gives errors when using the \code{hgsc} dataset because 
+\code{"qda"} gives errors when using the \code{hgsc} dataset because
   there are too many variables The algorithm requires the size of every class
-  to be greater than the number of features. A feature selection framework 
+  to be greater than the number of features. A feature selection framework
   and certain assertion checks need to be built for this algorithm to work.
 }
 \examples{

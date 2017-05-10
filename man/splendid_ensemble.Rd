@@ -17,7 +17,7 @@ splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE)
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "qda", and "rf" algorithms.}
 }
 \description{

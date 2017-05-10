@@ -16,14 +16,14 @@ splendid_model(data, class, n, seed = 1, algorithms = NULL,
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
-\item{algorithms}{character vector of algorithm names to use for supervised 
+\item{algorithms}{character vector of algorithm names to use for supervised
 learning. See Details for possible options. This argument is \code{NULL} by
 default, in which case uses all implemented algorithms.}
 
 \item{conf.level}{confidence level for bootstrapped estimates of evaluation
 measures}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a 
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "qda", and "rf" algorithms.}
 
 \item{...}{additional arguments to \code{splendid_model}}
