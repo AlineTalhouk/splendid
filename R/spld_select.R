@@ -18,7 +18,7 @@ bestofbests <- bests[1,]  %>%
   names()
 
 # Highest median Bootstrap
-df <- map(bt$evals, ~apply(.x,1,median)) %>% 
+df <- purrr::map(bt$evals, ~apply(.x,1,median)) %>% 
   data.frame() %>%
   t() %>% 
   apply (.,2, function(x){algs[order(rank(-x, ties.method = "random"))]}) %>% 
