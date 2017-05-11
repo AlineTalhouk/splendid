@@ -32,67 +32,153 @@ library(knitr)
 data(hgsc)
 ```
 
-## Ensemble Classification
+## Overview
 
-The main workhorse function of `splendid` is `splendid()`, and the usage is intuitive:
-  - `data` takes in your rectangular data in standard form (rows as samples/observations, columns as variables/features)
-  - `class` takes in the true/reference class labels with length equal to the number of samples
-  - `n` is the number of bootstrap replicates to generate as training sets
-  - `seed` is used for reproducibility in the bootstrapping
-  - `algorithms` takes in the desired classification algorithms to use
+The main function of `splendid` is `splendid()`, and the usage is intuitive:
+
+ - `data`: your rectangular data in standard form (rows as samples/observations, columns as variables/features)
+- `class`: the true/reference class labels with length equal to the number of samples
+- `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).
+- `seed`: constant for reproducibility in the bootstrap resampling
+- `algorithms`: character vector of classification algorithms
+- `rfe`: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.
   
 ```{r splendid}
 class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 table(class)
-sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn", "svm"))
+sl_result <- splendid(data = hgsc, class = class, n = 2,
+                      algorithms = c("lda", "knn", "svm"), rfe = FALSE)
 ```
 
-The resulting object is list with the following elements:
-  - `model` gives the model fits for each of the algorithms used. The fits are themselves nested based on the number of bootstrap replicates.
-  - `pred` has the same hierarchical structure as `model`, except the metadata consists of the predicted class labels
-  - `eval` is a tibble that shows a summary of the algorithms on some evaluation measures. More details on this element will be provided later.
-  - `best.algs` is a vector that shows the best-performing algorithm for each bootstrapped replicate of the data
-  - `ensemble` is the predicted class using the ensemble classifier
+The resulting object is a list with the following elements:
+
+- `models` gives the model fits for each of the algorithms used. The fits are themselves nested based on the number of bootstrap replicates.
+- `preds` has the same hierarchical structure as `models`, except the metadata consists of the predicted class labels.
+- `evals` is a list of data frames showing evaluation metrics for each algorithm. Rows are metrics and columns are bootstrap replicates. More details on this element will be provided later.
+- `bests` is a vector that shows the best-performing algorithm for each bootstrapped replicate of the data, chosen by rank aggregation.
+- `ensemble_algs` tallies the algorithm frequencies in `bests`, returning the top (3, by default) algorithms chosen.
+- `ensemble` is a list of model fits for each of the algorithms in `ensemble_algs`, fit on the full data.
   
 ```{r splendid_output}
 str(sl_result, max.level = 2)
 ```
   
-## Classification Algorithms
+## Classification
 
-The currently supported classification algorithms in `splendid` are:
-  - Linear Discriminant Analysis (`"lda"`)
-  - Random Forests (`"rf"`)
-  - Multinomial Classification (`"multinom"`)
-  - Neural Networks (`"nnet"`)
-  - K-Nearest Neighbours (`"knn"`)
-  - Support Vector Machines (`"svm"`)
-  - Prediction Analysis for Microarrays (`"pam"`)
-  - Adaptive Boosting (`"adaboost"`)
-  - Naive Bayes (`"nb"`)
-  - Generalized Linear Models using an Elastic Net model path (`"glmnet"`)
+The first step in the `splendid` pipeline is classification. Given explanatory data and a reference response of classes, we wish to build a classifier that can accurately predict class representation in a separate validation data set. To avoid overfitting, we split the given data into a training set and test set. The training set is constructed by taking a random sample with replacement of all samples. The test set is comprised of all samples which are not included in the corresponding training set, also known as an OOB sample. This is a simple bootstrap resampling scheme, which we replicate a sufficient number of times to capture sampling variability.
+
+### Algorithms
+
+There exist a vast number of classification algorithms. Those currently in `splendid` are:
+
+- Linear Discriminant Analysis (`"lda"`)
+- Quadratic Discriminant Analysis (`"qda"`)
+- Random Forests (`"rf"`)
+- Multinomial Classification using neural networks (`"multinom_nnet"`)
+- Neural Networks with One Hidden Layer (`"nnet"`)
+- K-Nearest Neighbours (`"knn"`)
+- Support Vector Machines using a Radial-Basis Kernel(`"svm"`)
+- Prediction Analysis for Microarrays (`"pam"`)
+- Adaptive Boosting using Decision Trees (`"adaboost"`)
+- Extreme Gradient Boosting using Decision Trees (`"xgboost"`)
+- Naive Bayes (`"nbayes"`)
+- Multinomial Classification using an L1-penalty (`"lasso"`), L2-penalty (`"ridge"`), or no penalty (`"multinom_glm"`)
   
 These algorithms are implemented in `classification()`.
 
-## Prediction Methods
+### Hyperparameters and other Details
+
+Certain functions have hyperparameters that need to be tuned in order to select the best model before prediction. We use a grid search on a pre-specified range of the hyperparameters and choose the optimal values using `e1071::tune()`.
+
+The ranges for the tuning parameters are:
+
+- `nnet`
+    - `size`: 1, 2, 3, 4, 5
+    - `decay`: 0, 0.125, 0.25, 0.375, 0.5
+- `svm`
+    - `gamma`: `1 / ncol(data) * 2 ^ (0:4)`
+    - `cost`: 1, 2, 4, 8, 16
+  
+Some algorithms have certain properties that require data manipulations before classification.
+
+- `qda`: The number of variables cannot exceed the number of samples in the smallest class. We use a variance threshold method to select the greatest number of variables allowed by the QDA restriction on the basis of decreasing variance across all samples. This filtering feature selection method does not solve the potential multicollinearity issue that can exist with many correlated variables. To tackle this problem, we add a small amount of noise to each variable.
+- `multinom_nnet` and `nnet`: We increase the maximum number of allowable weights to a sufficiently large number to avoid ill-fitted models.
+- `knn`: Since K-Nearest Neighbours is a non-parametric method, there *is* no model object upon which predictions are made, and predicted classes are directly found. To obtain prediction probabilities by class, we use a distance matrix between the training and test set samples.
+- `pam`: a uniform prior is used in the training step.
+- `xgboost`: the objective function is soft probability, and the evaluation metric is log loss.
+
+### Feature Selection
+
+We use Recursive Feature Elimination (RFE)^1^ on `lda`, `qda`, `rf`, and `svm` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
+
+One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the `sizes` parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:
+
+```{r class-sizes}
+table(class)
+```
+
+We tell RFE to search for the best models with 5, 10, ..., 50 features. Cross-validation with 2 folds is used in the algorithm.
+
+## Prediction
 
 There is a different prediction method for each classifier, since they are all imported from an external package. The `prediction()` function calls each method based on the class of the model output from `classification()`. `prediction()` also performs some manipulations so that the results all have the same data structure: unnamed factors, with labels given in the same order as the true class labels.
 
-The method for `"pam"` is an exception: the output from `prediction()` not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set.
+The method for `"pam"` is an exception: the output from `prediction()` not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set, named `delta`.
 
 ```{r prediction}
-str(sl_result$pred)
+str(sl_result$preds, max.level = 2, list.len = 2)
 ```
 
-## Evaluation Measures
+Note that each predicted class has an attribute that shows the class probabilities in a matrix. These matrices are useful to compute evaluation measures and generate discriminating graphs that we detail below.
 
-```{r evaluation, results='asis'}
-kable(sl_result$eval)
+## Evaluation
+
+### Metrics
+
+Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for `svm`, for two bootstrap replicates. The `logloss` and `auc` measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.
+
+```{r evaluation, echo=FALSE, results='asis'}
+kable(sl_result$evals$svm, caption = "SVM Evaluation Metrics")
 ```
 
-## Constructing the Ensemble
+- `logloss`: Multiclass log loss should be minimized
+- `auc`: Area Under the Curve compares trade-off between sensitivity and specificity
+- `accuracy`: number of correctly classified samples out of all samples
+- `ppv`: also known as precision
+- `sensitivity`: also known as recall
+- `f1`: balanced metric between precision and recall
+- `mcc`: Matthew's correlation coefficient
 
+Note that in the multiclass case, we have variants for some of the measures listed above, depending on how we are looking at the data. A `macro`-averaged metric calculates said metric on each of the one-vs-all confusion matrices and then takes the mean. A `micro`-averaged metric is calculated on the element-wise sum of all one-vs-all confusion matrices.
 
+Hence, there are `macro_ppv`, `macro_sensitivity`, and `macro_f1` macro-averaged metrics, and `micro_mcc` as the "only" micro-averaged metric. It turns out that `accuracy` is mathematically equivalent to micro-averaged PPV, sensitivity, and F1-score, so we don't redundantly add those to the list. Furthermore, calculating `mcc` in a macro-averaged way is not recommended, so we use it on the full confusion matrix.
+
+Class-specific measures fill in the rest of the matrix, labelled with the naming scheme `metric.class`.
+
+### Plots
+
+To assess the performance of a classifier, we can look at a discriminating plot and reliability plot.
+
+```{r plots, fig.height=4.5, fig.width=6, fig.show='hold'}
+data(hgsc)
+class <- factor(stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2])
+set.seed(1)
+training.id <- sample(seq_along(class), replace = TRUE)
+test.id <- which(!seq_along(class) %in% training.id)
+mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
+pred <- prediction(mod, hgsc, test.id, class)
+evals <- evaluation(class[test.id], pred, plot = TRUE)
+```
+
+## Ensemble Construction
+
+For each bootstrap replicate training set, we want to find the top performing classifier. We use Rank Aggregation with the Genetic Algorithm to choose the top algorithm by comparing across evaluation metrics^2^. In the case of log loss, we need to first invert its value since it its objective function is minimization. Class-specific measures are not included in the rank aggregation because they are interdependent. For example, a sample with a true class of "A" should not be treated differently depending on whether it was misclassified into "B" or "C".
+
+After obtaining the list of top classifiers for each bootstrap replicate, we sort them by decreasing frequency and keep the top 3 to use in the ensemble. The `ensemble_mods` output of `splendid` is a list of models fit on the full data for the top classifiers.
 
 ## References
+
+1. https://topepo.github.io/caret/recursive-feature-elimination.html
+2. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
+
 
