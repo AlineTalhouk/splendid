@@ -15,7 +15,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -52,15 +52,56 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    <div id="splendid" class="section level1">
+  <div class="col-md-9">
+    
+
+    
+    
+<div class="contents">
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<div id="splendid" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#splendid" class="anchor"></a>splendid</h1></div>
-<p>Supervised Learning Ensemble for Diagnostic Identification</p>
+<p>The goal of <code>splendid</code> is to provide a supervised learning pipeline that implements major components of a multiclass classification problem. We guide the user through fitting a classifier, obtaining predictions, and ultimately evaluating performance using metrics and visualizations.</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install splendid from github with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
+devtools::<span class="kw">install_github</span>(<span class="st">"AlineTalhouk/splendid"</span>)</code></pre></div>
+</div>
+<div id="example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h2>
+<p>The following example shows how to use the main function of the package, <code><a href="reference/splendid.html">splendid()</a></code>. A data matrix <code>hgsc</code> contains a subset of gene expression measurements of High Grade Serous Carcinoma Ovarian cancer patients from the Cancer Genome Atlas publically available datasets. Samples as rows, features as columns. The function below runs the package through the <code><a href="reference/splendid.html">splendid()</a></code> function. First we extract the reference class labels (by TCGA) from the row names of <code>hgsc</code>. Then we fit the random forest and extreme gradient boosting classifiers to one bootstrapped replicate of the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(splendid)
+<span class="kw">data</span>(hgsc)
+class &lt;-<span class="st"> </span>stringr::<span class="kw">str_split_fixed</span>(<span class="kw">rownames</span>(hgsc), <span class="st">"_"</span>, <span class="dt">n =</span> <span class="dv">2</span>)[, <span class="dv">2</span>]
+sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">1</span>,
+                      <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"rf"</span>, <span class="st">"xgboost"</span>))
+<span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)
+<span class="co">#&gt; List of 6</span>
+<span class="co">#&gt;  $ models       :List of 2</span>
+<span class="co">#&gt;   ..$ rf     :List of 1</span>
+<span class="co">#&gt;   ..$ xgboost:List of 1</span>
+<span class="co">#&gt;  $ preds        :List of 2</span>
+<span class="co">#&gt;   ..$ rf     :List of 1</span>
+<span class="co">#&gt;   ..$ xgboost:List of 1</span>
+<span class="co">#&gt;  $ evals        :List of 2</span>
+<span class="co">#&gt;   ..$ rf     :'data.frame':  24 obs. of  1 variable:</span>
+<span class="co">#&gt;   ..$ xgboost:'data.frame':  24 obs. of  1 variable:</span>
+<span class="co">#&gt;  $ bests        : Named chr "rf"</span>
+<span class="co">#&gt;   ..- attr(*, "names")= chr "1"</span>
+<span class="co">#&gt;  $ ensemble_algs: chr "rf"</span>
+<span class="co">#&gt;  $ ensemble_mods:List of 1</span>
+<span class="co">#&gt;   ..$ :List of 18</span>
+<span class="co">#&gt;   .. ..- attr(*, "class")= chr "randomForest"</span></code></pre></div>
+</div>
+</div>
 </div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/AlineTalhouk/splendid">https://​github.com/​AlineTalhouk/​splendid</a>
@@ -74,13 +115,15 @@
 <ul class="list-unstyled">
 <li>Derek Chiu <br><small class="roles"> Author, maintainer </small> </li>
 <li>Aline Talhouk <br><small class="roles"> Author </small> </li>
+<li>Dustin Johnson <br><small class="roles"> Author </small> </li>
 </ul>
 </div>
+
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Derek Chiu, Aline Talhouk.</p>
+  <p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
 </div>
 
 <div class="pkgdown">

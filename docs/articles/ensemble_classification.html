@@ -58,7 +58,7 @@
 </h1>
                         <h4 class="author">Derek Chiu</h4>
             
-            <h4 class="date">2017-05-10</h4>
+            <h4 class="date">2017-05-11</h4>
           </div>
 
     
@@ -75,17 +75,46 @@
 <span class="kw">library</span>(knitr)
 <span class="kw">data</span>(hgsc)</code></pre></div>
 </div>
-<div id="ensemble-classification" class="section level2">
+<div id="overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#ensemble-classification" class="anchor"></a>Ensemble Classification</h2>
-<p>The main workhorse function of <code>splendid</code> is <code><a href="../reference/splendid.html">splendid()</a></code>, and the usage is intuitive: - <code>data</code> takes in your rectangular data in standard form (rows as samples/observations, columns as variables/features) - <code>class</code> takes in the true/reference class labels with length equal to the number of samples - <code>n</code> is the number of bootstrap replicates to generate as training sets - <code>seed</code> is used for reproducibility in the bootstrapping - <code>algorithms</code> takes in the desired classification algorithms to use</p>
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p>The main function of <code>splendid</code> is <code><a href="../reference/splendid.html">splendid()</a></code>, and the usage is intuitive:</p>
+<ul>
+<li>
+<code>data</code>: your rectangular data in standard form (rows as samples/observations, columns as variables/features)</li>
+<li>
+<code>class</code>: the true/reference class labels with length equal to the number of samples</li>
+<li>
+<code>n</code>: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).</li>
+<li>
+<code>seed</code>: constant for reproducibility in the bootstrap resampling</li>
+<li>
+<code>algorithms</code>: character vector of classification algorithms</li>
+<li>
+<code>rfe</code>: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.</li>
+</ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">class &lt;-<span class="st"> </span>stringr::<span class="kw">str_split_fixed</span>(<span class="kw">rownames</span>(hgsc), <span class="st">"_"</span>, <span class="dt">n =</span> <span class="dv">2</span>)[, <span class="dv">2</span>]
 <span class="kw">table</span>(class)
 <span class="co">#&gt; class</span>
 <span class="co">#&gt; DIF.C4 IMM.C2 MES.C1 PRO.C5 </span>
 <span class="co">#&gt;    135    107    109    138</span>
-sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid.html">splendid</a></span>(hgsc, class, <span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"lda"</span>, <span class="st">"knn"</span>, <span class="st">"svm"</span>))</code></pre></div>
-<p>The resulting object is list with the following elements: - <code>model</code> gives the model fits for each of the algorithms used. The fits are themselves nested based on the number of bootstrap replicates. - <code>pred</code> has the same hierarchical structure as <code>model</code>, except the metadata consists of the predicted class labels - <code>eval</code> is a tibble that shows a summary of the algorithms on some evaluation measures. More details on this element will be provided later. - <code>best.algs</code> is a vector that shows the best-performing algorithm for each bootstrapped replicate of the data - <code>ensemble</code> is the predicted class using the ensemble classifier</p>
+sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">2</span>,
+                      <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"lda"</span>, <span class="st">"knn"</span>, <span class="st">"svm"</span>), <span class="dt">rfe =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>The resulting object is a list with the following elements:</p>
+<ul>
+<li>
+<code>models</code> gives the model fits for each of the algorithms used. The fits are themselves nested based on the number of bootstrap replicates.</li>
+<li>
+<code>preds</code> has the same hierarchical structure as <code>models</code>, except the metadata consists of the predicted class labels.</li>
+<li>
+<code>evals</code> is a list of data frames showing evaluation metrics for each algorithm. Rows are metrics and columns are bootstrap replicates. More details on this element will be provided later.</li>
+<li>
+<code>bests</code> is a vector that shows the best-performing algorithm for each bootstrapped replicate of the data, chosen by rank aggregation.</li>
+<li>
+<code>ensemble_algs</code> tallies the algorithm frequencies in <code>bests</code>, returning the top (3, by default) algorithms chosen.</li>
+<li>
+<code>ensemble</code> is a list of model fits for each of the algorithms in <code>ensemble_algs</code>, fit on the full data.</li>
+</ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)
 <span class="co">#&gt; List of 6</span>
 <span class="co">#&gt;  $ models       :List of 3</span>
@@ -107,322 +136,115 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <span class="co">#&gt;   ..$ :List of 29</span>
 <span class="co">#&gt;   .. ..- attr(*, "class")= chr "svm"</span></code></pre></div>
 </div>
-<div id="classification-algorithms" class="section level2">
+<div id="classification" class="section level2">
 <h2 class="hasAnchor">
-<a href="#classification-algorithms" class="anchor"></a>Classification Algorithms</h2>
-<p>The currently supported classification algorithms in <code>splendid</code> are: - Linear Discriminant Analysis (<code>"lda"</code>) - Random Forests (<code>"rf"</code>) - Multinomial Classification (<code>"multinom"</code>) - Neural Networks (<code>"nnet"</code>) - K-Nearest Neighbours (<code>"knn"</code>) - Support Vector Machines (<code>"svm"</code>) - Prediction Analysis for Microarrays (<code>"pam"</code>) - Adaptive Boosting (<code>"adaboost"</code>) - Naive Bayes (<code>"nb"</code>) - Generalized Linear Models using an Elastic Net model path (<code>"glmnet"</code>)</p>
+<a href="#classification" class="anchor"></a>Classification</h2>
+<p>The first step in the <code>splendid</code> pipeline is classification. Given explanatory data and a reference response of classes, we wish to build a classifier that can accurately predict class representation in a separate validation data set. To avoid overfitting, we split the given data into a training set and test set. The training set is constructed by taking a random sample with replacement of all samples. The test set is comprised of all samples which are not included in the corresponding training set, also known as an OOB sample. This is a simple bootstrap resampling scheme, which we replicate a sufficient number of times to capture sampling variability.</p>
+<div id="algorithms" class="section level3">
+<h3 class="hasAnchor">
+<a href="#algorithms" class="anchor"></a>Algorithms</h3>
+<p>There exist a vast number of classification algorithms. Those currently in <code>splendid</code> are:</p>
+<ul>
+<li>Linear Discriminant Analysis (<code>"lda"</code>)</li>
+<li>Quadratic Discriminant Analysis (<code>"qda"</code>)</li>
+<li>Random Forests (<code>"rf"</code>)</li>
+<li>Multinomial Classification using neural networks (<code>"multinom_nnet"</code>)</li>
+<li>Neural Networks with One Hidden Layer (<code>"nnet"</code>)</li>
+<li>K-Nearest Neighbours (<code>"knn"</code>)</li>
+<li>Support Vector Machines using a Radial-Basis Kernel(<code>"svm"</code>)</li>
+<li>Prediction Analysis for Microarrays (<code>"pam"</code>)</li>
+<li>Adaptive Boosting using Decision Trees (<code>"adaboost"</code>)</li>
+<li>Extreme Gradient Boosting using Decision Trees (<code>"xgboost"</code>)</li>
+<li>Naive Bayes (<code>"nbayes"</code>)</li>
+<li>Multinomial Classification using an L1-penalty (<code>"lasso"</code>), L2-penalty (<code>"ridge"</code>), or no penalty (<code>"multinom_glm"</code>)</li>
+</ul>
 <p>These algorithms are implemented in <code><a href="../reference/classification.html">classification()</a></code>.</p>
 </div>
-<div id="prediction-methods" class="section level2">
+<div id="hyperparameters-and-other-details" class="section level3">
+<h3 class="hasAnchor">
+<a href="#hyperparameters-and-other-details" class="anchor"></a>Hyperparameters and other Details</h3>
+<p>Certain functions have hyperparameters that need to be tuned in order to select the best model before prediction. We use a grid search on a pre-specified range of the hyperparameters and choose the optimal values using <code>e1071::tune()</code>.</p>
+<p>The ranges for the tuning parameters are:</p>
+<ul>
+<li>
+<code>nnet</code>
+<ul>
+<li>
+<code>size</code>: 1, 2, 3, 4, 5</li>
+<li>
+<code>decay</code>: 0, 0.125, 0.25, 0.375, 0.5</li>
+</ul>
+</li>
+<li>
+<code>svm</code>
+<ul>
+<li>
+<code>gamma</code>: <code>1 / ncol(data) * 2 ^ (0:4)</code>
+</li>
+<li>
+<code>cost</code>: 1, 2, 4, 8, 16</li>
+</ul>
+</li>
+</ul>
+<p>Some algorithms have certain properties that require data manipulations before classification.</p>
+<ul>
+<li>
+<code>qda</code>: The number of variables cannot exceed the number of samples in the smallest class. We use a variance threshold method to select the greatest number of variables allowed by the QDA restriction on the basis of decreasing variance across all samples. This filtering feature selection method does not solve the potential multicollinearity issue that can exist with many correlated variables. To tackle this problem, we add a small amount of noise to each variable.</li>
+<li>
+<code>multinom_nnet</code> and <code>nnet</code>: We increase the maximum number of allowable weights to a sufficiently large number to avoid ill-fitted models.</li>
+<li>
+<code>knn</code>: Since K-Nearest Neighbours is a non-parametric method, there <em>is</em> no model object upon which predictions are made, and predicted classes are directly found. To obtain prediction probabilities by class, we use a distance matrix between the training and test set samples.</li>
+<li>
+<code>pam</code>: a uniform prior is used in the training step.</li>
+<li>
+<code>xgboost</code>: the objective function is soft probability, and the evaluation metric is log loss.</li>
+</ul>
+</div>
+<div id="feature-selection" class="section level3">
+<h3 class="hasAnchor">
+<a href="#feature-selection" class="anchor"></a>Feature Selection</h3>
+<p>We use Recursive Feature Elimination (RFE)<sup>1</sup> on <code>lda</code>, <code>qda</code>, <code>rf</code>, and <code>svm</code> to reduce the dimensionality before classification. In <code>svm</code>, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set <code>rfe = TRUE</code> in <code>splendid</code> to use feature selection.</p>
+<p>One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the <code>sizes</code> parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(class)
+<span class="co">#&gt; class</span>
+<span class="co">#&gt; DIF.C4 IMM.C2 MES.C1 PRO.C5 </span>
+<span class="co">#&gt;    135    107    109    138</span></code></pre></div>
+<p>We tell RFE to search for the best models with 5, 10, …, 50 features. Cross-validation with 2 folds is used in the algorithm.</p>
+</div>
+</div>
+<div id="prediction" class="section level2">
 <h2 class="hasAnchor">
-<a href="#prediction-methods" class="anchor"></a>Prediction Methods</h2>
+<a href="#prediction" class="anchor"></a>Prediction</h2>
 <p>There is a different prediction method for each classifier, since they are all imported from an external package. The <code><a href="../reference/prediction.html">prediction()</a></code> function calls each method based on the class of the model output from <code><a href="../reference/classification.html">classification()</a></code>. <code><a href="../reference/prediction.html">prediction()</a></code> also performs some manipulations so that the results all have the same data structure: unnamed factors, with labels given in the same order as the true class labels.</p>
-<p>The method for <code>"pam"</code> is an exception: the output from <code><a href="../reference/prediction.html">prediction()</a></code> not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sl_result$pred)
+<p>The method for <code>"pam"</code> is an exception: the output from <code><a href="../reference/prediction.html">prediction()</a></code> not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set, named <code>delta</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sl_result$preds, <span class="dt">max.level =</span> <span class="dv">2</span>, <span class="dt">list.len =</span> <span class="dv">2</span>)
 <span class="co">#&gt; List of 3</span>
 <span class="co">#&gt;  $ lda:List of 2</span>
 <span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 2 3 4 1 4 2 1 2 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:189, 1:4] 1.00 1.00 2.11e-307 2.43e-69 1.65e-99 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:189] "TCGA.04.1332_MES.C1" "TCGA.04.1336_DIF.C4" "TCGA.04.1337_MES.C1" "TCGA.04.1338_MES.C1" ...</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:4] "DIF.C4" "IMM.C2" "MES.C1" "PRO.C5"</span>
 <span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 2 3 3 1 1 1 2 3 1 2 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:170, 1:4] 0.00 1.10e-310 7.59e-85 1.00 1.00 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:170] "TCGA.04.1332_MES.C1" "TCGA.04.1343_MES.C1" "TCGA.04.1347_PRO.C5" "TCGA.04.1350_PRO.C5" ...</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:4] "DIF.C4" "IMM.C2" "MES.C1" "PRO.C5"</span>
 <span class="co">#&gt;  $ knn:List of 2</span>
 <span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 3 3 3 2 4 2 4 2 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:189, 1:4] 0 1 0 0 0 0 0 0 0 0 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:189] "TCGA.04.1332_MES.C1" "TCGA.04.1336_DIF.C4" "TCGA.04.1337_MES.C1" "TCGA.04.1338_MES.C1" ...</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:4] "DIF.C4" "IMM.C2" "MES.C1" "PRO.C5"</span>
 <span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 3 4 4 1 1 2 4 1 2 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:170, 1:4] 0.2 0.2 0 0 1 1 0.4 0 0.6 0.4 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:170] "TCGA.04.1332_MES.C1" "TCGA.04.1343_MES.C1" "TCGA.04.1347_PRO.C5" "TCGA.04.1350_PRO.C5" ...</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:4] "DIF.C4" "IMM.C2" "MES.C1" "PRO.C5"</span>
-<span class="co">#&gt;  $ svm:List of 2</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 3 3 2 4 2 4 2 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "probabilities")= num [1:189, 1:4] 0.056151 0.004158 0.004974 0.000584 0.055787 ...</span>
-<span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:189] "TCGA.04.1332_MES.C1" "TCGA.04.1336_DIF.C4" "TCGA.04.1337_MES.C1" "TCGA.04.1338_MES.C1" ...</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:4] "PRO.C5" "DIF.C4" "IMM.C2" "MES.C1"</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 3 4 4 1 1 1 4 2 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "probabilities")= num [1:170, 1:4] 3.94e-02 2.55e-01 2.49e-05 8.04e-04 9.68e-01 ...</span>
-<span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:170] "TCGA.04.1332_MES.C1" "TCGA.04.1343_MES.C1" "TCGA.04.1347_PRO.C5" "TCGA.04.1350_PRO.C5" ...</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr [1:4] "DIF.C4" "MES.C1" "IMM.C2" "PRO.C5"</span></code></pre></div>
+<span class="co">#&gt;   [list output truncated]</span></code></pre></div>
+<p>Note that each predicted class has an attribute that shows the class probabilities in a matrix. These matrices are useful to compute evaluation measures and generate discriminating graphs that we detail below.</p>
 </div>
-<div id="evaluation-measures" class="section level2">
+<div id="evaluation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#evaluation-measures" class="anchor"></a>Evaluation Measures</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(sl_result$eval)</code></pre></div>
-<table class="table"><tbody><tr>
-<td>
+<a href="#evaluation" class="anchor"></a>Evaluation</h2>
+<div id="metrics" class="section level3">
+<h3 class="hasAnchor">
+<a href="#metrics" class="anchor"></a>Metrics</h3>
+<p>Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for <code>svm</code>, for two bootstrap replicates. The <code>logloss</code> and <code>auc</code> measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.</p>
 <table class="table">
-<thead><tr class="header">
-<th></th>
-<th align="right">1</th>
-<th align="right">2</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>logloss</td>
-<td align="right">21.5493810</td>
-<td align="right">23.7708052</td>
-</tr>
-<tr class="even">
-<td>auc</td>
-<td align="right">0.6157277</td>
-<td align="right">0.5642587</td>
-</tr>
-<tr class="odd">
-<td>accuracy</td>
-<td align="right">0.3544974</td>
-<td align="right">0.3117647</td>
-</tr>
-<tr class="even">
-<td>macro_ppv</td>
-<td align="right">0.3780929</td>
-<td align="right">0.3404084</td>
-</tr>
-<tr class="odd">
-<td>macro_sensitivity</td>
-<td align="right">0.3675173</td>
-<td align="right">0.3348792</td>
-</tr>
-<tr class="even">
-<td>macro_f1</td>
-<td align="right">0.3474771</td>
-<td align="right">0.3059036</td>
-</tr>
-<tr class="odd">
-<td>mcc</td>
-<td align="right">0.1570242</td>
-<td align="right">0.1120707</td>
-</tr>
-<tr class="even">
-<td>micro_mcc</td>
-<td align="right">0.1393298</td>
-<td align="right">0.0823529</td>
-</tr>
-<tr class="odd">
-<td>ppv.DIF.C4</td>
-<td align="right">0.5357143</td>
-<td align="right">0.4137931</td>
-</tr>
-<tr class="even">
-<td>ppv.IMM.C2</td>
-<td align="right">0.2941176</td>
-<td align="right">0.2258065</td>
-</tr>
-<tr class="odd">
-<td>ppv.MES.C1</td>
-<td align="right">0.3333333</td>
-<td align="right">0.3220339</td>
-</tr>
-<tr class="even">
-<td>ppv.PRO.C5</td>
-<td align="right">0.3492063</td>
-<td align="right">0.4000000</td>
-</tr>
-<tr class="odd">
-<td>sensitivity.DIF.C4</td>
-<td align="right">0.2631579</td>
-<td align="right">0.2448980</td>
-</tr>
-<tr class="even">
-<td>sensitivity.IMM.C2</td>
-<td align="right">0.5405405</td>
-<td align="right">0.4242424</td>
-</tr>
-<tr class="odd">
-<td>sensitivity.MES.C1</td>
-<td align="right">0.2173913</td>
-<td align="right">0.5135135</td>
-</tr>
-<tr class="even">
-<td>sensitivity.PRO.C5</td>
-<td align="right">0.4489796</td>
-<td align="right">0.1568627</td>
-</tr>
-<tr class="odd">
-<td>f1.DIF.C4</td>
-<td align="right">0.3529412</td>
-<td align="right">0.3076923</td>
-</tr>
-<tr class="even">
-<td>f1.IMM.C2</td>
-<td align="right">0.3809524</td>
-<td align="right">0.2947368</td>
-</tr>
-<tr class="odd">
-<td>f1.MES.C1</td>
-<td align="right">0.2631579</td>
-<td align="right">0.3958333</td>
-</tr>
-<tr class="even">
-<td>f1.PRO.C5</td>
-<td align="right">0.3928571</td>
-<td align="right">0.2253521</td>
-</tr>
-<tr class="odd">
-<td>mcc.DIF.C4</td>
-<td align="right">0.2127428</td>
-<td align="right">0.1257162</td>
-</tr>
-<tr class="even">
-<td>mcc.IMM.C2</td>
-<td align="right">0.1858135</td>
-<td align="right">0.0607046</td>
-</tr>
-<tr class="odd">
-<td>mcc.MES.C1</td>
-<td align="right">0.0910467</td>
-<td align="right">0.1844304</td>
-</tr>
-<tr class="even">
-<td>mcc.PRO.C5</td>
-<td align="right">0.1451349</td>
-<td align="right">0.0796819</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table class="table">
-<thead><tr class="header">
-<th></th>
-<th align="right">1</th>
-<th align="right">2</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>logloss</td>
-<td align="right">2.8864730</td>
-<td align="right">3.7329042</td>
-</tr>
-<tr class="even">
-<td>auc</td>
-<td align="right">0.9121428</td>
-<td align="right">0.9184349</td>
-</tr>
-<tr class="odd">
-<td>accuracy</td>
-<td align="right">0.7407407</td>
-<td align="right">0.7588235</td>
-</tr>
-<tr class="even">
-<td>macro_ppv</td>
-<td align="right">0.7668966</td>
-<td align="right">0.7705805</td>
-</tr>
-<tr class="odd">
-<td>macro_sensitivity</td>
-<td align="right">0.7329369</td>
-<td align="right">0.7797588</td>
-</tr>
-<tr class="even">
-<td>macro_f1</td>
-<td align="right">0.7386364</td>
-<td align="right">0.7627973</td>
-</tr>
-<tr class="odd">
-<td>mcc</td>
-<td align="right">0.6562480</td>
-<td align="right">0.6861985</td>
-</tr>
-<tr class="even">
-<td>micro_mcc</td>
-<td align="right">0.6543210</td>
-<td align="right">0.6784314</td>
-</tr>
-<tr class="odd">
-<td>ppv.DIF.C4</td>
-<td align="right">0.6400000</td>
-<td align="right">0.7083333</td>
-</tr>
-<tr class="even">
-<td>ppv.IMM.C2</td>
-<td align="right">0.8275862</td>
-<td align="right">0.6304348</td>
-</tr>
-<tr class="odd">
-<td>ppv.MES.C1</td>
-<td align="right">0.8000000</td>
-<td align="right">0.8292683</td>
-</tr>
-<tr class="even">
-<td>ppv.PRO.C5</td>
-<td align="right">0.8000000</td>
-<td align="right">0.9142857</td>
-</tr>
-<tr class="odd">
-<td>sensitivity.DIF.C4</td>
-<td align="right">0.8421053</td>
-<td align="right">0.6938776</td>
-</tr>
-<tr class="even">
-<td>sensitivity.IMM.C2</td>
-<td align="right">0.6486486</td>
-<td align="right">0.8787879</td>
-</tr>
-<tr class="odd">
-<td>sensitivity.MES.C1</td>
-<td align="right">0.8695652</td>
-<td align="right">0.9189189</td>
-</tr>
-<tr class="even">
-<td>sensitivity.PRO.C5</td>
-<td align="right">0.5714286</td>
-<td align="right">0.6274510</td>
-</tr>
-<tr class="odd">
-<td>f1.DIF.C4</td>
-<td align="right">0.7272727</td>
-<td align="right">0.7010309</td>
-</tr>
-<tr class="even">
-<td>f1.IMM.C2</td>
-<td align="right">0.7272727</td>
-<td align="right">0.7341772</td>
-</tr>
-<tr class="odd">
-<td>f1.MES.C1</td>
-<td align="right">0.8333333</td>
-<td align="right">0.8717949</td>
-</tr>
-<tr class="even">
-<td>f1.PRO.C5</td>
-<td align="right">0.6666667</td>
-<td align="right">0.7441860</td>
-</tr>
-<tr class="odd">
-<td>mcc.DIF.C4</td>
-<td align="right">0.5980841</td>
-<td align="right">0.5817676</td>
-</tr>
-<tr class="even">
-<td>mcc.IMM.C2</td>
-<td align="right">0.6779081</td>
-<td align="right">0.6718959</td>
-</tr>
-<tr class="odd">
-<td>mcc.MES.C1</td>
-<td align="right">0.7779405</td>
-<td align="right">0.8356066</td>
-</tr>
-<tr class="even">
-<td>mcc.PRO.C5</td>
-<td align="right">0.5882508</td>
-<td align="right">0.6825397</td>
-</tr>
-</tbody>
-</table>
-</td>
-<td>
-<table class="table">
+<caption>SVM Evaluation Metrics</caption>
 <thead><tr class="header">
 <th></th>
 <th align="right">1</th>
@@ -551,16 +373,54 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 </tr>
 </tbody>
 </table>
-</td>
-</tr></tbody></table>
+<ul>
+<li>
+<code>logloss</code>: Multiclass log loss should be minimized</li>
+<li>
+<code>auc</code>: Area Under the Curve compares trade-off between sensitivity and specificity</li>
+<li>
+<code>accuracy</code>: number of correctly classified samples out of all samples</li>
+<li>
+<code>ppv</code>: also known as precision</li>
+<li>
+<code>sensitivity</code>: also known as recall</li>
+<li>
+<code>f1</code>: balanced metric between precision and recall</li>
+<li>
+<code>mcc</code>: Matthew’s correlation coefficient</li>
+</ul>
+<p>Note that in the multiclass case, we have variants for some of the measures listed above, depending on how we are looking at the data. A <code>macro</code>-averaged metric calculates said metric on each of the one-vs-all confusion matrices and then takes the mean. A <code>micro</code>-averaged metric is calculated on the element-wise sum of all one-vs-all confusion matrices.</p>
+<p>Hence, there are <code>macro_ppv</code>, <code>macro_sensitivity</code>, and <code>macro_f1</code> macro-averaged metrics, and <code>micro_mcc</code> as the “only” micro-averaged metric. It turns out that <code>accuracy</code> is mathematically equivalent to micro-averaged PPV, sensitivity, and F1-score, so we don’t redundantly add those to the list. Furthermore, calculating <code>mcc</code> in a macro-averaged way is not recommended, so we use it on the full confusion matrix.</p>
+<p>Class-specific measures fill in the rest of the matrix, labelled with the naming scheme <code>metric.class</code>.</p>
 </div>
-<div id="constructing-the-ensemble" class="section level2">
+<div id="plots" class="section level3">
+<h3 class="hasAnchor">
+<a href="#plots" class="anchor"></a>Plots</h3>
+<p>To assess the performance of a classifier, we can look at a discriminating plot and reliability plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(hgsc)
+class &lt;-<span class="st"> </span><span class="kw">factor</span>(stringr::<span class="kw">str_split_fixed</span>(<span class="kw">rownames</span>(hgsc), <span class="st">"_"</span>, <span class="dt">n =</span> <span class="dv">2</span>)[, <span class="dv">2</span>])
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+training.id &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">seq_along</span>(class), <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+test.id &lt;-<span class="st"> </span><span class="kw">which</span>(!<span class="kw">seq_along</span>(class) %in%<span class="st"> </span>training.id)
+mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/classification.html">classification</a></span>(hgsc[training.id, ], class[training.id], <span class="st">"xgboost"</span>)
+pred &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction.html">prediction</a></span>(mod, hgsc, test.id, class)
+evals &lt;-<span class="st"> </span><span class="kw"><a href="../reference/evaluation.html">evaluation</a></span>(class[test.id], pred, <span class="dt">plot =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="ensemble_classification_files/figure-html/plots-1.png" width="576"><img src="ensemble_classification_files/figure-html/plots-2.png" width="576"></p>
+</div>
+</div>
+<div id="ensemble-construction" class="section level2">
 <h2 class="hasAnchor">
-<a href="#constructing-the-ensemble" class="anchor"></a>Constructing the Ensemble</h2>
+<a href="#ensemble-construction" class="anchor"></a>Ensemble Construction</h2>
+<p>For each bootstrap replicate training set, we want to find the top performing classifier. We use Rank Aggregation with the Genetic Algorithm to choose the top algorithm by comparing across evaluation metrics<sup>2</sup>. In the case of log loss, we need to first invert its value since it its objective function is minimization. Class-specific measures are not included in the rank aggregation because they are interdependent. For example, a sample with a true class of “A” should not be treated differently depending on whether it was misclassified into “B” or “C”.</p>
+<p>After obtaining the list of top classifiers for each bootstrap replicate, we sort them by decreasing frequency and keep the top 3 to use in the ensemble. The <code>ensemble_mods</code> output of <code>splendid</code> is a list of models fit on the full data for the top classifiers.</p>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://topepo.github.io/caret/recursive-feature-elimination.html" class="uri">https://topepo.github.io/caret/recursive-feature-elimination.html</a></li>
+<li>Pihur, Vasyl, Susmita Datta, and Somnath Datta. “RankAggreg, an R package for weighted rank aggregation.” <em>BMC bioinformatics</em> 10.1 (2009): 62.</li>
+</ol>
 </div>
 </div>
   </div>
@@ -570,11 +430,11 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#ensemble-classification">Ensemble Classification</a></li>
-      <li><a href="#classification-algorithms">Classification Algorithms</a></li>
-      <li><a href="#prediction-methods">Prediction Methods</a></li>
-      <li><a href="#evaluation-measures">Evaluation Measures</a></li>
-      <li><a href="#constructing-the-ensemble">Constructing the Ensemble</a></li>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#classification">Classification</a></li>
+      <li><a href="#prediction">Prediction</a></li>
+      <li><a href="#evaluation">Evaluation</a></li>
+      <li><a href="#ensemble-construction">Ensemble Construction</a></li>
       <li><a href="#references">References</a></li>
       </ul>
 </div>
@@ -584,7 +444,7 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 
 
       <footer><div class="copyright">
-  <p>Developed by Derek Chiu, Aline Talhouk.</p>
+  <p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
 </div>
 
 <div class="pkgdown">

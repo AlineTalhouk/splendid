@@ -83,8 +83,8 @@
     <p>Train, predict, and evaluate classification models</p>
     
 
-    <pre class="usage"><span class='fu'>splendid_model</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>conf.level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>splendid_model</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -110,11 +110,6 @@
       <td><p>character vector of algorithm names to use for supervised
 learning. See Details for possible options. This argument is <code>NULL</code> by
 default, in which case uses all implemented algorithms.</p></td>
-    </tr>
-    <tr>
-      <th>conf.level</th>
-      <td><p>confidence level for bootstrapped estimates of evaluation
-measures</p></td>
     </tr>
     <tr>
       <th>rfe</th>
@@ -146,7 +141,7 @@ feature selection method for "lda", "qda", and "rf" algorithms.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Derek Chiu, Aline Talhouk.</p>
+  <p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
 </div>
 
 <div class="pkgdown">
