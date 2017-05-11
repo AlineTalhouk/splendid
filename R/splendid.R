@@ -29,8 +29,6 @@
 #' @param algorithms character vector of algorithm names to use for supervised
 #'   learning. See Details for possible options. This argument is \code{NULL} by
 #'   default, in which case uses all implemented algorithms.
-#' @param conf.level confidence level for bootstrapped estimates of evaluation
-#'   measures
 #' @param rfe logical; if \code{TRUE}, run Recursive Feature Elimination as a
 #'   feature selection method for "lda", "qda", and "rf" algorithms.
 #' @param ... additional arguments to \code{splendid_model}
@@ -61,10 +59,9 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "svm"))
 splendid <- function(data, class, n, seed = 1, algorithms = NULL,
-                     conf.level = 0.95, rfe = FALSE, ...) {
+                     rfe = FALSE, ...) {
   sm <- splendid_model(data = data, class = class, n = n,
-                       algorithms = algorithms, conf.level = conf.level,
-                       rfe = rfe, ...)
+                       algorithms = algorithms, rfe = rfe, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class)
   c(sm, se)
 }

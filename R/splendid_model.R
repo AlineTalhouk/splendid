@@ -7,7 +7,7 @@
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "svm")
 splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
-                           conf.level = 0.95, rfe = FALSE, ...) {
+                           rfe = FALSE, ...) {
 
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)

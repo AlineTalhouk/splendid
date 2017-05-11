@@ -4,8 +4,7 @@
 \alias{splendid}
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
-splendid(data, class, n, seed = 1, algorithms = NULL, conf.level = 0.95,
-  rfe = FALSE, ...)
+splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE, ...)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -19,9 +18,6 @@ splendid(data, class, n, seed = 1, algorithms = NULL, conf.level = 0.95,
 \item{algorithms}{character vector of algorithm names to use for supervised
 learning. See Details for possible options. This argument is \code{NULL} by
 default, in which case uses all implemented algorithms.}
-
-\item{conf.level}{confidence level for bootstrapped estimates of evaluation
-measures}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "qda", and "rf" algorithms.}
