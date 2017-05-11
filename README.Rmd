@@ -1,0 +1,40 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# splendid
+
+The goal of `splendid` is to provide a supervised learning pipeline that implements major components of a multiclass classification problem. We guide the user through fitting a classifier, obtaining predictions, and ultimately evaluating performance using metrics and visualizations.
+
+## Installation
+
+You can install splendid from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("AlineTalhouk/splendid")
+```
+
+## Example
+
+The following example shows how to use the main function of the package, `splendid()`. A data matrix `hgsc` contains a subset of gene expression measurements of High Grade Serous Carcinoma Ovarian cancer patients from the Cancer Genome Atlas publically available datasets. Samples as rows, features as columns. The function below runs the package through the `splendid()` function. First we extract the reference class labels
+(by TCGA) from the row names of `hgsc`. Then we fit the random forest and extreme gradient boosting classifiers to one bootstrapped replicate of the data.
+
+```{r example}
+library(splendid)
+data(hgsc)
+class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+sl_result <- splendid(data = hgsc, class = class, n = 1,
+                      algorithms = c("rf", "xgboost"))
+str(sl_result, max.level = 2)
+```

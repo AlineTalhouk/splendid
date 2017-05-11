@@ -6,3 +6,5 @@
 ^docs$
 ^calibration.R$
 ^spld_select.R$
+^README\.Rmd$
+^README-.*\.png$
