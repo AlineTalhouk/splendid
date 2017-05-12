@@ -34,7 +34,8 @@ Imports:
     kernlab,
     HandTill2001,
     ggplot2,
-    grDevices
+    grDevices,
+    MLmetrics
 Suggests:
     stringr,
     testthat,
