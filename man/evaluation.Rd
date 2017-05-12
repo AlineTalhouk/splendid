@@ -38,7 +38,7 @@ training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) \%in\% training.id)
 mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
 pred <- prediction(mod, hgsc, test.id, class)
-evaluation(class[test.id], pred, plot = TRUE)
+evaluation(class[test.id], pred)
 }
 \author{
 Derek Chiu
