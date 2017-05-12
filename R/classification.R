@@ -41,16 +41,14 @@
 classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
   algs <- match.arg(algs, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
-  sizes <- sizes %||% seq_len(round(min(table(class)) / 2))
+  sizes <- sizes %||% seq_len(round(min(table(class)) / 2)) %>%
+    magrittr::extract(. %% 5 == 0)
   switch(algs,
          lda = {
            if (!rfe)
              suppressWarnings(MASS::lda(data, grouping = class))
            else
-             suppressPackageStartupMessages(suppressWarnings(
-               caret::rfe(data, class, sizes = sizes,
-                          rfeControl = caret::rfeControl(
-                            functions = caret::ldaFuncs, method = "cv"))))
+             rfe_model(data, class, algs, sizes)
          },
          qda = {
            data <- data %>%  # Use the variables with the largest variance
@@ -63,19 +61,13 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
            if (!rfe)
              MASS::qda(data, grouping = class)
            else
-             suppressPackageStartupMessages(suppressWarnings(
-               caret::rfe(data, class, sizes = sizes,
-                          rfeControl = caret::rfeControl(
-                            functions = qdaFuncs, method = "cv"))))
+             rfe_model(data, class, algs, sizes)
          },
          rf = {
            if (!rfe)
              randomForest::randomForest(data, y = class)
            else
-             suppressPackageStartupMessages(suppressWarnings(
-               caret::rfe(data, class, sizes = sizes,
-                          rfeControl = caret::rfeControl(
-                            functions = caret::rfFuncs, method = "cv"))))
+             rfe_model(data, class, algs, sizes)
          },
          multinom_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                         trace = FALSE),
@@ -93,12 +85,7 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
            if (!rfe) {
              opt_var <- names(data)
            } else {
-             mod <- suppressPackageStartupMessages(suppressWarnings(
-               caret::rfe(data, class, sizes = sizes[sizes %% 5 == 0],
-                          method = "svmRadial",
-                          rfeControl = caret::rfeControl(
-                            functions = caret::caretFuncs, method = "cv",
-                            number = 2))))
+             mod <- rfe_model(data, class, algs, sizes)
              opt_var <- mod$optVariables
            }
            e1071::best.svm(x = data[, opt_var], y = class,
@@ -135,4 +122,19 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
 qdaFuncs <- caret::ldaFuncs
 qdaFuncs$fit <- function(x, y, first, last, ...) {
   MASS::qda(x, y, ...)
+}
+
+#' RFE model
+#' @noRd
+rfe_model <- function(data, class, algs, sizes) {
+  funcs <- switch(algs,
+                  lda = caret::ldaFuncs,
+                  qda = qdaFuncs,
+                  rf = caret::rfFuncs,
+                  svm = caret::caretFuncs)
+  method <- if (algs == "svm") "svmRadial" else NULL
+  suppressPackageStartupMessages(suppressWarnings(
+    caret::rfe(data, class, sizes = sizes, method = method,
+               rfeControl = caret::rfeControl(functions = funcs, method = "cv",
+                                              number = 2))))
 }
