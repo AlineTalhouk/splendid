@@ -28,6 +28,13 @@
 #' pred <- prediction(mod, hgsc, test.id, class)
 #' evaluation(class[test.id], pred)
 evaluation <- function(x, y, plot = FALSE) {
+  # If there are unclassified cases, remove them prior to calculations
+  good_ind <- y %@% "class.thres" != "unclassified"
+  probs <- (y %@% "prob")[good_ind, ]
+  x <- x[good_ind]
+  y <- y %@% "class.thres"
+  y <- droplevels(y[good_ind])
+
   # Multiclass confusion matrix with actual as rows, predicted as columns
   cm <- as.matrix(table(Actual = x, Predicted = y))
   ocm <- ova(cm)  # One Vs. All confusion matrices
@@ -46,7 +53,7 @@ evaluation <- function(x, y, plot = FALSE) {
     dm_funs <- c(dm_funs, dplyr::lst(discrimination_plot, reliability_plot))
   }
   dm <- dm_funs %>%
-    purrr::invoke_map(list(list(x = x, pred.probs = attr(y, "prob"))))
+    purrr::invoke_map(list(list(x = x, pred.probs = probs)))
 
   # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
   accuracy <- sum(diag(cm)) / sum(cm)

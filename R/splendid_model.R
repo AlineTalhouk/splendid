@@ -7,7 +7,7 @@
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "svm")
 splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
-                           rfe = FALSE, ...) {
+                           rfe = FALSE, threshold = 0.5, ...) {
 
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
@@ -26,7 +26,7 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   preds <- purrr::map(models,
                       ~ purrr::pmap(list(.x, test.idx, train.idx),
                                     prediction, data = data, class = class,
-                                    ...))
+                                    threshold = threshold, ...))
   evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>%
     purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>%
     purrr::at_depth(2, ~ purrr::flatten(.x) %>%

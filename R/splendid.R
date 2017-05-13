@@ -31,6 +31,8 @@
 #'   default, in which case uses all implemented algorithms.
 #' @param rfe logical; if \code{TRUE}, run Recursive Feature Elimination as a
 #'   feature selection method for "lda", "qda", and "rf" algorithms.
+#' @param threshold a numeric indicating the lowest maximum class probability
+#'   below which a sample will be unclassified.
 #' @param ... additional arguments to \code{splendid_model}
 #' @return A nested list with five elements
 #' \item{model}{A list with an element for each algorithm, each of which is a
@@ -59,7 +61,7 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "svm"))
 splendid <- function(data, class, n, seed = 1, algorithms = NULL,
-                     rfe = FALSE, ...) {
+                     rfe = FALSE, threshold = 0.5, ...) {
   sm <- splendid_model(data = data, class = class, n = n,
                        algorithms = algorithms, rfe = rfe, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class)

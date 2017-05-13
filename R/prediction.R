@@ -16,7 +16,7 @@
 #' @param test.id integer vector of indices for test set
 #' @param ... additional arguments to be passed to or from methods
 #' @param train.id integer vector of indices for training set ID. Only used for
-#' \code{knn} and \code{pamr} prediction methods.
+#'   \code{knn} and \code{pamr} prediction methods.
 #' @return A factor of predicted classes with labels in the same order as true
 #'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
 #'   list of length 2: the predicted class, and the threshold value.
@@ -32,7 +32,7 @@
 #' mod <- classification(hgsc[training.id, ], class[training.id], "lda")
 #' pred <- prediction(mod, hgsc, test.id)
 #' table(true = class[test.id], pred)
-prediction <- function(mod, data, test.id, ...) {
+prediction <- function(mod, data, test.id, threshold = 0.5, ...) {
   if (!inherits(mod, ALG.CLASS)) {
     match.arg(class(mod), ALG.CLASS)
   } else {
@@ -42,76 +42,93 @@ prediction <- function(mod, data, test.id, ...) {
 
 #' @rdname prediction
 #' @export
-prediction.default <- function(mod, data, test.id, ...) {
+prediction.default <- function(mod, data, test.id, threshold = 0.5, ...) {
   stats::predict(mod, data[test.id, ], ...)
 }
 
 #' @export
-prediction.lda <- function(mod, data, test.id, ...) {
+prediction.lda <- function(mod, data, test.id, threshold = 0.5, ...) {
   p <- prediction.default(mod, data, test.id)
-  attr(p$class, "prob") <- p$posterior
-  p$class
+  prob <- p$posterior
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(p$class, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.qda <- function(mod, data, test.id, ...) {
+prediction.qda <- function(mod, data, test.id, threshold = 0.5, ...) {
   p <- prediction.default(mod, data[, colnames(mod$means)], test.id)
-  attr(p$class, "prob") <- p$posterior
-  p$class
+  prob <- p$posterior
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(p$class, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.rfe <- function(mod, data, test.id, ...) {
+prediction.rfe <- function(mod, data, test.id, threshold = 0.5, ...) {
   p <- prediction.default(mod, data[, mod$optVariables], test.id)
-  attr(p$pred, "prob") <- dplyr::select(p, -dplyr::contains("pred"))
-  p$pred
+  prob <- p[, names(p) != "pred"]
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(p$pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.randomForest <- function(mod, data, test.id, ...) {
+prediction.randomForest <- function(mod, data, test.id, threshold = 0.5, ...) {
   pred <- unname(prediction.default(mod, data, test.id, type = "response"))
   prob <- prediction.default(mod, data, test.id, type = "prob")
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.multinom <- function(mod, data, test.id, ...) {
+prediction.multinom <- function(mod, data, test.id, threshold = 0.5, ...) {
   pred <- prediction.default(mod, data, test.id, type = "class")
   prob <- prediction.default(mod, data, test.id, type = "probs")
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.nnet.formula <- function(mod, data, test.id, ...) {
+prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, ...) {
   pred <- factor(prediction.default(mod, data, test.id, type = "class"))
   prob <- prediction.default(mod, data, test.id, type = "raw")
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, test.id, train.id, class, ...) {
+prediction.knn <- function(mod, data, test.id, train.id, class, threshold = 0.5,
+                           ...) {
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
                   y = class[train.id], dist.matrix = kdist, k = 5)
   pred <- unname(factor(purrr::invoke(knnflex::knn.predict, kparams)))
   prob <- t(purrr::invoke(knnflex::knn.probability, kparams))
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.svm <- function(mod, data, test.id, ...) {
-  unname(prediction.default(mod, data, test.id, probability = TRUE))
+prediction.svm <- function(mod, data, test.id, threshold = 0.5, ...) {
+  pred <- unname(prediction.default(mod, data, test.id, probability = TRUE))
+  prob <- attr(pred, "probabilities")
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp,
+            probabilities = NULL)
 }
 
 #' @rdname prediction
 #' @export
-prediction.pamrtrained <- function(mod, data, test.id, train.id, class, ...) {
+prediction.pamrtrained <- function(mod, data, test.id, train.id, class,
+                                   threshold = 0.5, ...) {
   model.cv <- sink_output(
     pamr::pamr.cv(mod, list(x = t(data[train.id, ]), y = class[train.id]),
                   nfold = 5))
@@ -120,49 +137,77 @@ prediction.pamrtrained <- function(mod, data, test.id, train.id, class, ...) {
                              type = "class")
   prob <- pamr::pamr.predict(mod, t(data[test.id, ]), threshold = delta,
                              type = "posterior")
-  attr(pred, "prob") <- prob
-  dplyr::lst(pred, delta)
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  dplyr::lst(structure(pred, prob = prob, class.thres = ct, class.prop = cp),
+             delta)
 }
 
 #' @export
-prediction.maboost <- function(mod, data, test.id, ...) {
+prediction.maboost <- function(mod, data, test.id, threshold = 0.5, ...) {
   names(data) <- make.names(names(data))
   both <- prediction.default(mod, data, test.id, type = "both")
-  attr(both$class, "prob") <- both$probs
-  both$class
+  ct <- class_threshold(both$probs, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(both$class, prob = both$probs, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.xgb.Booster <- function(mod, data, test.id, class, ...) {
+prediction.xgb.Booster <- function(mod, data, test.id, class, threshold = 0.5,
+                                   ...) {
+  class <- factor(class)
   prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
     magrittr::set_colnames(levels(class)) %>%
     round(6)
   eps <- rowSums(prob) - 1
   prob[, 1] <- prob[, 1] - eps  # make sure every row sums to 1
   pred <- factor(levels(class)[max.col(data.frame(prob))])
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.naiveBayes <- function(mod, data, test.id, ...) {
+prediction.naiveBayes <- function(mod, data, test.id, threshold = 0.5, ...) {
   pred <- prediction.default(mod, data, test.id, "class")
   prob <- prediction.default(mod, data, test.id, "raw")
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.cv.glmnet <- function(mod, data, test.id, ...) {
+prediction.cv.glmnet <- function(mod, data, test.id, threshold = 0.5, ...) {
   pred <- factor(prediction.default(mod, as.matrix(data), test.id,
                                     type = "class"))
   prob <- prediction.default(mod, as.matrix(data), test.id,
                              type = "response")[, , 1]
-  attr(pred, "prob") <- prob
-  pred
+  ct <- class_threshold(prob, threshold = threshold)
+  cp <- class_proportion(ct)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp)
 }
 
 #' @export
-prediction.glmnet <- function(mod, data, test.id, ...) {
+prediction.glmnet <- function(mod, data, test.id, threshold = 0.5, ...) {
   prediction.cv.glmnet(mod, data, test.id, ...)
+}
+
+#' Predicted class labels above a max class probability threshold
+#' @noRd
+class_threshold <- function(prob, threshold = 0.5) {
+  prob %>%
+    as.data.frame() %>%
+    dplyr::mutate(max_prop = purrr::pmap_dbl(., max),
+                  max_class = purrr::pmap(., list) %>%
+                    purrr::map_chr(~ names(which.max(.x))) %>%
+                    ifelse(max_prop >= threshold, ., "unclassified")) %>%
+    magrittr::extract2("max_class") %>%
+    factor()
+}
+
+#' Proportion of classified predictions
+#' @noRd
+class_proportion <- function(pred) {
+  good_ind <- pred != "unclassified"
+  sum(good_ind) / length(good_ind)
 }
