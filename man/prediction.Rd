@@ -7,13 +7,15 @@
 \alias{prediction.pamrtrained}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, test.id, ...)
+prediction(mod, data, test.id, threshold = 0.5, ...)
 
-\method{prediction}{default}(mod, data, test.id, ...)
+\method{prediction}{default}(mod, data, test.id, threshold = 0.5, ...)
 
-\method{prediction}{knn}(mod, data, test.id, train.id, class, ...)
+\method{prediction}{knn}(mod, data, test.id, threshold = 0.5, train.id, class,
+  ...)
 
-\method{prediction}{pamrtrained}(mod, data, test.id, train.id, class, ...)
+\method{prediction}{pamrtrained}(mod, data, test.id, threshold = 0.5,
+  train.id, class, ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link{classification}}}
@@ -21,6 +23,9 @@ prediction(mod, data, test.id, ...)
 \item{data}{data object with rows as samples, columns as features}
 
 \item{test.id}{integer vector of indices for test set}
+
+\item{threshold}{a numeric indicating the lowest maximum class probability
+below which a sample will be unclassified.}
 
 \item{...}{additional arguments to be passed to or from methods}
 

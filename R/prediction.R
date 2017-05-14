@@ -102,7 +102,7 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, ...) {
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, test.id, train.id, class, threshold = 0.5,
+prediction.knn <- function(mod, data, test.id, threshold = 0.5, train.id, class,
                            ...) {
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
@@ -127,8 +127,8 @@ prediction.svm <- function(mod, data, test.id, threshold = 0.5, ...) {
 
 #' @rdname prediction
 #' @export
-prediction.pamrtrained <- function(mod, data, test.id, train.id, class,
-                                   threshold = 0.5, ...) {
+prediction.pamrtrained <- function(mod, data, test.id, threshold = 0.5,
+                                   train.id, class, ...) {
   model.cv <- sink_output(
     pamr::pamr.cv(mod, list(x = t(data[train.id, ]), y = class[train.id]),
                   nfold = 5))
@@ -153,7 +153,7 @@ prediction.maboost <- function(mod, data, test.id, threshold = 0.5, ...) {
 }
 
 #' @export
-prediction.xgb.Booster <- function(mod, data, test.id, class, threshold = 0.5,
+prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
                                    ...) {
   class <- factor(class)
   prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
@@ -197,12 +197,14 @@ prediction.glmnet <- function(mod, data, test.id, threshold = 0.5, ...) {
 class_threshold <- function(prob, threshold = 0.5) {
   prob %>%
     as.data.frame() %>%
-    dplyr::mutate(max_prop = purrr::pmap_dbl(., max),
-                  max_class = purrr::pmap(., list) %>%
-                    purrr::map_chr(~ names(which.max(.x))) %>%
-                    ifelse(max_prop >= threshold, ., "unclassified")) %>%
+    dplyr::mutate_(.dots = stats::setNames(
+      list(~purrr::pmap_dbl(., max),
+           ~purrr::pmap(., list) %>%
+             purrr::map_chr(~ names(which.max(.x))) %>%
+             ifelse(max_prop >= threshold, ., "unclassified")),
+      c("max_prop", "max_class"))) %>%
     magrittr::extract2("max_class") %>%
-    factor()
+    factor(levels = colnames(prob))
 }
 
 #' Proportion of classified predictions
