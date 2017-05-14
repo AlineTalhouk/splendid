@@ -25,15 +25,18 @@
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
 #' mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
-#' pred <- prediction(mod, hgsc, test.id, class)
+#' pred <- prediction(mod, hgsc, test.id, class = class)
 #' evaluation(class[test.id], pred)
 evaluation <- function(x, y, plot = FALSE) {
-  # If there are unclassified cases, remove them prior to calculations
-  good_ind <- y %@% "class.thres" != "unclassified"
-  probs <- (y %@% "prob")[good_ind, ]
-  x <- x[good_ind]
-  y <- y %@% "class.thres"
-  y <- droplevels(y[good_ind])
+  # Remove unclassified cases unless they're all unclassified
+  keep_ind <- y %@% "class.thres" != "unclassified"
+  probs <- y %@% "prob"
+  if (sum(keep_ind) > 0) {
+    probs <- probs[keep_ind, ]
+    x <- x[keep_ind]
+    y <- (y %@% "class.thres")[keep_ind] %>%
+      forcats::fct_drop(only = "unclassified")
+  }
 
   # Multiclass confusion matrix with actual as rows, predicted as columns
   cm <- as.matrix(table(Actual = x, Predicted = y))

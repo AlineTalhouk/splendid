@@ -35,7 +35,8 @@ Imports:
     HandTill2001,
     ggplot2,
     grDevices,
-    MLmetrics
+    MLmetrics,
+    forcats
 Suggests:
     stringr,
     testthat,
