@@ -9,5 +9,5 @@
 #' @docType package
 #' @import ggplot2
 #' @importFrom magrittr "%>%"
-#' @importFrom purrr "%||%"
+#' @importFrom purrr "%||%" "%@%"
 NULL
