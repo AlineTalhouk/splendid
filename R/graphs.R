@@ -28,7 +28,7 @@
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
 #' mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
-#' pred <- prediction(mod, hgsc, test.id, class)
+#' pred <- prediction(mod, hgsc, test.id, class = class)
 #' discrimination_plot(class[test.id], attr(pred, "prob"))
 #' reliability_plot(class[test.id], attr(pred, "prob"))
 discrimination_plot <- function(x, pred.probs) {

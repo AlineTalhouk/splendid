@@ -4,7 +4,8 @@
 \alias{splendid}
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
-splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE, ...)
+splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
+  threshold = 0.5, ...)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -21,6 +22,9 @@ default, in which case uses all implemented algorithms.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "qda", and "rf" algorithms.}
+
+\item{threshold}{a numeric indicating the lowest maximum class probability
+below which a sample will be unclassified.}
 
 \item{...}{additional arguments to \code{splendid_model}}
 }
