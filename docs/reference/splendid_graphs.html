@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluation of prediction performance — evaluation â€¢ splendid</title>
+<title>Discriminating graphs — splendid_graphs â€¢ splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -76,47 +76,49 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluation of prediction performance</h1>
+    <h1>Discriminating graphs</h1>
     </div>
 
     
-    <p>Evaluation of prediction performance on the OOB set is done using various
-measure for classification problems.</p>
+    <p>Graphs a <code>discrimination_plot</code> and <code>reliability_plot</code> based on true
+classes and predicted class probabilities.</p>
     
 
-    <pre class="usage"><span class='fu'>evaluation</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>discrimination_plot</span>(<span class='no'>x</span>, <span class='no'>pred.probs</span>)
+
+<span class='fu'>reliability_plot</span>(<span class='no'>x</span>, <span class='no'>pred.probs</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>actual class labels</p></td>
+      <td><p>true class labels</p></td>
     </tr>
     <tr>
-      <th>y</th>
-      <td><p>predicted class labels</p></td>
-    </tr>
-    <tr>
-      <th>plot</th>
-      <td><p>logical; if <code>TRUE</code> a discrimination plot and reliability
-plot are shown for each class</p></td>
+      <th>pred.probs</th>
+      <td><p>matrix of predicted class probabilities. Number of rows
+must equal length of <code>x</code></p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with one element per evaluation measure except for the
-  <code>cs</code> element, which returns a list of class-specific evaluation
-  measures.</p>
+    <p><code>ggplot</code> objects for the desired plot</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The currently supported evaluation measures include discriminatory measures
-like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
-(Recall)/F1-score, accuracy (same as micro-averaged PPV
-Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
-micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
+    <p>A <code>discrimination_plot</code> shows boxplots of the predicted probabilities
+for each class, separated by panels of the true class labels. The class
+prevalence is also drawn as a horizontal line for each panel.</p>
+<p>A <code>reliability_plot</code> shows mean prediction vs. observed fraction on
+lowess smoother for each class. A line going thru the origin with slope of 1
+serves as a reference for perfect reliability.</p>
+<p>Both plots can be called from within <code><a href='evaluation.html'>evaluation</a></code>.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -127,40 +129,7 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
 <span class='no'>test.id</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(!<span class='fu'>seq_along</span>(<span class='no'>class</span>) <span class='kw'>%in%</span> <span class='no'>training.id</span>)
 <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"xgboost"</span>)
 <span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>test.id</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='no'>class</span>)
-<span class='fu'>evaluation</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>)</div><div class='output co'>#&gt; $logloss
-#&gt; [1] 0.6783892
-#&gt; 
-#&gt; $auc
-#&gt; [1] 0.9886179
-#&gt; 
-#&gt; $accuracy
-#&gt; [1] 0.9358974
-#&gt; 
-#&gt; $macro_ppv
-#&gt; [1] 0.9491304
-#&gt; 
-#&gt; $macro_sensitivity
-#&gt; [1] 0.9298128
-#&gt; 
-#&gt; $macro_f1
-#&gt; [1] 0.9345154
-#&gt; 
-#&gt; $mcc
-#&gt; [1] 0.9163398
-#&gt; 
-#&gt; $micro_mcc
-#&gt; [1] 0.9145299
-#&gt; 
-#&gt; $cs
-#&gt;         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 
-#&gt;          1.0000000          1.0000000          0.9565217          0.8400000 
-#&gt; sensitivity.DIF.C4 sensitivity.IMM.C2 sensitivity.MES.C1 sensitivity.PRO.C5 
-#&gt;          0.7647059          1.0000000          1.0000000          0.9545455 
-#&gt;          f1.DIF.C4          f1.IMM.C2          f1.MES.C1          f1.PRO.C5 
-#&gt;          0.8666667          1.0000000          0.9777778          0.8936170 
-#&gt;         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 
-#&gt;          0.8471405          1.0000000          0.9692476          0.8515607 
-#&gt; </div></pre>
+<span class='fu'>discrimination_plot</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='fu'>attr</span>(<span class='no'>pred</span>, <span class='st'>"prob"</span>))</div><img src='splendid_graphs-2.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>reliability_plot</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='fu'>attr</span>(<span class='no'>pred</span>, <span class='st'>"prob"</span>))</div><img src='splendid_graphs-4.png' alt='' width='540' height='400' /></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -170,13 +139,15 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     
-Derek Chiu
+Dustin Johnson, Derek Chiu
 
   </div>
 </div>

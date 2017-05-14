@@ -37,10 +37,10 @@ str(sl_result, max.level = 2)
 #>  $ evals        :List of 2
 #>   ..$ rf     :'data.frame':  24 obs. of  1 variable:
 #>   ..$ xgboost:'data.frame':  24 obs. of  1 variable:
-#>  $ bests        : Named chr "rf"
+#>  $ bests        : Named chr "xgboost"
 #>   ..- attr(*, "names")= chr "1"
-#>  $ ensemble_algs: chr "rf"
+#>  $ ensemble_algs: chr "xgboost"
 #>  $ ensemble_mods:List of 1
-#>   ..$ :List of 18
-#>   .. ..- attr(*, "class")= chr "randomForest"
+#>   ..$ :List of 6
+#>   .. ..- attr(*, "class")= chr "xgb.Booster"
 ```
