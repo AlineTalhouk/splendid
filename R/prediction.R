@@ -169,8 +169,8 @@ prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
 
 #' @export
 prediction.naiveBayes <- function(mod, data, test.id, threshold = 0.5, ...) {
-  pred <- prediction.default(mod, data, test.id, "class")
-  prob <- prediction.default(mod, data, test.id, "raw")
+  pred <- prediction.default(mod, data, test.id, type = "class")
+  prob <- prediction.default(mod, data, test.id, type = "raw")
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.thres = ct, class.prop = cp)
@@ -189,7 +189,7 @@ prediction.cv.glmnet <- function(mod, data, test.id, threshold = 0.5, ...) {
 
 #' @export
 prediction.glmnet <- function(mod, data, test.id, threshold = 0.5, ...) {
-  prediction.cv.glmnet(mod, data, test.id, ...)
+  prediction.cv.glmnet(mod, data, test.id, threshold, ...)
 }
 
 #' Predicted class labels above a max class probability threshold
@@ -204,7 +204,8 @@ class_threshold <- function(prob, threshold = 0.5) {
              ifelse(max_prop >= threshold, ., "unclassified")),
       c("max_prop", "max_class"))) %>%
     magrittr::extract2("max_class") %>%
-    factor(levels = colnames(prob))
+    factor() %>%
+    forcats::fct_expand(colnames(prob))
 }
 
 #' Proportion of classified predictions
