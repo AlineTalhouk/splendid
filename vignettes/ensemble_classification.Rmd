@@ -73,6 +73,8 @@ There exist a vast number of classification algorithms. Those currently in `sple
 
 - Linear Discriminant Analysis (`"lda"`)
 - Quadratic Discriminant Analysis (`"qda"`)
+- Shrinkage Linear Discriminant Analysis (`"slda"`)^3^
+- Shrinkage Diagonal Discriminant Analysis (`"sdda"`)^3^
 - Random Forests (`"rf"`)
 - Multinomial Classification using neural networks (`"multinom_nnet"`)
 - Neural Networks with One Hidden Layer (`"nnet"`)
@@ -180,5 +182,4 @@ After obtaining the list of top classifiers for each bootstrap replicate, we sor
 
 1. https://topepo.github.io/caret/recursive-feature-elimination.html
 2. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
-
-
+3. Ahdesmäki, Miika, and Korbinian Strimmer. "Feature selection in omics prediction problems using cat scores and false nondiscovery rate control." *The Annals of Applied Statistics* 4.1 (2010): 503-519.
