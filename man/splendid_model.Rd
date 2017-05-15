@@ -21,7 +21,7 @@ learning. See Details for possible options. This argument is \code{NULL} by
 default, in which case uses all implemented algorithms.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "qda", and "rf" algorithms.}
+feature selection method for "lda", "qda", "rf", and "svm" algorithms.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}

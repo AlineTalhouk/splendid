@@ -21,7 +21,7 @@ learning. See Details for possible options. This argument is \code{NULL} by
 default, in which case uses all implemented algorithms.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "qda", and "rf" algorithms.}
+feature selection method for "lda", "qda", "rf", and "svm" algorithms.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
@@ -30,24 +30,24 @@ below which a sample will be unclassified.}
 }
 \value{
 A nested list with five elements
-\item{model}{A list with an element for each algorithm, each of which is a
+\item{models}{A list with an element for each algorithm, each of which is a
 list with length \code{n}. Shows the model object for each algorithm and
 bootstrap replicate on the training set.}
-\item{pred}{A list with an element for each algorithm, each of which is a
+\item{preds}{A list with an element for each algorithm, each of which is a
 list with length \code{n}. Shows the predicted classes for each algorithm and
 bootstrap replicate on the test set.}
-\item{eval}{For each bootstrap sample, we can calculate various evaluation
+\item{evals}{For each bootstrap sample, we can calculate various evaluation
 measures for the predicted classes from each algorithm. Evaluation measures
 include macro-averaged precision/recall/F1-score, micro-averaged precision,
 and (micro-averaged MCC) The return value of \code{eval} is a tibble that
 shows some summary statistics (e.g. mean, median) of the evaluation measures
 across bootstrap samples, for each classification algorithm.}
-\item{best.alg}{A length \code{n} vector of the top performing algorithms in
-each bootstrap sample as defined by the evaluation measures and using Rank
-Aggregation.}
-\item{ensemble}{A predicted class vector of the entire dataset using the
-ensemble classifier: majority voting is used for class representation of each
-sample across different algortithms used.}
+\item{bests}{best-performing algorithm for each bootstrapped replicate of the
+data, chosen by rank aggregation.}
+\item{ensemble_algs}{tallies the frequencies in \code{bests}, returning the
+top algorithms chosen.}
+\item{ensemble}{list of model fits for each of the algorithms in
+\code{ensemble_algs}, fit on the full data.}
 }
 \description{
 Supervised learning classification algorithms are performed on bootstrap
@@ -61,13 +61,15 @@ training set, also called Out-Of-Bag samples. This framework uses the 0.632
 bootstrap rule for large n.
 
 The classification algorithms currently supported are: Linear Discriminant
-Analysis ("lda"), Random Forests ("rf"), Multinomial Classification using
-Neural Networks ("multinom_nnet"), Neural Networks ("nnet"), K-Nearest
-Neighbours, ("knn"), Support Vector Machines ("svm"), Prediction Analysis for
-Microarrays ("pam"), Adaptive Boosting ("adaboost"), Extreme Gradient
-Boosting ("xgboost"), Naive Bayes ("nbayes"), and Generalized Linear Models
-using the LASSO penalty ("lasso"), ridge ("ridge") penalty, or no
-regularization ("multinom_glm").
+Analysis ("lda"), Quadratic Discriminant Analysis ("qda"), Shrinkage Linear
+Discriminant Analysis ("slda"), Shrinkage Diagonal Discriminant Analysis
+("sdda"), Random Forests ("rf"), Multinomial Classification using Neural
+Networks ("multinom_nnet"), Neural Networks ("nnet"), K-Nearest Neighbours,
+("knn"), Support Vector Machines ("svm"), Prediction Analysis for Microarrays
+("pam"), Adaptive Boosting ("adaboost"), Extreme Gradient Boosting
+("xgboost"), Naive Bayes ("nbayes"), and Generalized Linear Models using the
+LASSO penalty ("lasso"), ridge ("ridge") penalty, or no regularization
+("multinom_glm").
 
 An ensemble classifier is constructed using Rank Aggregation across multiple
 evaluation measures such as precision, recall, F1-score, and Matthew's

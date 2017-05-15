@@ -15,7 +15,7 @@ classification(data, class, algs, rfe = FALSE, sizes = NULL)
 in \code{\link{splendid}} for a list of choices.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "qda", and "rf" algorithms.}
+feature selection method for "lda", "qda", "rf", and "svm" algorithms.}
 
 \item{sizes}{the range of sizes of features to test RFE algorithm}
 }
