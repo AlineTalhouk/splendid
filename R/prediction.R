@@ -48,8 +48,8 @@ prediction.default <- function(mod, data, test.id, threshold = 0.5, ...) {
 
 #' @export
 prediction.lda <- function(mod, data, test.id, threshold = 0.5, ...) {
-  p <- prediction.default(mod, data, test.id)
-  prob <- p$posterior
+  p <- prediction.default(mod, data, test.id, ...)
+  prob <- p$posterior %>% sum_to_one()
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(p$class, prob = prob, class.thres = ct, class.prop = cp)
@@ -62,6 +62,11 @@ prediction.qda <- function(mod, data, test.id, threshold = 0.5, ...) {
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(p$class, prob = prob, class.thres = ct, class.prop = cp)
+}
+
+#' @export
+prediction.sda <- function(mod, data, test.id, threshold = 0.5, ...) {
+  prediction.lda(mod, as.matrix(data), test.id, threshold, verbose = FALSE, ...)
 }
 
 #' @export
@@ -158,9 +163,7 @@ prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
   class <- factor(class)
   prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
     magrittr::set_colnames(levels(class)) %>%
-    round(6)
-  eps <- rowSums(prob) - 1
-  prob[, 1] <- prob[, 1] - eps  # make sure every row sums to 1
+    sum_to_one()
   pred <- factor(levels(class)[max.col(data.frame(prob))])
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
@@ -213,4 +216,10 @@ class_threshold <- function(prob, threshold = 0.5) {
 class_proportion <- function(pred) {
   good_ind <- pred != "unclassified"
   sum(good_ind) / length(good_ind)
+}
+
+#' Ensure all row sums of probability matrix equal 1
+#' @noRd
+sum_to_one <- function(prob) {
+  prob %>% magrittr::inset(., , 1, .[, 1] - (rowSums(.) - 1))
 }
