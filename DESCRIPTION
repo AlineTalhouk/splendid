@@ -36,7 +36,8 @@ Imports:
     ggplot2,
     grDevices,
     MLmetrics,
-    forcats
+    forcats,
+    sda
 Suggests:
     stringr,
     testthat,

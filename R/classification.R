@@ -63,6 +63,10 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
            else
              rfe_model(data, class, algs, sizes)
          },
+         slda = sda::sda(as.matrix(data), class, diagonal = FALSE,
+                         verbose = FALSE),
+         sdda = sda::sda(as.matrix(data), class, diagonal = TRUE,
+                         verbose = FALSE),
          rf = {
            if (!rfe)
              randomForest::randomForest(data, y = class)
