@@ -36,7 +36,7 @@ data(hgsc)
 
 The main function of `splendid` is `splendid()`, and the usage is intuitive:
 
- - `data`: your rectangular data in standard form (rows as samples/observations, columns as variables/features)
+- `data`: your rectangular data in standard form (rows as samples/observations, columns as variables/features)
 - `class`: the true/reference class labels with length equal to the number of samples
 - `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).
 - `seed`: constant for reproducibility in the bootstrap resampling
@@ -47,7 +47,7 @@ The main function of `splendid` is `splendid()`, and the usage is intuitive:
 class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 table(class)
 sl_result <- splendid(data = hgsc, class = class, n = 2,
-                      algorithms = c("lda", "knn", "svm"), rfe = FALSE)
+                      algorithms = c("slda", "knn", "svm"), rfe = FALSE)
 ```
 
 The resulting object is a list with the following elements:
@@ -73,8 +73,8 @@ There exist a vast number of classification algorithms. Those currently in `sple
 
 - Linear Discriminant Analysis (`"lda"`)
 - Quadratic Discriminant Analysis (`"qda"`)
-- Shrinkage Linear Discriminant Analysis (`"slda"`)^3^
-- Shrinkage Diagonal Discriminant Analysis (`"sdda"`)^3^
+- Shrinkage Linear Discriminant Analysis (`"slda"`)^1^
+- Shrinkage Diagonal Discriminant Analysis (`"sdda"`)^1^
 - Random Forests (`"rf"`)
 - Multinomial Classification using neural networks (`"multinom_nnet"`)
 - Neural Networks with One Hidden Layer (`"nnet"`)
@@ -84,7 +84,7 @@ There exist a vast number of classification algorithms. Those currently in `sple
 - Adaptive Boosting using Decision Trees (`"adaboost"`)
 - Extreme Gradient Boosting using Decision Trees (`"xgboost"`)
 - Naive Bayes (`"nbayes"`)
-- Multinomial Classification using an L1-penalty (`"lasso"`), L2-penalty (`"ridge"`), or no penalty (`"multinom_glm"`)
+- Multinomial Classification using an L1-penalty (`"lasso"`), L2-penalty (`"ridge"`), or no penalty (`"multinom_glm"`)^2^
   
 These algorithms are implemented in `classification()`.
 
@@ -104,6 +104,7 @@ The ranges for the tuning parameters are:
 Some algorithms have certain properties that require data manipulations before classification.
 
 - `qda`: The number of variables cannot exceed the number of samples in the smallest class. We use a variance threshold method to select the greatest number of variables allowed by the QDA restriction on the basis of decreasing variance across all samples. This filtering feature selection method does not solve the potential multicollinearity issue that can exist with many correlated variables. To tackle this problem, we add a small amount of noise to each variable.
+- `slda` and `sdda`: These shrinkage discriminant analysis algorithms estimate the regularization parameters analytically without having to solve using resampling methods.
 - `multinom_nnet` and `nnet`: We increase the maximum number of allowable weights to a sufficiently large number to avoid ill-fitted models.
 - `knn`: Since K-Nearest Neighbours is a non-parametric method, there *is* no model object upon which predictions are made, and predicted classes are directly found. To obtain prediction probabilities by class, we use a distance matrix between the training and test set samples.
 - `pam`: a uniform prior is used in the training step.
@@ -111,7 +112,7 @@ Some algorithms have certain properties that require data manipulations before c
 
 ### Feature Selection
 
-We use Recursive Feature Elimination (RFE)^1^ on `lda`, `qda`, `rf`, and `svm` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
+We use Recursive Feature Elimination (RFE)^3^ on `lda`, `qda`, `rf`, and `svm` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
 
 One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the `sizes` parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:
 
@@ -131,7 +132,13 @@ The method for `"pam"` is an exception: the output from `prediction()` not only 
 str(sl_result$preds, max.level = 2, list.len = 2)
 ```
 
-Note that each predicted class has an attribute that shows the class probabilities in a matrix. These matrices are useful to compute evaluation measures and generate discriminating graphs that we detail below.
+### Attributes
+
+Note that each predicted class has an attribute that shows the class probabilities in a matrix. We ensure that the class probabilities for every sample sum to one by making a small adjustment to one of the classes depending on whether the probability was over or under one. These matrices are useful to compute evaluation measures and generate discriminating graphs that we detail below, and is stored in `attr(*, "prob")`.
+
+To obtain better performance under evaluation metrics, we may want to exclude samples which have a maximum class probability below a threshold. For example, we may only compare the true test labels with the corresponding OOB samples where the winning class has a probability at least 50\%. Samples below this threshold are labelled as `"unclassified"`. If the threshold results in all samples being unclassified, then we use the unfiltered, original predicted labels for evaluation. This object is stored in `attr(*, "class.thres")`.
+
+The final attribute of a prediction object is stored `attr(*, "class.prop")`, showing the proportion of classified cases. This value is inversely proportional to the `threshold` setting.
 
 ## Evaluation
 
@@ -167,19 +174,20 @@ class <- factor(stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2])
 set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) %in% training.id)
-mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
+mod <- classification(hgsc[training.id, ], class[training.id], "adaboost")
 pred <- prediction(mod, hgsc, test.id, class = class)
 evals <- evaluation(class[test.id], pred, plot = TRUE)
 ```
 
 ## Ensemble Construction
 
-For each bootstrap replicate training set, we want to find the top performing classifier. We use Rank Aggregation with the Genetic Algorithm to choose the top algorithm by comparing across evaluation metrics^2^. In the case of log loss, we need to first invert its value since it its objective function is minimization. Class-specific measures are not included in the rank aggregation because they are interdependent. For example, a sample with a true class of "A" should not be treated differently depending on whether it was misclassified into "B" or "C".
+For each bootstrap replicate training set, we want to find the top performing classifier. We use Rank Aggregation with the Genetic Algorithm to choose the top algorithm by comparing across evaluation metrics^4^. In the case of log loss, we need to first invert its value since it its objective function is minimization. Class-specific measures are not included in the rank aggregation because they are interdependent. For example, a sample with a true class of "A" should not be treated differently depending on whether it was misclassified into "B" or "C".
 
 After obtaining the list of top classifiers for each bootstrap replicate, we sort them by decreasing frequency and keep the top 3 to use in the ensemble. The `ensemble_mods` output of `splendid` is a list of models fit on the full data for the top classifiers.
 
 ## References
 
-1. https://topepo.github.io/caret/recursive-feature-elimination.html
-2. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
-3. Ahdesmäki, Miika, and Korbinian Strimmer. "Feature selection in omics prediction problems using cat scores and false nondiscovery rate control." *The Annals of Applied Statistics* 4.1 (2010): 503-519.
+1. Ahdesmäki, Miika, and Korbinian Strimmer. "Feature selection in omics prediction problems using cat scores and false nondiscovery rate control." *The Annals of Applied Statistics* 4.1 (2010): 503-519.
+2. https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet_beta.pdf
+2. https://topepo.github.io/caret/recursive-feature-elimination.html
+3. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
