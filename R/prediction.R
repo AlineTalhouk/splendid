@@ -221,5 +221,13 @@ class_proportion <- function(pred) {
 #' Ensure all row sums of probability matrix equal 1
 #' @noRd
 sum_to_one <- function(prob) {
-  prob %>% magrittr::inset(., , 1, .[, 1] - (rowSums(.) - 1))
+  apply(prob, 1, function(x) {
+    if (sum(x) > 1) {
+      x %>% magrittr::inset(which.max(.), max(.) - (sum(.) - 1))
+    } else if (sum(x) < 1) {
+      x %>% magrittr::inset(which.min(.), min(.) - (sum(.) - 1))
+    } else {
+      x
+    }
+  }) %>% t()
 }
