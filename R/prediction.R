@@ -108,7 +108,7 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, test.id, threshold = 0.5, train.id, class,
+prediction.knn <- function(mod, data, test.id, threshold = 0.5, class, train.id,
                            ...) {
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
@@ -135,7 +135,7 @@ prediction.svm <- function(mod, data, test.id, threshold = 0.5, class, ...) {
 #' @rdname prediction
 #' @export
 prediction.pamrtrained <- function(mod, data, test.id, threshold = 0.5,
-                                   train.id, class, ...) {
+                                   class, train.id, ...) {
   model.cv <- sink_output(
     pamr::pamr.cv(mod, list(x = t(data[train.id, ]), y = class[train.id]),
                   nfold = 5))

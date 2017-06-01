@@ -7,15 +7,15 @@
 \alias{prediction.pamrtrained}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, test.id, threshold = 0.5, ...)
+prediction(mod, data, test.id, threshold = 0.5, class, ...)
 
-\method{prediction}{default}(mod, data, test.id, threshold = 0.5, ...)
+\method{prediction}{default}(mod, data, test.id, threshold = 0.5, class, ...)
 
-\method{prediction}{knn}(mod, data, test.id, threshold = 0.5, train.id, class,
+\method{prediction}{knn}(mod, data, test.id, threshold = 0.5, class, train.id,
   ...)
 
-\method{prediction}{pamrtrained}(mod, data, test.id, threshold = 0.5,
-  train.id, class, ...)
+\method{prediction}{pamrtrained}(mod, data, test.id, threshold = 0.5, class,
+  train.id, ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link{classification}}}
@@ -27,12 +27,12 @@ prediction(mod, data, test.id, threshold = 0.5, ...)
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
 
+\item{class}{true/reference class vector used for supervised learning}
+
 \item{...}{additional arguments to be passed to or from methods}
 
 \item{train.id}{integer vector of indices for training set ID. Only used for
 \code{knn} and \code{pamr} prediction methods.}
-
-\item{class}{true/reference class vector used for supervised learning}
 }
 \value{
 A factor of predicted classes with labels in the same order as true
