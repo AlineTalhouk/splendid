@@ -59,7 +59,7 @@ set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) \%in\% training.id)
 mod <- classification(hgsc[training.id, ], class[training.id], "lda")
-pred <- prediction(mod, hgsc, test.id)
+pred <- prediction(mod, hgsc, test.id, class = class)
 table(true = class[test.id], pred)
 }
 \author{
