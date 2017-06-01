@@ -20,15 +20,15 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
     stats::setNames(., .)  # if null, use all
 
   # Apply training sets to models and predict on the test sets
-  models <- purrr::map(algs,
-                       ~ purrr::map(train.idx, function(id)
-                         classification(data[id, ], class[id], .x, rfe)))
-  preds <- purrr::map(models,
-                      ~ purrr::pmap(list(.x, test.idx, train.idx),
-                                    prediction, data = data, class = class,
-                                    threshold = threshold, ...))
-  evals <- purrr::map_at(preds, "pam", purrr::map, 1) %>%
-    purrr::map(~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>%
+  models <- algs %>% purrr::map(
+    ~ purrr::map(train.idx, function(id)
+      classification(data[id, ], class[id], .x, rfe)))
+  preds <- models %>% purrr::map(
+    ~ purrr::pmap(list(.x, test.idx, train.idx),
+                  prediction, data = data, class = class,
+                  threshold = threshold, ...))
+  evals <- preds %>% purrr::map(
+    ~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>%
     purrr::at_depth(2, ~ purrr::flatten(.x) %>%
                       unlist() %>%
                       data.frame()) %>%

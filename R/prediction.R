@@ -135,8 +135,8 @@ prediction.pamrtrained <- function(mod, data, test.id, threshold = 0.5,
                              type = "posterior")
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
-  dplyr::lst(structure(pred, prob = prob, class.thres = ct, class.prop = cp),
-             delta)
+  structure(pred, prob = prob, class.thres = ct, class.prop = cp,
+            delta = delta)
 }
 
 #' @export
