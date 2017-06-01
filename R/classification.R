@@ -27,11 +27,6 @@
 #' @return The model object from running the classification algorithm
 #'   \code{"alg"}
 #'
-#' @note \code{"qda"} gives errors when using the \code{hgsc} dataset because
-#'   there are too many variables The algorithm requires the size of every class
-#'   to be greater than the number of features. A feature selection framework
-#'   and certain assertion checks need to be built for this algorithm to work.
-#'
 #' @author Derek Chiu
 #' @export
 #' @examples
@@ -47,19 +42,6 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
          lda = {
            if (!rfe)
              suppressWarnings(MASS::lda(data, grouping = class))
-           else
-             rfe_model(data, class, algs, sizes)
-         },
-         qda = {
-           data <- data %>%  # Use the variables with the largest variance
-             magrittr::extract(apply(., 2, stats::var) %>%
-                                 unlist() %>%
-                                 sort() %>%
-                                 utils::tail(min(table(class)) - 1) %>%
-                                 names()) %>%
-             apply(2, jitter)
-           if (!rfe)
-             MASS::qda(data, grouping = class)
            else
              rfe_model(data, class, algs, sizes)
          },
@@ -121,19 +103,11 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
   )
 }
 
-#' QDA functions
-#' @noRd
-qdaFuncs <- caret::ldaFuncs
-qdaFuncs$fit <- function(x, y, first, last, ...) {
-  MASS::qda(x, y, ...)
-}
-
 #' RFE model
 #' @noRd
 rfe_model <- function(data, class, algs, sizes) {
   funcs <- switch(algs,
                   lda = caret::ldaFuncs,
-                  qda = qdaFuncs,
                   rf = caret::rfFuncs,
                   svm = caret::caretFuncs)
   method <- if (algs == "svm") "svmRadial" else NULL

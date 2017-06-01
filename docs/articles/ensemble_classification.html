@@ -58,7 +58,7 @@
 </h1>
                         <h4 class="author">Derek Chiu</h4>
             
-            <h4 class="date">2017-05-16</h4>
+            <h4 class="date">2017-06-01</h4>
           </div>
 
     
@@ -146,7 +146,6 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <p>There exist a vast number of classification algorithms. Those currently in <code>splendid</code> are:</p>
 <ul>
 <li>Linear Discriminant Analysis (<code>"lda"</code>)</li>
-<li>Quadratic Discriminant Analysis (<code>"qda"</code>)</li>
 <li>Shrinkage Linear Discriminant Analysis (<code>"slda"</code>)<sup>1</sup>
 </li>
 <li>Shrinkage Diagonal Discriminant Analysis (<code>"sdda"</code>)<sup>1</sup>
@@ -194,8 +193,6 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <p>Some algorithms have certain properties that require data manipulations before classification.</p>
 <ul>
 <li>
-<code>qda</code>: The number of variables cannot exceed the number of samples in the smallest class. We use a variance threshold method to select the greatest number of variables allowed by the QDA restriction on the basis of decreasing variance across all samples. This filtering feature selection method does not solve the potential multicollinearity issue that can exist with many correlated variables. To tackle this problem, we add a small amount of noise to each variable.</li>
-<li>
 <code>slda</code> and <code>sdda</code>: These shrinkage discriminant analysis algorithms estimate the regularization parameters analytically without having to solve using resampling methods.</li>
 <li>
 <code>multinom_nnet</code> and <code>nnet</code>: We increase the maximum number of allowable weights to a sufficiently large number to avoid ill-fitted models.</li>
@@ -210,7 +207,7 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <div id="feature-selection" class="section level3">
 <h3 class="hasAnchor">
 <a href="#feature-selection" class="anchor"></a>Feature Selection</h3>
-<p>We use Recursive Feature Elimination (RFE)<sup>3</sup> on <code>lda</code>, <code>qda</code>, <code>rf</code>, and <code>svm</code> to reduce the dimensionality before classification. In <code>svm</code>, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set <code>rfe = TRUE</code> in <code>splendid</code> to use feature selection.</p>
+<p>We use Recursive Feature Elimination (RFE)<sup>3</sup> on <code>lda</code>, <code>rf</code>, and <code>svm</code> to reduce the dimensionality before classification. In <code>svm</code>, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set <code>rfe = TRUE</code> in <code>splendid</code> to use feature selection.</p>
 <p>One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the <code>sizes</code> parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(class)
 <span class="co">#&gt; class</span>

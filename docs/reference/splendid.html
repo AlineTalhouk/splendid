@@ -116,7 +116,7 @@ default, in which case uses all implemented algorithms.</p></td>
     <tr>
       <th>rfe</th>
       <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
-feature selection method for "lda", "qda", "rf", and "svm" algorithms.</p></td>
+feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
     </tr>
     <tr>
       <th>threshold</th>
@@ -159,15 +159,14 @@ replacement. Test sets comprise of all remaining samples left out from each
 training set, also called Out-Of-Bag samples. This framework uses the 0.632
 bootstrap rule for large n.</p>
 <p>The classification algorithms currently supported are: Linear Discriminant
-Analysis ("lda"), Quadratic Discriminant Analysis ("qda"), Shrinkage Linear
-Discriminant Analysis ("slda"), Shrinkage Diagonal Discriminant Analysis
-("sdda"), Random Forests ("rf"), Multinomial Classification using Neural
-Networks ("multinom_nnet"), Neural Networks ("nnet"), K-Nearest Neighbours,
-("knn"), Support Vector Machines ("svm"), Prediction Analysis for Microarrays
-("pam"), Adaptive Boosting ("adaboost"), Extreme Gradient Boosting
-("xgboost"), Naive Bayes ("nbayes"), and Generalized Linear Models using the
-LASSO penalty ("lasso"), ridge ("ridge") penalty, or no regularization
-("multinom_glm").</p>
+Analysis ("lda"), Shrinkage Linear Discriminant Analysis ("slda"), Shrinkage
+Diagonal Discriminant Analysis ("sdda"), Random Forests ("rf"), Multinomial
+Classification using Neural Networks ("multinom_nnet"), Neural Networks
+("nnet"), K-Nearest Neighbours, ("knn"), Support Vector Machines ("svm"),
+Prediction Analysis for Microarrays ("pam"), Adaptive Boosting ("adaboost"),
+Extreme Gradient Boosting ("xgboost"), Naive Bayes ("nbayes"), and
+Generalized Linear Models using the LASSO penalty ("lasso"), ridge ("ridge")
+penalty, or no regularization ("multinom_glm").</p>
 <p>An ensemble classifier is constructed using Rank Aggregation across multiple
 evaluation measures such as precision, recall, F1-score, and Matthew's
 Correlation Coefficient (MCC).</p>

@@ -56,15 +56,6 @@ prediction.lda <- function(mod, data, test.id, threshold = 0.5, ...) {
 }
 
 #' @export
-prediction.qda <- function(mod, data, test.id, threshold = 0.5, ...) {
-  p <- prediction.default(mod, data[, colnames(mod$means)], test.id)
-  prob <- p$posterior
-  ct <- class_threshold(prob, threshold = threshold)
-  cp <- class_proportion(ct)
-  structure(p$class, prob = prob, class.thres = ct, class.prop = cp)
-}
-
-#' @export
 prediction.sda <- function(mod, data, test.id, threshold = 0.5, ...) {
   prediction.lda(mod, as.matrix(data), test.id, threshold, verbose = FALSE, ...)
 }

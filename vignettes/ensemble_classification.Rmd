@@ -72,7 +72,6 @@ The first step in the `splendid` pipeline is classification. Given explanatory d
 There exist a vast number of classification algorithms. Those currently in `splendid` are:
 
 - Linear Discriminant Analysis (`"lda"`)
-- Quadratic Discriminant Analysis (`"qda"`)
 - Shrinkage Linear Discriminant Analysis (`"slda"`)^1^
 - Shrinkage Diagonal Discriminant Analysis (`"sdda"`)^1^
 - Random Forests (`"rf"`)
@@ -103,7 +102,6 @@ The ranges for the tuning parameters are:
   
 Some algorithms have certain properties that require data manipulations before classification.
 
-- `qda`: The number of variables cannot exceed the number of samples in the smallest class. We use a variance threshold method to select the greatest number of variables allowed by the QDA restriction on the basis of decreasing variance across all samples. This filtering feature selection method does not solve the potential multicollinearity issue that can exist with many correlated variables. To tackle this problem, we add a small amount of noise to each variable.
 - `slda` and `sdda`: These shrinkage discriminant analysis algorithms estimate the regularization parameters analytically without having to solve using resampling methods.
 - `multinom_nnet` and `nnet`: We increase the maximum number of allowable weights to a sufficiently large number to avoid ill-fitted models.
 - `knn`: Since K-Nearest Neighbours is a non-parametric method, there *is* no model object upon which predictions are made, and predicted classes are directly found. To obtain prediction probabilities by class, we use a distance matrix between the training and test set samples.
@@ -112,7 +110,7 @@ Some algorithms have certain properties that require data manipulations before c
 
 ### Feature Selection
 
-We use Recursive Feature Elimination (RFE)^3^ on `lda`, `qda`, `rf`, and `svm` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
+We use Recursive Feature Elimination (RFE)^3^ on `lda`, `rf`, and `svm` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
 
 One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the `sizes` parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:
 

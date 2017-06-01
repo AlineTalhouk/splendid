@@ -15,7 +15,7 @@ classification(data, class, algs, rfe = FALSE, sizes = NULL)
 in \code{\link{splendid}} for a list of choices.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "qda", "rf", and "svm" algorithms.}
+feature selection method for "lda", "rf", and "svm" algorithms.}
 
 \item{sizes}{the range of sizes of features to test RFE algorithm}
 }
@@ -44,12 +44,6 @@ When \code{alg = "knn"}, the result is \code{NULL} because the
 The modelling and prediction is done in one step. However, a class attribute
 is still assigned to the result in order to enact the corresponding method in
 \code{\link{prediction}}.
-}
-\note{
-\code{"qda"} gives errors when using the \code{hgsc} dataset because
-  there are too many variables The algorithm requires the size of every class
-  to be greater than the number of features. A feature selection framework
-  and certain assertion checks need to be built for this algorithm to work.
 }
 \examples{
 data(hgsc)

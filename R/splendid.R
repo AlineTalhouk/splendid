@@ -10,15 +10,14 @@
 #' bootstrap rule for large n.
 #'
 #' The classification algorithms currently supported are: Linear Discriminant
-#' Analysis ("lda"), Quadratic Discriminant Analysis ("qda"), Shrinkage Linear
-#' Discriminant Analysis ("slda"), Shrinkage Diagonal Discriminant Analysis
-#' ("sdda"), Random Forests ("rf"), Multinomial Classification using Neural
-#' Networks ("multinom_nnet"), Neural Networks ("nnet"), K-Nearest Neighbours,
-#' ("knn"), Support Vector Machines ("svm"), Prediction Analysis for Microarrays
-#' ("pam"), Adaptive Boosting ("adaboost"), Extreme Gradient Boosting
-#' ("xgboost"), Naive Bayes ("nbayes"), and Generalized Linear Models using the
-#' LASSO penalty ("lasso"), ridge ("ridge") penalty, or no regularization
-#' ("multinom_glm").
+#' Analysis ("lda"), Shrinkage Linear Discriminant Analysis ("slda"), Shrinkage
+#' Diagonal Discriminant Analysis ("sdda"), Random Forests ("rf"), Multinomial
+#' Classification using Neural Networks ("multinom_nnet"), Neural Networks
+#' ("nnet"), K-Nearest Neighbours, ("knn"), Support Vector Machines ("svm"),
+#' Prediction Analysis for Microarrays ("pam"), Adaptive Boosting ("adaboost"),
+#' Extreme Gradient Boosting ("xgboost"), Naive Bayes ("nbayes"), and
+#' Generalized Linear Models using the LASSO penalty ("lasso"), ridge ("ridge")
+#' penalty, or no regularization ("multinom_glm").
 #'
 #' An ensemble classifier is constructed using Rank Aggregation across multiple
 #' evaluation measures such as precision, recall, F1-score, and Matthew's
@@ -32,7 +31,7 @@
 #'   learning. See Details for possible options. This argument is \code{NULL} by
 #'   default, in which case uses all implemented algorithms.
 #' @param rfe logical; if \code{TRUE}, run Recursive Feature Elimination as a
-#'   feature selection method for "lda", "qda", "rf", and "svm" algorithms.
+#'   feature selection method for "lda", "rf", and "svm" algorithms.
 #' @param threshold a numeric indicating the lowest maximum class probability
 #'   below which a sample will be unclassified.
 #' @param ... additional arguments to \code{splendid_model}
