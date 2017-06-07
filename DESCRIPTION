@@ -9,7 +9,7 @@ Authors@R: c(
 Description: Provides a bootstrapping and ensemble framework for supervised
     learning analyses using multiclass classification algorithms. Predicted
     classes are evaluated under metrics such as log loss, AUC, F1-score,
-    Matthew's correlation coefficient, and accuracy. Discrimination and 
+    Matthew's correlation coefficient, and accuracy. Discrimination and
     reliability plots visualize the classifier performances.
 Depends: R (>= 3.2.0)
 Imports:
