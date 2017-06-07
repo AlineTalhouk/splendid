@@ -28,14 +28,16 @@
 #' pred <- prediction(mod, hgsc, test.id, class = class)
 #' evaluation(class[test.id], pred)
 evaluation <- function(x, y, plot = FALSE) {
-  # Remove unclassified cases unless they're all unclassified
-  keep_ind <- y %@% "class.thres" != "unclassified"
+  # Remove unclassified cases unless they're all unclassified or remaining cases
+  # does not span all classes
+  y_thres <- y %@% "class.thres"
+  keep_ind <- y_thres != "unclassified"
+  n_class <- dplyr::n_distinct(y_thres[keep_ind])
   probs <- y %@% "prob"
-  if (sum(keep_ind) > 0) {
+  if (sum(keep_ind) > 0 && n_class == nlevels(x)) {
     probs <- probs[keep_ind, ]
     x <- x[keep_ind]
-    y <- (y %@% "class.thres")[keep_ind] %>%
-      forcats::fct_drop(only = "unclassified")
+    y <- y_thres[keep_ind] %>% forcats::fct_drop(only = "unclassified")
   }
 
   # Multiclass confusion matrix with actual as rows, predicted as columns
