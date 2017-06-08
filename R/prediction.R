@@ -166,7 +166,7 @@ prediction.maboost <- function(mod, data, test.id, threshold = 0.5, class,
 prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
                                    ...) {
   class <- factor(class)
-  prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
+  prob <- prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
     magrittr::set_rownames(rownames(data[test.id, ])) %>%
     magrittr::set_colnames(levels(class)) %>%
     sum_to_one()
