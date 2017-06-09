@@ -20,3 +20,18 @@ sink_output <- function(expr) {
   on.exit(file.remove(tmp), add = TRUE)
   invisible(force(expr))
 }
+
+#' Ensure all row sums of probability matrix equal 1
+#' @noRd
+sum_to_one <- function(prob) {
+  apply(prob, 1, function(x) {
+    x <- x / sum(x)
+    if (sum(x) > 1) {
+      x %>% magrittr::inset(which.max(.), max(.) - (sum(.) - 1))
+    } else if (sum(x) < 1) {
+      x %>% magrittr::inset(which.min(.), min(.) - (sum(.) - 1))
+    } else {
+      x
+    }
+  }) %>% t()
+}
