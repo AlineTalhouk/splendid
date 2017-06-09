@@ -89,6 +89,10 @@ prediction.multinom <- function(mod, data, test.id, threshold = 0.5, class,
                                 ...) {
   pred <- prediction.default(mod, data, test.id, type = "class")
   prob <- prediction.default(mod, data, test.id, type = "probs")
+  if (!is.matrix(prob)) {  # for OVA case
+    prob <- matrix(c(1 - prob, prob), ncol = 2,
+                   dimnames = list(NULL, mod$lev))
+  }
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
