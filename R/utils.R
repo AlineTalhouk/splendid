@@ -35,3 +35,19 @@ sum_to_one <- function(prob) {
     }
   }) %>% t()
 }
+
+#' Add binary One-Vs-All matrix to class vector
+#'
+#' @param x data frame with class labels in a column vector
+#' @return data frame of \code{x} and one column for each binarized class
+#'   membership
+#' @noRd
+binarize <- function(x) {
+  cl <- factor(x$class)
+  cl %>%
+    levels() %>%
+    purrr::set_names() %>%
+    purrr::map(~ ifelse(cl == .x, .x, 0)) %>%
+    purrr::prepend(list(class = as.character(cl))) %>%
+    data.frame(stringsAsFactors = FALSE)
+}
