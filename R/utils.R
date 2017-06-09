@@ -22,17 +22,13 @@ sink_output <- function(expr) {
 }
 
 #' Ensure all row sums of probability matrix equal 1
+#' If all probabilities are 0 from ova_model, randomly assign a class
+#'
 #' @noRd
 sum_to_one <- function(prob) {
   apply(prob, 1, function(x) {
-    x <- x / sum(x)
-    if (sum(x) > 1) {
-      x %>% magrittr::inset(which.max(.), max(.) - (sum(.) - 1))
-    } else if (sum(x) < 1) {
-      x %>% magrittr::inset(which.min(.), min(.) - (sum(.) - 1))
-    } else {
-      x
-    }
+    if (sum(x) == 0) x[sample(seq_along(x), size = 1)] <- 1
+    x / sum(x)
   }) %>% t()
 }
 
