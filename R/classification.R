@@ -33,7 +33,8 @@
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' classification(hgsc, class, "rf")
-classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
+classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
+                           sizes = NULL) {
   algs <- match.arg(algs, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- sizes %||% seq_len(round(min(table(class)) / 2)) %>%
@@ -66,7 +67,14 @@ classification <- function(data, class, algs, rfe = FALSE, sizes = NULL) {
                             tunecontrol = e1071::tune.control(
                               sampling = "fix"))
          },
-         knn = structure(list(), class = "knn"),
+         knn = {
+           if (ova) {
+             structure(list(unique(class[class != "0"])),
+                       class = c("knn", "ova"))
+           } else {
+             structure(list(), class = "knn")
+           }
+         },
          svm = {
            if (!rfe) {
              opt_var <- names(data)

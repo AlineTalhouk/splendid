@@ -89,9 +89,8 @@ prediction.multinom <- function(mod, data, test.id, threshold = 0.5, class,
                                 ...) {
   pred <- prediction.default(mod, data, test.id, type = "class")
   prob <- prediction.default(mod, data, test.id, type = "probs")
-  if (!is.matrix(prob)) {  # for OVA case
-    prob <- matrix(c(1 - prob, prob), ncol = 2,
-                   dimnames = list(NULL, mod$lev))
+  if (!is.matrix(prob)) {  # for ova case
+    prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
   }
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
@@ -104,6 +103,9 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
                                     ...) {
   pred <- factor(prediction.default(mod, data, test.id, type = "class"))
   prob <- prediction.default(mod, data, test.id, type = "raw")
+  if (ncol(prob) == 1) {  # for ova case
+    prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
+  }
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
@@ -114,6 +116,10 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
 #' @export
 prediction.knn <- function(mod, data, test.id, threshold = 0.5, class, train.id,
                            ...) {
+  if (inherits(mod, "ova")) {
+    lev <- as.character(unlist(mod))
+    class <- factor(ifelse(class == lev, lev, 0))
+  }
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
