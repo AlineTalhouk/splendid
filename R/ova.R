@@ -4,11 +4,11 @@
 #' @return list of  binary classifier fits on each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
-ova_train <- function(data, class, algs, rfe) {
+ova_train <- function(data, class, algs, rfe, ova) {
   fits <- data.frame(class) %>%
     binarize() %>%
     dplyr::select(-class) %>%
-    purrr::map(classification, data = data, algs = algs, rfe = rfe)
+    purrr::map(classification, data = data, algs = algs, rfe = rfe, ova = ova)
   fits
 }
 
@@ -19,9 +19,11 @@ ova_train <- function(data, class, algs, rfe) {
 #' @return (tibble) predicted probabilities for each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
-ova_predict <- function(fits, data, test.id, class, threshold = 0.5, ...) {
+ova_predict <- function(fits, data, test.id, class, train.id,
+                        threshold = 0.5, ...) {
   prob <- fits %>%
-    purrr::map(prediction, data = data, test.id = test.id, class = class) %>%
+    purrr::map(prediction, data = data, test.id = test.id, class = class,
+               train.id = train.id) %>%
     purrr::map(`%@%`, "prob") %>%
     purrr::map_df(~ .x[, 2]) %>%
     as.matrix() %>%
