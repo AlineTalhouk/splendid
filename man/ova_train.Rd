@@ -4,7 +4,7 @@
 \alias{ova_train}
 \title{One-Vs-All training approach}
 \usage{
-ova_train(data, class, algs, rfe)
+ova_train(data, class, algs, rfe, ova)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -13,6 +13,10 @@ ova_train(data, class, algs, rfe)
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
+
+\item{ova}{logical; if \code{TRUE}, a One-Vs-All classification approach is
+performed for every algorithm in \code{algorithms}. The relevant results
+are prefixed with the string \code{ova_}.}
 }
 \value{
 list of  binary classifier fits on each class
