@@ -5,7 +5,7 @@
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
 splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
-  threshold = 0.5, ...)
+  ova = FALSE, threshold = 0.5, ...)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -22,6 +22,10 @@ default, in which case uses all implemented algorithms.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
+
+\item{ova}{logical; if \code{TRUE}, a One-Vs-All classification approach is
+performed for every algorithm in \code{algorithms}. The relevant results
+are prefixed with the string \code{ova_}.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}

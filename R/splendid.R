@@ -32,6 +32,9 @@
 #'   default, in which case uses all implemented algorithms.
 #' @param rfe logical; if \code{TRUE}, run Recursive Feature Elimination as a
 #'   feature selection method for "lda", "rf", and "svm" algorithms.
+#' @param ova logical; if \code{TRUE}, a One-Vs-All classification approach is
+#'   performed for every algorithm in \code{algorithms}. The relevant results
+#'   are prefixed with the string \code{ova_}.
 #' @param threshold a numeric indicating the lowest maximum class probability
 #'   below which a sample will be unclassified.
 #' @param ... additional arguments to \code{splendid_model}
@@ -61,10 +64,10 @@
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "svm"))
-splendid <- function(data, class, n, seed = 1, algorithms = NULL,
-                     rfe = FALSE, threshold = 0.5, ...) {
+splendid <- function(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
+                     ova = FALSE, threshold = 0.5, ...) {
   sm <- splendid_model(data = data, class = class, n = n,
-                       algorithms = algorithms, rfe = rfe, ...)
+                       algorithms = algorithms, rfe = rfe, ova = ova, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class)
   c(sm, se)
 }

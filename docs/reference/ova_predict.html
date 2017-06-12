@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Train, predict, and evaluate classification models — splendid_model • splendid</title>
+<title>One-Vs-All prediction approach — ova_predict • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -76,51 +76,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Train, predict, and evaluate classification models</h1>
+    <h1>One-Vs-All prediction approach</h1>
     </div>
 
     
-    <p>Train, predict, and evaluate classification models</p>
+    <p>One-Vs-All prediction approach</p>
     
 
-    <pre><span class='fu'>splendid_model</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>ova_predict</span>(<span class='no'>fits</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='no'>class</span>, <span class='no'>train.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>fits</th>
+      <td><p>list of ova fits from <code>ova_train</code></p></td>
+    </tr>
+    <tr>
       <th>data</th>
       <td><p>data object with rows as samples, columns as features</p></td>
+    </tr>
+    <tr>
+      <th>test.id</th>
+      <td><p>integer vector of indices for test set</p></td>
     </tr>
     <tr>
       <th>class</th>
       <td><p>true/reference class vector used for supervised learning</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>number of bootstrap replicates to generate</p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p>random seed used for reproducibility in bootstrapping results</p></td>
-    </tr>
-    <tr>
-      <th>algorithms</th>
-      <td><p>character vector of algorithm names to use for supervised
-learning. See Details for possible options. This argument is <code>NULL</code> by
-default, in which case uses all implemented algorithms.</p></td>
-    </tr>
-    <tr>
-      <th>rfe</th>
-      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
-    </tr>
-    <tr>
-      <th>ova</th>
-      <td><p>logical; if <code>TRUE</code>, a One-Vs-All classification approach is
-performed for every algorithm in <code>algorithms</code>. The relevant results
-are prefixed with the string <code>ova_</code>.</p></td>
+      <th>train.id</th>
+      <td><p>integer vector of indices for training set ID. Only used for
+<code>knn</code> and <code>pamr</code> prediction methods.</p></td>
     </tr>
     <tr>
       <th>threshold</th>
@@ -129,23 +116,27 @@ below which a sample will be unclassified.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments to <code>splendid_model</code></p></td>
+      <td><p>additional arguments to be passed to or from methods</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
-<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>]
-<span class='no'>sl_result</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid_model</span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='st'>"svm"</span>)</div></pre>
+    <p>(tibble) predicted probabilities for each class</p>
+    
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
+
+    <h2>Author</h2>
+    
+Dustin Johnson, Derek Chiu
 
   </div>
 </div>

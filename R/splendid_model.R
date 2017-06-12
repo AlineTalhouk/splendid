@@ -7,7 +7,7 @@
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "svm")
 splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
-                           rfe = FALSE, threshold = 0.5, ...) {
+                           rfe = FALSE, ova = FALSE, threshold = 0.5, ...) {
 
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
@@ -22,17 +22,38 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   # Apply training sets to models and predict on the test sets
   models <- algs %>% purrr::map(
     ~ purrr::map(train.idx, function(id)
-      classification(data[id, ], class[id], .x, rfe)))
+      classification(data[id, ], class[id], .x, rfe, ova = FALSE)))
   preds <- models %>% purrr::map(
     ~ purrr::pmap(list(.x, test.idx, train.idx),
                   prediction, data = data, class = class,
                   threshold = threshold, ...))
+
+  # Run One-Vs-All models if specified
+  if (ova) {
+    ova_names <- paste("ova", algs, sep = "_")
+    ova_models <- algs %>% purrr::map(
+      ~ purrr::map(train.idx, function(id)
+        ova_train(data[id, ], class[id], .x, rfe, ova = TRUE))) %>%
+      purrr::set_names(ova_names)
+    ova_preds <- ova_models %>% purrr::map(
+      ~ purrr::pmap(list(.x, test.idx, train.idx),
+                    ova_predict, data = data, class = class,
+                    threshold = threshold, ...)) %>%
+      purrr::set_names(ova_names)
+
+    # Combine results with conventional approach
+    models <- c(models, ova_models)
+    preds <- c(preds, ova_preds)
+  }
+
+  # Evaluate predictions
   evals <- preds %>% purrr::map(
     ~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>%
     purrr::modify_depth(2, ~ purrr::flatten(.x) %>%
                           unlist() %>%
                           data.frame()) %>%
     purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n)))
+
   dplyr::lst(models, preds, evals)
 }
 
@@ -49,3 +70,4 @@ training_id <- function(data, class, n) {
   else
     return(train.idx[all.cl])
 }
+

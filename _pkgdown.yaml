@@ -20,6 +20,7 @@ reference:
   - classification
   - prediction
   - evaluation
+  - matches("ova")
   - matches("splendid")
 - title: Data
   contents:

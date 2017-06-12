@@ -89,6 +89,9 @@ prediction.multinom <- function(mod, data, test.id, threshold = 0.5, class,
                                 ...) {
   pred <- prediction.default(mod, data, test.id, type = "class")
   prob <- prediction.default(mod, data, test.id, type = "probs")
+  if (!is.matrix(prob)) {  # for ova case
+    prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
+  }
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
@@ -100,6 +103,9 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
                                     ...) {
   pred <- factor(prediction.default(mod, data, test.id, type = "class"))
   prob <- prediction.default(mod, data, test.id, type = "raw")
+  if (ncol(prob) == 1) {  # for ova case
+    prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
+  }
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
@@ -110,6 +116,10 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
 #' @export
 prediction.knn <- function(mod, data, test.id, threshold = 0.5, class, train.id,
                            ...) {
+  if (inherits(mod, "ova")) {  # for ova case
+    lev <- as.character(unlist(mod))
+    class <- factor(ifelse(class == lev, lev, 0))
+  }
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
@@ -126,6 +136,8 @@ prediction.knn <- function(mod, data, test.id, threshold = 0.5, class, train.id,
 prediction.svm <- function(mod, data, test.id, threshold = 0.5, class, ...) {
   pred <- unname(prediction.default(mod, data, test.id, probability = TRUE))
   prob <- attr(pred, "probabilities")
+  if (!("0" %in% mod$levels))
+    prob <- prob[, order(colnames(prob), levels(class))]
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
@@ -166,10 +178,12 @@ prediction.maboost <- function(mod, data, test.id, threshold = 0.5, class,
 prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
                                    ...) {
   class <- factor(class)
-  prob <-  prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
+  prob <- prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
     magrittr::set_rownames(rownames(data[test.id, ])) %>%
-    magrittr::set_colnames(levels(class)) %>%
     sum_to_one()
+  if (ncol(prob) == nlevels(class)) {
+    colnames(prob) <- levels(class)
+  }
   pred <- factor(levels(class)[max.col(data.frame(prob))])
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
@@ -228,18 +242,4 @@ class_threshold <- function(prob, threshold = 0.5) {
 class_proportion <- function(pred) {
   good_ind <- pred != "unclassified"
   sum(good_ind) / length(good_ind)
-}
-
-#' Ensure all row sums of probability matrix equal 1
-#' @noRd
-sum_to_one <- function(prob) {
-  apply(prob, 1, function(x) {
-    if (sum(x) > 1) {
-      x %>% magrittr::inset(which.max(.), max(.) - (sum(.) - 1))
-    } else if (sum(x) < 1) {
-      x %>% magrittr::inset(which.min(.), min(.) - (sum(.) - 1))
-    } else {
-      x
-    }
-  }) %>% t()
 }
