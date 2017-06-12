@@ -1,7 +1,7 @@
 #' One-Vs-All training approach
 #'
 #' @inheritParams classification
-#' @return list of  binary classifier fits on each class
+#' @return list of binary classifier fits on each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_train <- function(data, class, algs, rfe, ova) {

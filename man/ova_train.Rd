@@ -22,7 +22,7 @@ performed for every algorithm in \code{algorithms}. The relevant results
 are prefixed with the string \code{ova_}.}
 }
 \value{
-list of  binary classifier fits on each class
+list of binary classifier fits on each class
 }
 \description{
 One-Vs-All training approach
