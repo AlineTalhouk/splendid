@@ -11,6 +11,9 @@ ova_train(data, class, algs, rfe, ova)
 
 \item{class}{true/reference class vector used for supervised learning}
 
+\item{algs}{character string of classification algorithm to use. See Details
+in \code{\link{splendid}} for a list of choices.}
+
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
 

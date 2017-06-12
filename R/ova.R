@@ -1,6 +1,6 @@
 #' One-Vs-All training approach
 #'
-#' @inheritParams splendid
+#' @inheritParams classification
 #' @return list of  binary classifier fits on each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
@@ -15,7 +15,7 @@ ova_train <- function(data, class, algs, rfe, ova) {
 #' One-Vs-All prediction approach
 #'
 #' @param fits list of ova fits from \code{ova_train}
-#' @inheritParams splendid
+#' @inheritParams prediction
 #' @return (tibble) predicted probabilities for each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export

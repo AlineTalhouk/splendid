@@ -11,12 +11,17 @@ ova_predict(fits, data, test.id, class, train.id, threshold = 0.5, ...)
 
 \item{data}{data object with rows as samples, columns as features}
 
+\item{test.id}{integer vector of indices for test set}
+
 \item{class}{true/reference class vector used for supervised learning}
+
+\item{train.id}{integer vector of indices for training set ID. Only used for
+\code{knn} and \code{pamr} prediction methods.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
 
-\item{...}{additional arguments to \code{splendid_model}}
+\item{...}{additional arguments to be passed to or from methods}
 }
 \value{
 (tibble) predicted probabilities for each class
