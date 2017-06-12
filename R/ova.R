@@ -25,6 +25,12 @@ ova_predict <- function(fits, data, test.id, class, train.id,
     purrr::map(prediction, data = data, test.id = test.id, class = class,
                train.id = train.id) %>%
     purrr::map(`%@%`, "prob") %>%
+    purrr::imap(~ {  # for xgboost
+      if (is.null(colnames(.x)))
+        .x %>% magrittr::set_colnames(c("0", .y))
+      else
+        .x
+      }) %>%
     purrr::map_df(~ .x[, colnames(.x) != "0"]) %>%
     as.matrix() %>%
     sum_to_one() %>%
