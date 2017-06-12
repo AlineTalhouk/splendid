@@ -83,7 +83,7 @@
     <p>Runs a classification algorithm on a given dataset and reference class.</p>
     
 
-    <pre><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -105,6 +105,12 @@ in <code><a href='splendid.html'>splendid</a></code> for a list of choices.</p><
       <th>rfe</th>
       <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
+    </tr>
+    <tr>
+      <th>ova</th>
+      <td><p>logical; if <code>TRUE</code>, a One-Vs-All classification approach is
+performed for every algorithm in <code>algorithms</code>. The relevant results
+are prefixed with the string <code>ova_</code>.</p></td>
     </tr>
     <tr>
       <th>sizes</th>

@@ -86,7 +86,7 @@ variants.</p>
     
 
     <pre><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -117,6 +117,12 @@ default, in which case uses all implemented algorithms.</p></td>
       <th>rfe</th>
       <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
+    </tr>
+    <tr>
+      <th>ova</th>
+      <td><p>logical; if <code>TRUE</code>, a One-Vs-All classification approach is
+performed for every algorithm in <code>algorithms</code>. The relevant results
+are prefixed with the string <code>ova_</code>.</p></td>
     </tr>
     <tr>
       <th>threshold</th>
