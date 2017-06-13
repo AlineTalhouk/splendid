@@ -5,9 +5,8 @@
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_train <- function(data, class, algs, rfe, ova) {
-  fits <- data.frame(class) %>%
+  fits <- class %>%
     binarize() %>%
-    dplyr::select(-class) %>%
     purrr::map(classification, data = data, algs = algs, rfe = rfe, ova = ova)
   fits
 }
