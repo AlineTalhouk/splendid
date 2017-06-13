@@ -16,8 +16,8 @@
 #' @return \code{sequential_train} returns a list of fits over the top-ranked
 #'   sequence.
 #' @return \code{sequential_pred} returns a list of two elements
-#' \item{pred}{predicted sequential probabilities}
-#' \item{error}{confusion matrices for each class}
+#' \item{preds}{predicted sequential probabilities}
+#' \item{cm}{confusion matrices for each class}
 #' @name sequential
 #' @author Dustin Johnson, Derek Chiu
 #' @export
@@ -38,8 +38,8 @@ sequential_train <- function(sm, data, class) {
   # sequentially train
   for (rank_i in seq_len(nseq)) {
     # class and alg to fit ova model on
-    cl <- as.character(model.rank[rank_i, "class"])
-    alg <- as.character(model.rank[rank_i, "model"])
+    cl <- model.rank[["class"]][rank_i]
+    alg <- model.rank[["model"]][rank_i]
 
     # fit ranked model sequentially for each class
     fits[[rank_i]] <- classification(
@@ -75,10 +75,10 @@ sequential_pred <- function(fit, sm, data, class) {
                        class = class) %@% "prob"
     if (is.null(colnames(prob))) colnames(prob) <- c("0", names(fit)[rank_i])
     preds[[rank_i]] <- prob
-    pred <- apply(preds[[rank_i]], 1, function(x) names(x)[which.max(x)])
+    pred <- apply(prob, 1, function(x) names(x)[which.max(x)])
 
     # confustion matrix for class prediction and class error as attribute
-    cl <- as.character(model.rank[rank_i, "class"])
+    cl <- model.rank[["class"]][rank_i]
     cm[[rank_i]] <- conf_mat(class.bin[, cl], pred)
     attr(cm[[rank_i]], "error") <- class_error(cm[[rank_i]])
 

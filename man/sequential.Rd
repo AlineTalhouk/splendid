@@ -25,8 +25,8 @@ sequential_pred(fit, sm, data, class)
   sequence.
 
 \code{sequential_pred} returns a list of two elements
-\item{pred}{predicted sequential probabilities}
-\item{error}{confusion matrices for each class}
+\item{preds}{predicted sequential probabilities}
+\item{cm}{confusion matrices for each class}
 }
 \description{
 Sequentially train top ranked algorithms on each class ordered by class
