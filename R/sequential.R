@@ -29,63 +29,66 @@
 #' sp <- sequential_pred(st, sm, hgsc, class)
 sequential_train <- function(sm, data, class) {
   # initialize objects
+  class.bin <- binarize(class)
   model.rank <- sequential_rank(sm$evals)
   nseq <- nrow(model.rank) - 1
-  fits <- vector("list", nseq)
-  class.df <- binarize(data.frame(class))
-  class.df.temp <- class.df
-  dat.temp <- data
+  fits <- vector("list", nseq) %>%
+    purrr::set_names(model.rank$class[seq_len(nseq)])
 
   # sequentially train
   for (rank_i in seq_len(nseq)) {
+    # class and alg to fit ova model on
+    cl <- as.character(model.rank[rank_i, "class"])
+    alg <- as.character(model.rank[rank_i, "model"])
+
     # fit ranked model sequentially for each class
     fits[[rank_i]] <- classification(
-      data = dat.temp,
-      class = class.df.temp[, as.character(model.rank[rank_i, "class"])],
-      algs = as.character(model.rank[rank_i, "model"])
+      data = data,
+      class = class.bin[, cl],
+      algs = alg
     )
 
     # drop class already fit and move to next binary fit
-    dat.class.combine <- data.frame(class.df.temp, dat.temp) %>%
-      dplyr::filter(class != as.character(model.rank[rank_i, "class"]))
-    class.df.temp <- dat.class.combine[, seq_len(ncol(class.df.temp))]
-    dat.temp <- dat.class.combine %>% select(-seq_len(ncol(class.df.temp)))
+    cl.rm <- class != cl
+    data <- data[cl.rm, ]
+    class.bin <- class.bin[cl.rm, ]
+    class <- class[cl.rm]
   }
-  fits %>% purrr::set_names(model.rank$class[seq_len(nseq)])
+  fits
 }
 
 #' @name sequential
 #' @export
 sequential_pred <- function(fit, sm, data, class) {
-
   # initialize objects
+  class.bin <- binarize(class)
   model.rank <- sequential_rank(sm$evals)
   nseq <- nrow(model.rank) - 1
-  preds <- confmat <- vector("list", nseq)
-  dat.temp <- data
-  class.temp <- binarize(data.frame(class))
+  preds <- cm <- vector("list", nseq) %>%
+    purrr::set_names(model.rank$class[seq_len(nseq)])
 
   # sequential prediction
   for (rank_i in seq_len(nseq)) {
     # predict classes sequentially according to rank
-    prob <- prediction(fit[[rank_i]], dat.temp,
-                       test.id = seq_len(nrow(dat.temp)),
-                       class = class.temp$class) %@% "prob"
+    prob <- prediction(mod = fit[[rank_i]], data = data,
+                       test.id = seq_len(nrow(data)),
+                       class = class) %@% "prob"
     if (is.null(colnames(prob))) colnames(prob) <- c("0", names(fit)[rank_i])
     preds[[rank_i]] <- prob
     pred <- apply(preds[[rank_i]], 1, function(x) names(x)[which.max(x)])
 
-    # confustion matrix for class prediction
-    confmat[[rank_i]] <- conf_mat(class.temp[, as.character(model.rank[rank_i, "class"])], pred)
-    attr(confmat[[rank_i]], "error") <- class_error(confmat[[rank_i]])
+    # confustion matrix for class prediction and class error as attribute
+    cl <- as.character(model.rank[rank_i, "class"])
+    cm[[rank_i]] <- conf_mat(class.bin[, cl], pred)
+    attr(cm[[rank_i]], "error") <- class_error(cm[[rank_i]])
 
     # drop classes predicted for next sequential step
-    dat.class.combine <- data.frame(class.temp, pred = pred, dat.temp) %>%
-      dplyr::filter(pred != as.character(model.rank[rank_i, "class"]))
-    class.temp <- dat.class.combine[, seq_len(ncol(class.temp))]
-    dat.temp <- dat.class.combine %>% select(-c(seq_len(ncol(class.temp)), pred))
+    cl.rm <- pred != cl
+    data <- data[cl.rm, ]
+    class.bin <- class.bin[cl.rm, ]
+    class <- class[cl.rm]
   }
-  list(pred = preds, error = confmat)
+  dplyr::lst(preds, cm)
 }
 
 #' Rank top models for each sequentially fitted class based on maximum average
