@@ -1,73 +1,32 @@
-#' Extract evaluation metrics for sequential model
+#' Sequential Algorithm
 #'
-#' The by-class F1-scores are extracted for each model and bootstrap replicate.
-#'
-#' @param x evaluation output from \code{evals} element of
-#'   \code{splendid_model}.
-sequential_eval <- function(x) {
-  evals <- x %>%
-    purrr::imap(~ .x %>% magrittr::set_colnames(
-      paste(.y, colnames(.x), sep = "."))) %>%
-    unname() %>%
-    purrr::invoke(cbind, .) %>%
-    dplyr::mutate(measure = rownames(.)) %>%
-    dplyr::filter(grepl("f1\\.", measure)) %>%
-    dplyr::mutate(measure = gsub("f1\\.", "", measure)) %>%
-    dplyr::rename(class = measure) %>%
-    tidyr::gather(score, value, 1:4) %>%
-    tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
-    dplyr::select(model, boot, class, value)
-  evals
-}
-
-
-#' Prepare data for sequential model
-#'
-#' Processes the data output from combineResults.R into model.rank object
-#' required sequential input
-#'
-#' @param x data frame with F1-score of each model on each class derived from
-#'   \code{sequential_eval}
-#' @param boxplot if \code{TRUE}, boxplots are shown.
-#' @return data frame with top models for each class ranked. A figure is also
-#'   returned showing boxplots of F1-score by class and algorithm.
-sequential_rank <- function(x, boxplot = FALSE) {
-
-  tidy_evals <- sequential_eval(x)
-
-  if (boxplot) {
-    p <- tidy_evals %>%
-      ggplot(aes(y = value, x = class, fill = model)) +
-      geom_boxplot(alpha = 0.6) +
-      facet_wrap(~model) +
-      theme_bw() +
-      labs(y = "F1-score")
-    print(p)
-  }
-
-  model_ranks <- tidy_evals %>%
-    dplyr::group_by(class, model) %>%
-    dplyr::summarise(accuracy = mean(value)) %>%
-    dplyr::group_by(class) %>%
-    dplyr::filter(accuracy == max(accuracy)) %>%
-    dplyr::arrange(desc(accuracy)) %>%
-    cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-accuracy)
-  model_ranks
-}
-
 #' Sequentially train top ranked algorithms on each class ordered by class
-#' performance
+#' performance and predict a given class using the sequentially trained fits.
+#'
+#' \code{sequential_train} sequentially trains One-Vs-All models until all
+#' classes have been classified. Hence for \code{n} classes, there are \code{n -
+#' 1} sequential fits. \code{sequential_pred} predicts class membership for each
+#' One-Vs-All sequential model. Performance is evaluated on by-class F1-scores,
+#' since these are better for evaluation than other metrics such as accuracy,
+#' precision, and recall.
 #'
 #' @inheritParams splendid_ensemble
+#' @param fit list of fitted models from \code{sequential_train}
 #'
-#' @return (list) list of fits over ranked sequence
+#' @return \code{sequential_train} returns a list of fits over the top-ranked
+#'   sequence.
+#' @return \code{sequential_pred} returns a list of two elements
+#' \item{pred}{predicted sequential probabilities}
+#' \item{error}{confusion matrices for each class}
+#' @name sequential
+#' @author Dustin Johnson, Derek Chiu
 #' @export
 #' @examples
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "slda"))
-#' sequential_train(sm, hgsc, class)
+#' st <- sequential_train(sm, hgsc, class)
+#' sp <- sequential_pred(st, sm, hgsc, class)
 sequential_train <- function(sm, data, class) {
   # initialize objects
   model.rank <- sequential_rank(sm$evals)
@@ -95,21 +54,8 @@ sequential_train <- function(sm, data, class) {
   fits %>% purrr::set_names(model.rank$class[seq_len(nseq)])
 }
 
-#' Sequentially predict a given class using the sequentially trained fits
-#'
-#' @param fit list of fitted models from \code{sequential_train}
-#' @inheritParams sequential_train
-#'
-#' @return list of two elements
-#'    pred: (list) predicted sequential probabilities
-#'    error: (list) confusion matrices for each class
+#' @name sequential
 #' @export
-#' @examples
-#' data(hgsc)
-#' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
-#' sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "slda"))
-#' st <- sequential_train(sm, hgsc, class)
-#' sp <- sequential_pred(st, sm, hgsc, class)
 sequential_pred <- function(fit, sm, data, class) {
 
   # initialize objects
@@ -140,4 +86,51 @@ sequential_pred <- function(fit, sm, data, class) {
     dat.temp <- dat.class.combine %>% select(-c(seq_len(ncol(class.temp)), pred))
   }
   list(pred = preds, error = confmat)
+}
+
+#' Rank top models for each sequentially fitted class based on maximum average
+#' F1-score across bootstrap replicates.
+#' @inheritParams sequential_ensemble
+#' @param boxplot if \code{TRUE}, boxplots are shown.
+#' @noRd
+sequential_rank <- function(x, boxplot = FALSE) {
+  tidy_evals <- sequential_eval(x)
+  if (boxplot) {
+    p <- tidy_evals %>%
+      ggplot(aes(y = value, x = class, fill = model)) +
+      geom_boxplot(alpha = 0.6) +
+      facet_wrap(~model) +
+      theme_bw() +
+      labs(y = "F1-score")
+    print(p)
+  }
+  model_ranks <- tidy_evals %>%
+    dplyr::group_by(class, model) %>%
+    dplyr::summarise(accuracy = mean(value)) %>%
+    dplyr::group_by(class) %>%
+    dplyr::filter(accuracy == max(accuracy)) %>%
+    dplyr::arrange(desc(accuracy)) %>%
+    cbind(rank = seq_len(nrow(.)), .) %>%
+    dplyr::select(-accuracy)
+  model_ranks
+}
+
+#' Extract by-class F1-scores for each model and bootstrap replicate in tidy
+#' format.
+#' @inheritParams splendid_ensemble
+#' @noRd
+sequential_eval <- function(sm) {
+  evals <- sm %>%
+    purrr::imap(~ .x %>% magrittr::set_colnames(
+      paste(.y, colnames(.x), sep = "."))) %>%
+    unname() %>%
+    purrr::invoke(cbind, .) %>%
+    dplyr::mutate(measure = rownames(.)) %>%
+    dplyr::filter(grepl("f1\\.", measure)) %>%
+    dplyr::mutate(measure = gsub("f1\\.", "", measure)) %>%
+    dplyr::rename(class = measure) %>%
+    tidyr::gather(score, value, 1:4) %>%
+    tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
+    dplyr::select(model, boot, class, value)
+  evals
 }
