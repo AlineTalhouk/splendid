@@ -47,3 +47,14 @@ binarize <- function(x) {
     purrr::prepend(list(class = as.character(cl))) %>%
     data.frame(stringsAsFactors = FALSE)
 }
+
+#' Confusion matrix
+#' @noRd
+conf_mat <- function(class.true, class.pred)
+  as.matrix(table(class.true, class.pred))
+
+#' Class error
+#' @noRd
+class_error <- function(confmat) {
+  1 - (sum(diag(confmat)) / sum(confmat))
+}
