@@ -70,4 +70,3 @@ training_id <- function(data, class, n) {
   else
     return(train.idx[all.cl])
 }
-
