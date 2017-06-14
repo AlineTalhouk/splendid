@@ -41,7 +41,7 @@ evaluation <- function(x, y, plot = FALSE) {
   }
 
   # Multiclass confusion matrix with actual as rows, predicted as columns
-  cm <- as.matrix(table(Actual = x, Predicted = y))
+  cm <- conf_mat(x, y)
   ocm <- ova(cm)  # One Vs. All confusion matrices
   socm <- purrr::reduce(ocm, `+`)  # Element-wise sum of ocm
 
