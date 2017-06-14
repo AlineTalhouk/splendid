@@ -29,9 +29,8 @@
 #' sp <- sequential_pred(st, sm, hgsc, class)
 sequential_train <- function(sm, data, class) {
   # prepare data
-  spp <- sequential_prepare(sm, class)
-  model_rank <- spp[["model_rank"]]
-  class_bin <- spp[["class_bin"]]
+  model_rank <- sequential_rank(sm[["evals"]])
+  class_bin <- sequential_binarize(model_rank, class)
 
   # storage vector
   fits <- purrr::list_along(class_bin) %>%
@@ -51,10 +50,10 @@ sequential_train <- function(sm, data, class) {
     )
 
     # drop class already fit and move to next binary fit
-    cl.rm <- class != cl
-    data <- data[cl.rm, ]
-    class_bin <- class_bin[cl.rm, ]
-    class <- class[cl.rm]
+    cl.keep <- class != cl
+    data <- data[cl.keep, ]
+    class_bin <- class_bin[cl.keep, ]
+    class <- class[cl.keep]
   }
   fits
 }
@@ -63,9 +62,8 @@ sequential_train <- function(sm, data, class) {
 #' @export
 sequential_pred <- function(fit, sm, data, class) {
   # prepare data
-  spp <- sequential_prepare(sm, class)
-  model_rank <- spp[["model_rank"]]
-  class_bin <- spp[["class_bin"]]
+  model_rank <- sequential_rank(sm[["evals"]])
+  class_bin <- sequential_binarize(model_rank, class)
 
   # storage vectors
   preds <- cm <- purrr::list_along(class_bin) %>%
@@ -75,8 +73,7 @@ sequential_pred <- function(fit, sm, data, class) {
   for (rank_i in seq_along(class_bin)) {
     # predict classes sequentially according to rank
     prob <- prediction(mod = fit[[rank_i]], data = data,
-                       test.id = seq_len(nrow(data)),
-                       class = class) %@% "prob"
+                       test.id = seq_len(nrow(data)), class = class) %@% "prob"
     if (is.null(colnames(prob))) colnames(prob) <- c("0", names(fit)[rank_i])
     preds[[rank_i]] <- prob
     pred <- apply(prob, 1, function(x) names(x)[which.max(x)])
@@ -87,25 +84,12 @@ sequential_pred <- function(fit, sm, data, class) {
     attr(cm[[rank_i]], "error") <- class_error(cm[[rank_i]])
 
     # drop classes predicted for next sequential step
-    cl.rm <- pred != cl
-    data <- data[cl.rm, ]
-    class_bin <- class_bin[cl.rm, ]
-    class <- class[cl.rm]
+    cl.keep <- pred != cl
+    data <- data[cl.keep, ]
+    class_bin <- class_bin[cl.keep, ]
+    class <- class[cl.keep]
   }
   dplyr::lst(preds, cm)
-}
-
-#' Prepare binarized classes and ranked models for sequential algorithm
-#' @noRd
-sequential_prepare <- function(sm, class) {
-  # rank classes/models, binarize classes and combine the last two ranked
-  model_rank <- sequential_rank(sm[["evals"]])
-  last_two <- tail(model_rank[["class"]], 2)
-  class_bin <- class %>%
-    binarize() %>%
-    tidyr::unite_(col = last_two[1], from = last_two) %>%
-    dplyr::mutate_at(.vars = last_two[1], .funs = funs(gsub("_0|0_", "", .)))
-  dplyr::lst(model_rank, class_bin)
 }
 
 #' Rank top models for each sequentially fitted class based on maximum average
@@ -153,4 +137,17 @@ sequential_eval <- function(sm) {
     tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
     dplyr::select(model, boot, class, value)
   evals
+}
+
+#' Prepare binarized classes from ranked models for sequential algorithm
+#' @param mr output from \code{sequential_rank}
+#' @noRd
+sequential_binarize <- function(mr, class) {
+  # Binarize classes and combine the last two ranked classes
+  last_two <- tail(mr[["class"]], 2)
+  class_bin <- class %>%
+    binarize() %>%
+    tidyr::unite_(col = last_two[1], from = last_two) %>%
+    dplyr::mutate_at(.vars = last_two[1], .funs = funs(gsub("_0|0_", "", .)))
+  class_bin
 }
