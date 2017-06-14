@@ -25,7 +25,7 @@ sequential_pred(fit, sm, data, class)
   sequence.
 
 \code{sequential_pred} returns a list of two elements
-\item{preds}{predicted sequential probabilities}
+\item{prob}{predicted sequential probabilities}
 \item{cm}{confusion matrices for each class}
 }
 \description{
