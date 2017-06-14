@@ -28,30 +28,32 @@
 #' st <- sequential_train(sm, hgsc, class)
 #' sp <- sequential_pred(st, sm, hgsc, class)
 sequential_train <- function(sm, data, class) {
-  # initialize objects
-  class.bin <- binarize(class)
-  model.rank <- sequential_rank(sm$evals)
-  nseq <- nrow(model.rank) - 1
-  fits <- vector("list", nseq) %>%
-    purrr::set_names(model.rank$class[seq_len(nseq)])
+  # prepare data
+  spp <- sequential_prepare(sm, class)
+  model_rank <- spp[["model_rank"]]
+  class_bin <- spp[["class_bin"]]
+
+  # storage vector
+  fits <- purrr::list_along(class_bin) %>%
+    purrr::set_names(head(model_rank[["class"]], -1))
 
   # sequentially train
-  for (rank_i in seq_len(nseq)) {
+  for (rank_i in seq_along(class_bin)) {
     # class and alg to fit ova model on
-    cl <- model.rank[["class"]][rank_i]
-    alg <- model.rank[["model"]][rank_i]
+    cl <- model_rank[["class"]][rank_i]
+    alg <- model_rank[["model"]][rank_i]
 
     # fit ranked model sequentially for each class
     fits[[rank_i]] <- classification(
       data = data,
-      class = class.bin[, cl],
+      class = class_bin[, cl],
       algs = alg
     )
 
     # drop class already fit and move to next binary fit
     cl.rm <- class != cl
     data <- data[cl.rm, ]
-    class.bin <- class.bin[cl.rm, ]
+    class_bin <- class_bin[cl.rm, ]
     class <- class[cl.rm]
   }
   fits
@@ -60,15 +62,17 @@ sequential_train <- function(sm, data, class) {
 #' @name sequential
 #' @export
 sequential_pred <- function(fit, sm, data, class) {
-  # initialize objects
-  class.bin <- binarize(class)
-  model.rank <- sequential_rank(sm$evals)
-  nseq <- nrow(model.rank) - 1
-  preds <- cm <- vector("list", nseq) %>%
-    purrr::set_names(model.rank$class[seq_len(nseq)])
+  # prepare data
+  spp <- sequential_prepare(sm, class)
+  model_rank <- spp[["model_rank"]]
+  class_bin <- spp[["class_bin"]]
+
+  # storage vectors
+  preds <- cm <- purrr::list_along(class_bin) %>%
+    purrr::set_names(names(fit))
 
   # sequential prediction
-  for (rank_i in seq_len(nseq)) {
+  for (rank_i in seq_along(class_bin)) {
     # predict classes sequentially according to rank
     prob <- prediction(mod = fit[[rank_i]], data = data,
                        test.id = seq_len(nrow(data)),
@@ -78,17 +82,30 @@ sequential_pred <- function(fit, sm, data, class) {
     pred <- apply(prob, 1, function(x) names(x)[which.max(x)])
 
     # confustion matrix for class prediction and class error as attribute
-    cl <- model.rank[["class"]][rank_i]
-    cm[[rank_i]] <- conf_mat(class.bin[, cl], pred)
+    cl <- model_rank[["class"]][rank_i]
+    cm[[rank_i]] <- conf_mat(class_bin[, cl], pred)
     attr(cm[[rank_i]], "error") <- class_error(cm[[rank_i]])
 
     # drop classes predicted for next sequential step
     cl.rm <- pred != cl
     data <- data[cl.rm, ]
-    class.bin <- class.bin[cl.rm, ]
+    class_bin <- class_bin[cl.rm, ]
     class <- class[cl.rm]
   }
   dplyr::lst(preds, cm)
+}
+
+#' Prepare binarized classes and ranked models for sequential algorithm
+#' @noRd
+sequential_prepare <- function(sm, class) {
+  # rank classes/models, binarize classes and combine the last two ranked
+  model_rank <- sequential_rank(sm[["evals"]])
+  last_two <- tail(model_rank[["class"]], 2)
+  class_bin <- class %>%
+    binarize() %>%
+    tidyr::unite_(col = last_two[1], from = last_two) %>%
+    dplyr::mutate_at(.vars = last_two[1], .funs = funs(gsub("_0|0_", "", .)))
+  dplyr::lst(model_rank, class_bin)
 }
 
 #' Rank top models for each sequentially fitted class based on maximum average
@@ -96,8 +113,8 @@ sequential_pred <- function(fit, sm, data, class) {
 #' @inheritParams sequential_ensemble
 #' @param boxplot if \code{TRUE}, boxplots are shown.
 #' @noRd
-sequential_rank <- function(x, boxplot = FALSE) {
-  tidy_evals <- sequential_eval(x)
+sequential_rank <- function(sm, boxplot = FALSE) {
+  tidy_evals <- sequential_eval(sm)
   if (boxplot) {
     p <- tidy_evals %>%
       ggplot(aes(y = value, x = class, fill = model)) +
@@ -132,7 +149,7 @@ sequential_eval <- function(sm) {
     dplyr::filter(grepl("f1\\.", measure)) %>%
     dplyr::mutate(measure = gsub("f1\\.", "", measure)) %>%
     dplyr::rename(class = measure) %>%
-    tidyr::gather(score, value, 1:4) %>%
+    tidyr::gather(score, value, -class) %>%
     tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
     dplyr::select(model, boot, class, value)
   evals
