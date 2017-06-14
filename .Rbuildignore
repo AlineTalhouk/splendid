@@ -7,5 +7,3 @@
 ^spld_select.R$
 ^README\.Rmd$
 ^README-.*\.png$
-^error examples$
-^sequential_oneVsAll$
