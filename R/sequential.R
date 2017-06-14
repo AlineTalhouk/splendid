@@ -100,7 +100,7 @@ sequential_rank <- function(sm, boxplot = FALSE) {
   tidy_evals <- sequential_eval(sm)
   if (boxplot) {
     p <- tidy_evals %>%
-      ggplot(aes(y = value, x = class, fill = model)) +
+      ggplot(aes_(y = ~value, x = ~class, fill = ~model)) +
       geom_boxplot(alpha = 0.6) +
       facet_wrap(~model) +
       theme_bw() +
@@ -108,13 +108,13 @@ sequential_rank <- function(sm, boxplot = FALSE) {
     print(p)
   }
   model_ranks <- tidy_evals %>%
-    dplyr::group_by(class, model) %>%
-    dplyr::summarise(accuracy = mean(value)) %>%
-    dplyr::group_by(class) %>%
-    dplyr::filter(accuracy == max(accuracy)) %>%
-    dplyr::arrange(desc(accuracy)) %>%
+    dplyr::group_by(.data$class, .data$model) %>%
+    dplyr::summarise(!!"accuracy" := mean(.data$value)) %>%
+    dplyr::group_by(!!quo(class)) %>%
+    dplyr::filter(.data$accuracy == max(.data$accuracy)) %>%
+    dplyr::arrange(desc(.data$accuracy)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-accuracy)
+    dplyr::select(-.data$accuracy)
   model_ranks
 }
 
@@ -128,13 +128,14 @@ sequential_eval <- function(sm) {
       paste(.y, colnames(.x), sep = "."))) %>%
     unname() %>%
     purrr::invoke(cbind, .) %>%
-    dplyr::mutate(measure = rownames(.)) %>%
-    dplyr::filter(grepl("f1\\.", measure)) %>%
-    dplyr::mutate(measure = gsub("f1\\.", "", measure)) %>%
-    dplyr::rename(class = measure) %>%
-    tidyr::gather(score, value, -class) %>%
-    tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
-    dplyr::select(model, boot, class, value)
+    dplyr::mutate(!!"measure" := rownames(.)) %>%
+    dplyr::filter(grepl("f1\\.", .data$measure)) %>%
+    dplyr::mutate(!!"measure" := gsub("f1\\.", "", .data$measure)) %>%
+    dplyr::rename("class" = "measure") %>%
+    tidyr::gather_("score", "value",
+                   grep("class", names(.), value = TRUE, invert = TRUE)) %>%
+    tidyr::separate_("score", c("model", "boot"), sep = "\\.") %>%
+    dplyr::select("model", "boot", "class", "value")
   evals
 }
 
