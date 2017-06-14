@@ -16,7 +16,7 @@
 #' @return \code{sequential_train} returns a list of fits over the top-ranked
 #'   sequence.
 #' @return \code{sequential_pred} returns a list of two elements
-#' \item{preds}{predicted sequential probabilities}
+#' \item{prob}{predicted sequential probabilities}
 #' \item{cm}{confusion matrices for each class}
 #' @name sequential
 #' @author Dustin Johnson, Derek Chiu
@@ -28,12 +28,11 @@
 #' st <- sequential_train(sm, hgsc, class)
 #' sp <- sequential_pred(st, sm, hgsc, class)
 sequential_train <- function(sm, data, class) {
-  # prepare data
+  # prepare data and setup storage object(s)
   model_rank <- sequential_rank(sm[["evals"]])
   class_bin <- sequential_binarize(model_rank, class)
-
-  # storage vector
-  fits <- purrr::list_along(class_bin) %>%
+  fits <- class_bin %>%
+    purrr::list_along() %>%
     purrr::set_names(head(model_rank[["class"]], -1))
 
   # sequentially train
@@ -43,11 +42,8 @@ sequential_train <- function(sm, data, class) {
     alg <- model_rank[["model"]][rank_i]
 
     # fit ranked model sequentially for each class
-    fits[[rank_i]] <- classification(
-      data = data,
-      class = class_bin[, cl],
-      algs = alg
-    )
+    fits[[rank_i]] <- class_bin[[cl]] %>%
+      classification(data = data, algs = alg)
 
     # drop class already fit and move to next binary fit
     cl.keep <- class != cl
@@ -61,27 +57,30 @@ sequential_train <- function(sm, data, class) {
 #' @name sequential
 #' @export
 sequential_pred <- function(fit, sm, data, class) {
-  # prepare data
+  # prepare data and setup storage object(s)
   model_rank <- sequential_rank(sm[["evals"]])
   class_bin <- sequential_binarize(model_rank, class)
-
-  # storage vectors
-  preds <- cm <- purrr::list_along(class_bin) %>%
+  prob <- cm <- class_bin %>%
+    purrr::list_along() %>%
     purrr::set_names(names(fit))
 
   # sequential prediction
   for (rank_i in seq_along(class_bin)) {
     # predict classes sequentially according to rank
-    prob <- prediction(mod = fit[[rank_i]], data = data,
-                       test.id = seq_len(nrow(data)), class = class) %@% "prob"
-    if (is.null(colnames(prob))) colnames(prob) <- c("0", names(fit)[rank_i])
-    preds[[rank_i]] <- prob
-    pred <- apply(prob, 1, function(x) names(x)[which.max(x)])
+    prob[[rank_i]] <- fit[[rank_i]] %>%
+      prediction(data = data, test.id = seq_len(nrow(data)), class = class) %>%
+      `%@%`("prob") %>%
+      purrr::when(
+        is.null(colnames(.)) ~
+          magrittr::set_colnames(., c("0", names(fit)[rank_i])),
+        ~ .
+      )
+    pred <- apply(prob[[rank_i]], 1, function(x) names(x)[which.max(x)])
 
     # confustion matrix for class prediction and class error as attribute
     cl <- model_rank[["class"]][rank_i]
-    cm[[rank_i]] <- conf_mat(class_bin[, cl], pred)
-    attr(cm[[rank_i]], "error") <- class_error(cm[[rank_i]])
+    cm[[rank_i]] <- conf_mat(class_bin[[cl]], pred) %>%
+      structure(error = class_error(.))
 
     # drop classes predicted for next sequential step
     cl.keep <- pred != cl
@@ -89,7 +88,7 @@ sequential_pred <- function(fit, sm, data, class) {
     class_bin <- class_bin[cl.keep, ]
     class <- class[cl.keep]
   }
-  dplyr::lst(preds, cm)
+  dplyr::lst(prob, cm)
 }
 
 #' Rank top models for each sequentially fitted class based on maximum average
@@ -140,7 +139,7 @@ sequential_eval <- function(sm) {
 }
 
 #' Prepare binarized classes from ranked models for sequential algorithm
-#' @param mr output from \code{sequential_rank}
+#' @param mr model_rank output from \code{sequential_rank}
 #' @noRd
 sequential_binarize <- function(mr, class) {
   # Binarize classes and combine the last two ranked classes
