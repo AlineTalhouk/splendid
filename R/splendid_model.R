@@ -17,7 +17,7 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
 
   # Classification algorithms to use and their model function calls
   algs <- algorithms %||% ALG.NAME %>%
-    stats::setNames(., .)  # if null, use all
+    purrr::set_names()  # if null, use all
 
   # Apply training sets to models and predict on the test sets
   models <- algs %>% purrr::map(
