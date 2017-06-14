@@ -2,14 +2,14 @@
 #'
 #' @inheritParams splendid
 #' @param sm a \code{splendid_model} object
-#' @param top the number of highest-performing algorithms to retain for ensemble
 #' @export
 #' @examples
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
-#' sm <- splendid_model(hgsc, class, n = 2, algorithms = c("svm", "lda"))
+#' sm <- splendid_model(hgsc, class, n = 3, algorithms = c("xgboost", "lda"))
 #' se <- splendid_ensemble(sm, hgsc, class)
-splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE) {
+splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE,
+                              sequential = FALSE) {
   bests <- sm$evals %>%
     do.call(cbind, .) %>%
     t() %>%
@@ -37,7 +37,13 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE) {
     rev() %>%
     head(top) %>%
     names()
-  ensemble_mods <- purrr::map(ensemble_algs, ~ classification(data, class, .x,
-                                                              rfe = rfe))
-  dplyr::lst(bests, ensemble_algs, ensemble_mods)
+  ensemble_mods <- ensemble_algs %>%
+    purrr::map(classification, data = data, class = class, rfe = rfe)
+  if (sequential) {
+    seq_mods <- sequential_train(sm, data, class)
+    seq_preds <- sequential_pred(seq_mods, sm, data, class)
+  } else {
+    seq_mods <- seq_preds <- NULL
+  }
+  dplyr::lst(bests, ensemble_algs, ensemble_mods, seq_mods, seq_preds)
 }

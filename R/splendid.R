@@ -37,6 +37,9 @@
 #'   are prefixed with the string \code{ova_}.
 #' @param threshold a numeric indicating the lowest maximum class probability
 #'   below which a sample will be unclassified.
+#' @param top the number of highest-performing algorithms to retain for ensemble
+#' @param sequential logical; if \code{TRUE}, a sequential model is fit on the
+#'   algorithms that had the best performance with one-vs-all classification.
 #' @param ... additional arguments to \code{splendid_model}
 #' @return A nested list with five elements
 #' \item{models}{A list with an element for each algorithm, each of which is a
@@ -65,9 +68,11 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "svm"))
 splendid <- function(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
-                     ova = FALSE, threshold = 0.5, ...) {
+                     ova = FALSE, threshold = 0.5, top = 3, sequential = FALSE,
+                     ...) {
   sm <- splendid_model(data = data, class = class, n = n,
                        algorithms = algorithms, rfe = rfe, ova = ova, ...)
-  se <- splendid_ensemble(sm = sm, data = data, class = class)
+  se <- splendid_ensemble(sm = sm, data = data, class = class, top = top,
+                          sequential = sequential)
   c(sm, se)
 }
