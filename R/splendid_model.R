@@ -16,30 +16,21 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   test.idx <- purrr::map(train.idx, ~ which(!seq_len(nrow(data)) %in% .x))
 
   # Classification algorithms to use and their model function calls
-  algs <- algorithms %||% ALG.NAME %>%
-    purrr::set_names()  # if null, use all
+  algs <- algorithms %||% ALG.NAME %>% purrr::set_names()  # if null, use all
 
   # Apply training sets to models and predict on the test sets
-  models <- algs %>% purrr::map(
-    ~ purrr::map(train.idx, function(id)
-      classification(data[id, ], class[id], .x, rfe, ova = FALSE)))
-  preds <- models %>% purrr::map(
-    ~ purrr::pmap(list(.x, test.idx, train.idx),
-                  prediction, data = data, class = class,
-                  threshold = threshold, ...))
+  models <- sp_mod(classification, train.idx, data, class, algs, rfe,
+                   ova = FALSE)
+  preds <- sp_pred(prediction, models, test.idx, train.idx, data, class,
+                   threshold)
 
-  # Run One-Vs-All models if specified
+  # Train and predict One-Vs-All models if specified
   if (ova) {
-    ova_names <- paste("ova", algs, sep = "_")
-    ova_models <- algs %>% purrr::map(
-      ~ purrr::map(train.idx, function(id)
-        ova_train(data[id, ], class[id], .x, rfe, ova = TRUE))) %>%
-      purrr::set_names(ova_names)
-    ova_preds <- ova_models %>% purrr::map(
-      ~ purrr::pmap(list(.x, test.idx, train.idx),
-                    ova_predict, data = data, class = class,
-                    threshold = threshold, ...)) %>%
-      purrr::set_names(ova_names)
+    ova_models <- sp_mod(ova_train, train.idx, data, class, algs, rfe,
+                         ova = TRUE) %>%
+      purrr::set_names(paste("ova", algs, sep = "_"))
+    ova_preds <- sp_pred(ova_predict, ova_models, test.idx, train.idx, data,
+                         class, threshold)
 
     # Combine results with conventional approach
     models <- c(models, ova_models)
@@ -55,6 +46,24 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
     purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n)))
 
   dplyr::lst(models, preds, evals)
+}
+
+#' Train models based on function f
+#' @noRd
+sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova) {
+  mod <- algorithms %>% purrr::map(
+    ~ purrr::map(train.id, function(id)
+      f(data[id, ], class[id], .x, rfe, ova)))
+  mod
+}
+
+#' Make prediction based on function f
+#' @noRd
+sp_pred <- function(f, model, test.id, train.id, data, class, threshold, ...) {
+  pred <- model %>% purrr::map(
+    ~ purrr::pmap(list(.x, test.id, train.id),
+                  f, data = data, class = class, threshold = threshold, ...))
+  pred
 }
 
 #' Recurrsively create training set indices ensuring class representation
