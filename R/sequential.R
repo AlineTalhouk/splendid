@@ -39,11 +39,12 @@ sequential_train <- function(sm, data, class) {
   for (rank_i in seq_along(class_bin)) {
     # class and alg to fit ova model on
     cl <- model_rank[["class"]][rank_i]
-    alg <- model_rank[["model"]][rank_i]
+    algs <- model_rank[["model"]][rank_i]
+    ova <- if (algs == "knn") TRUE else FALSE  # always turn on ova for knn
 
     # fit ranked model sequentially for each class
     fits[[rank_i]] <- class_bin[[cl]] %>%
-      classification(data = data, algs = alg)
+      classification(data = data, algs = algs, ova = ova)
 
     # drop class already fit and move to next binary fit
     cl.keep <- class != cl
@@ -68,7 +69,8 @@ sequential_pred <- function(fit, sm, data, class) {
   for (rank_i in seq_along(class_bin)) {
     # predict classes sequentially according to rank
     prob[[rank_i]] <- fit[[rank_i]] %>%
-      prediction(data = data, test.id = seq_len(nrow(data)), class = class) %>%
+      prediction(data = data, test.id = seq_len(nrow(data)), class = class,
+                 train.id = seq_len(nrow(data))) %>%
       `%@%`("prob") %>%
       purrr::when(
         is.null(colnames(.)) ~
@@ -83,7 +85,7 @@ sequential_pred <- function(fit, sm, data, class) {
       structure(error = class_error(.))
 
     # drop classes predicted for next sequential step
-    cl.keep <- pred != cl
+    cl.keep <- class != cl
     data <- data[cl.keep, ]
     class_bin <- class_bin[cl.keep, ]
     class <- class[cl.keep]
@@ -108,10 +110,11 @@ sequential_rank <- function(sm, boxplot = FALSE) {
     print(p)
   }
   model_ranks <- tidy_evals %>%
-    dplyr::group_by(.data$class, .data$model) %>%
-    dplyr::summarise(!!"accuracy" := mean(.data$value)) %>%
+    dplyr::group_by(.data$class, .data$model, .data$ova) %>%
+    dplyr::summarise(!!"accuracy" := mean(.data$value, na.rm = TRUE)) %>%
     dplyr::group_by(!!quo(class)) %>%
-    dplyr::filter(.data$accuracy == max(.data$accuracy)) %>%
+    dplyr::filter(.data$accuracy == max(.data$accuracy),
+                  !duplicated(.data$accuracy)) %>%
     dplyr::arrange(desc(.data$accuracy)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
     dplyr::select(-.data$accuracy)
@@ -124,9 +127,6 @@ sequential_rank <- function(sm, boxplot = FALSE) {
 #' @noRd
 sequential_eval <- function(sm) {
   evals <- sm %>%
-    purrr::imap(~ .x %>% magrittr::set_colnames(
-      paste(.y, colnames(.x), sep = "."))) %>%
-    unname() %>%
     purrr::invoke(cbind, .) %>%
     dplyr::mutate(!!"measure" := rownames(.)) %>%
     dplyr::filter(grepl("f1\\.", .data$measure)) %>%
@@ -135,7 +135,9 @@ sequential_eval <- function(sm) {
     tidyr::gather_("score", "value",
                    grep("class", names(.), value = TRUE, invert = TRUE)) %>%
     tidyr::separate_("score", c("model", "boot"), sep = "\\.") %>%
-    dplyr::select("model", "boot", "class", "value")
+    dplyr::mutate(!!"ova" := grepl("ova", model),
+                  !!"model" := gsub("ova_", "", model)) %>%
+    dplyr::select("model", "ova", "boot", "class", "value")
   evals
 }
 
