@@ -118,12 +118,12 @@ prediction.knn <- function(mod, data, test.id, threshold = 0.5, class, train.id,
                            ...) {
   if (inherits(mod, "ova")) {  # for ova case
     lev <- as.character(unlist(mod))
-    class <- factor(ifelse(class == lev, lev, 0))
+    if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
   }
   kdist <- knnflex::knn.dist(data[c(train.id, test.id), ])
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
-                  y = class[train.id], dist.matrix = kdist, k = 5)
+                  y = factor(class[train.id]), dist.matrix = kdist, k = 5)
   pred <- unname(factor(purrr::invoke(knnflex::knn.predict, kparams)))
   prob <- t(purrr::invoke(knnflex::knn.probability, kparams))
   ct <- class_threshold(prob, threshold = threshold)
@@ -137,7 +137,7 @@ prediction.svm <- function(mod, data, test.id, threshold = 0.5, class, ...) {
   pred <- unname(prediction.default(mod, data, test.id, probability = TRUE))
   prob <- attr(pred, "probabilities")
   if (!("0" %in% mod$levels))
-    prob <- prob[, order(colnames(prob), levels(class))]
+    prob <- prob[, order(colnames(prob), names(table(class)))]
   ct <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
   structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
