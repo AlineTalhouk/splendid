@@ -17,9 +17,8 @@ in \code{\link{splendid}} for a list of choices.}
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
 
-\item{ova}{logical; if \code{TRUE}, a One-Vs-All classification approach is
-performed for every algorithm in \code{algorithms}. The relevant results
-are prefixed with the string \code{ova_}.}
+\item{ova}{logical; if \code{TRUE}, use the One-Vs-All approach for the
+\code{knn} algorithm.}
 }
 \value{
 list of binary classifier fits on each class
