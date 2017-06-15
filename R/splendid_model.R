@@ -26,10 +26,10 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
 
   # Train and predict One-Vs-All models if specified
   if (ova) {
-    ova_models <- sp_mod(ova_train, train.idx, data, class, algs, rfe,
+    ova_models <- sp_mod(ova_classification, train.idx, data, class, algs, rfe,
                          ova = TRUE) %>%
       purrr::set_names(paste("ova", algs, sep = "_"))
-    ova_preds <- sp_pred(ova_predict, ova_models, test.idx, train.idx, data,
+    ova_preds <- sp_pred(ova_prediction, ova_models, test.idx, train.idx, data,
                          class, threshold)
 
     # Combine results with conventional approach
