@@ -66,7 +66,7 @@
 #' data(hgsc)
 #' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
-#' "svm"))
+#' "xgboost"))
 splendid <- function(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
                      ova = FALSE, threshold = 0.5, top = 3, sequential = FALSE,
                      ...) {
