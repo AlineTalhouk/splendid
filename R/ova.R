@@ -19,7 +19,7 @@ ova_classification <- function(data, class, algs, rfe, ova) {
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_prediction <- function(fits, data, test.id, class, train.id,
-                        threshold = 0.5, ...) {
+                           threshold = 0.5, ...) {
   prob <- fits %>%
     purrr::map(prediction, data = data, test.id = test.id, class = class,
                train.id = train.id) %>%
