@@ -111,13 +111,13 @@ sequential_rank <- function(sm, boxplot = FALSE) {
   }
   model_ranks <- tidy_evals %>%
     dplyr::group_by(.data$class, .data$model, .data$ova) %>%
-    dplyr::summarise(!!"accuracy" := mean(.data$value, na.rm = TRUE)) %>%
+    dplyr::summarise(!!"metric" := mean(.data$value, na.rm = TRUE)) %>%
     dplyr::group_by(!!quo(class)) %>%
-    dplyr::filter(.data$accuracy == max(.data$accuracy),
-                  !duplicated(.data$accuracy)) %>%
-    dplyr::arrange(desc(.data$accuracy)) %>%
+    dplyr::filter(.data$metric == max(.data$metric),
+                  !duplicated(.data$metric)) %>%
+    dplyr::arrange(desc(.data$metric)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-.data$accuracy)
+    dplyr::select(-.data$metric)
   model_ranks
 }
 
@@ -135,8 +135,8 @@ sequential_eval <- function(sm) {
     tidyr::gather_("score", "value",
                    grep("class", names(.), value = TRUE, invert = TRUE)) %>%
     tidyr::separate_("score", c("model", "boot"), sep = "\\.") %>%
-    dplyr::mutate(!!"ova" := grepl("ova", model),
-                  !!"model" := gsub("ova_", "", model)) %>%
+    dplyr::mutate(!!"ova" := grepl("ova", .data$model),
+                  !!"model" := gsub("ova_", "", .data$model)) %>%
     dplyr::select("model", "ova", "boot", "class", "value")
   evals
 }
