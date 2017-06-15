@@ -107,8 +107,9 @@ mcc <- function(C) {
                                                ~ C[.x[[1]], ] %*% C[, .x[[2]]]))
   den <- sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
                                          ~ C[.x[[1]], ] %*% t(C)[, .x[[2]]]))) *
-    sqrt(N ^ 2 - sum(purrr::map_dbl(rc, ~ t(C)[.x[[1]], ] %*% C[, .x[[2]]])))
-  return(num / den)
+    sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
+                                    ~ t(C)[.x[[1]], ] %*% C[, .x[[2]]])))
+  num / den
 }
 
 #' Create One-Vs-All confusion matrices
@@ -142,10 +143,9 @@ logloss <- function(x, pred.probs) {
 #' @noRd
 auc <- function(x, pred.probs) {
   # ui-constructor for multicap class
-  mcap.construct <- HandTill2001::multcap(response = x,
-                                          predicted = as.matrix(pred.probs))
-
-  # multi-class auc metric
-  auc.out <- HandTill2001::auc(mcap.construct)
-  return(auc.out)
+  mcap.construct <- HandTill2001::multcap(
+    response = x,
+    predicted = as.matrix(pred.probs)
+  )
+  HandTill2001::auc(mcap.construct)  # multi-class auc metric
 }
