@@ -35,8 +35,5 @@ ova_prediction <- function(fits, data, test.id, class, train.id,
     sum_to_one() %>%
     magrittr::set_rownames(rownames(data[test.id, ]))
   pred <- colnames(prob)[max.col(prob)]
-  ct <- class_threshold(prob, threshold = threshold)
-  cp <- class_proportion(ct)
-  structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
-            class.prop = cp)
+  prediction_output(pred, prob, class, test.id, threshold)
 }
