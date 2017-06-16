@@ -1,0 +1,125 @@
+---
+title: "Model Extensions"
+author: "Derek Chiu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model Extensions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	collapse = TRUE,
+	comment = "#>"
+)
+```
+
+## Introduction
+
+`splendid` supports two modelling extensions to how ensemble classification is performed. Both paradigms are constructed from a set of binary classifiers. The first extension is called the **one-vs-all** approach, where each class is compared to its complement. The second extension utilizes a **sequential algorithm** to build the ensemble classifier, assigning class membership sequentially, in the order of highest performance. Our goal is to provide the user additional options and flexibility with modelling, since there is no guarantee that prediction accuracy is improved.
+
+```{r load}
+# install.packages("devtools")
+# devtools::install_github("AlineTalhouk/splendid")
+library(splendid)
+library(knitr)
+data(hgsc)
+```
+
+## One-Vs-All
+
+To build a one-vs-all model, or `ova` model for short, we first need to create a binarized class matrix, where each class is compared to its complement. Take the `hgsc` data set for example. The first 10 classes as predicted by TCGA are:
+
+```{r hgsc_class}
+class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+head(class, 10)
+```
+
+The corresponding binarized class matrix is shown in Table 1. We denote a `"0"` meaning "not equal" to the class as indicated by the column name.
+
+```{r ova_class_binarize, echo=FALSE, results='asis'}
+kable(head(splendid:::binarize(class), 10), caption = "Table 1: Binarized class matrix for `ova`")
+```
+
+Classification proceeds in this fashion for every bootstrap replicate and algorithm, as specified in `splendid()`. However, whereas before we have one model fit, now there are four model fits at each iteration. Note that k-Nearest Neighbour classification gives the same results using the multiclass or `ova` approach because of its nonparametric nature.
+
+There is a bit of data manipulation required for obtaining the predicted class and probability matrix. Let K be the number of classes and N be the number of samples to classify. For each of the K fits, there is an N by 2 probability matrix from classifying *k* vs. *not k*, *k = 1, ..., K*. We extract the column of probabilities pertaining to *k* for each fit and construct an N by K probability matrix. Of course, the sum of probabilities for each sample would likely not equate to one. To normalize the probability matrix, we divide each row by its sum. Finally, the `ova` predicted class is taken as the largest probability from each row.
+
+The `ova` approach would hence produce a probability matrix that has a similar pattern to the conventional, multiclass approach but with *less extreme* values. This results in potentially more unclassified cases when we choose to threshold the predictions.
+
+## Sequential Algorithm
+
+The sequential algorithm follows a more complicated workflow. This is an ensemble method, meaning that we work with fitted models, predictions, and evaluation metrics, whereas the `ova` approach is integrated in the initial classification.
+
+By *sequential*, the idea is that we want to sequentially assign classes in a binary fashion, until all classes have been assigned. The diagram below is a simple example for a 4-class case.
+
+```{r sequential_tree, echo=FALSE}
+library(DiagrammeR)
+grViz("
+digraph sequential {
+
+ # add node statements
+ node [shape = box,
+       style = filled]
+ A [label = '1, 2, 3, 4', fillcolor = gray]
+ B [label = '3', fillcolor = tomato]
+ C [label = 'Not 3', fillcolor = red]
+ D [label = '4', fillcolor = lightblue]
+ E [label = 'Not 4', fillcolor = dodgerblue]
+ F [label = '1', fillcolor = yellow]
+ G [label = '2', fillcolor = green]
+
+ # add edge statements
+ A->B
+ A->C
+ C->D
+ C->E
+ E->F
+ E->G
+}")
+```
+
+Notice that in a 4-class case, there are only 3 fits (since the last binary classification class "2" is the same as class "Not 1"). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.
+
+Suppose we fit a set of classifiers with 2 bootstrap replicates on the `xgboost` and `rf` algorithms.
+
+```{r sequential_model}
+sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "rf"))
+```
+
+Table 2 shows the per-class F1-scores for model fitted and bootstrap replicate. An logical column indicates whether `ova` was used for the particular algorithm.
+
+```{r sequential_eval, echo=FALSE, results='asis'}
+kable(splendid:::sequential_eval(sm$evals), caption = "Table 2: Per-class F1-scores by model and bootstrap replicate")
+```
+
+We then calculate the average `value` across `model` and `boot` to obtain the mean F1-score across algorithms and replicates. The model associated with the *maximum* mean F1-score for a certain class will be used for its sequential algorithm. Finally, the sequence of fits is determined by descending magnitude of this maximum mean F1-score.
+
+Table 3 shows that the class "MES.C1" had the highest mean F1-score, and the model that produced it was `rf`, and so on. This means we first fit "MES.C1" vs. "Not MES.C1" using `rf`, then "IMM.C2" vs. "Not IMM.C2" using `xgboost`, and finally "PRO.C5" vs. "DIF.C4" using `rf`. The information in the last row of Table 3 is simply for reference.
+
+```{r sequential_rank, echo=FALSE, results='asis'}
+mr <- splendid:::sequential_rank(sm$evals, boxplot = FALSE)
+kable(mr, caption = "Table 3: Ranked classes and associated models")
+```
+
+A slightly different binarized class matrix is needed as a result:
+
+```{r sequential_binarize, echo=FALSE, results='asis'}
+kable(head(splendid:::sequential_binarize(mr, class), 10), caption = "Table 4: Binarized class matrix for sequential algorithm")
+```
+
+Table 4 is similar in nature to Table 1, except that the two "worst-classified" classes are grouped together (i.e. "PRO.C5" and "DIF.C4"). In each sequential fit, the nonzero rows are removed from the entire matrix and the classified class column is removed. This means in the final sequential fit, the matrix reduces to a single column of "PRO.C5" and "DIF.C4" values.
+
+The prediction output is generated from applying the sequential algorithm on the **full data**. We can extract the binarized probability matrices and also the 2-by-2 confusion matrices.
+
+## Usage
+
+The `ova` approach can be used in `splendid()` by setting `ova = TRUE`. For every algorithm specified in `algorithms`, an analogous `ova` version is implemented. All pertinent results are labelled with the string `ova_algorithm_name`.
+
+The `sequential` algorithm can be used to construct an ensemble classifier by setting `sequential = TRUE` in `splendid()`.
+
+Please read the function documentation for further details.

@@ -1,7 +1,7 @@
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.0.0.9011
-Date: 2017-06-12
+Version: 0.0.0.9012
+Date: 2017-06-16
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"),
@@ -37,12 +37,14 @@ Imports:
     grDevices,
     MLmetrics,
     forcats,
-    sda
+    sda,
+    rlang
 Suggests:
     stringr,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    DiagrammeR
 Remotes: Dasonk/knnflex
 License: MIT + file LICENSE
 URL: https://github.com/AlineTalhouk/splendid

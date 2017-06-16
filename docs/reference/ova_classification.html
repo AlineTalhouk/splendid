@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • splendid</title>
+<title>One-Vs-All training approach — ova_classification • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -36,7 +36,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -73,21 +73,64 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Vignette reference <small>version&nbsp;0.0.0.9012</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="ensemble_classification.html">Ensemble Classification using `splendid`</a></li>
-        <li><a href="model_extensions.html">Model Extensions</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>One-Vs-All training approach</h1>
     </div>
+
+    
+    <p>One-Vs-All training approach</p>
+    
+
+    <pre><span class='fu'>ova_classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>, <span class='no'>rfe</span>, <span class='no'>ova</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>data object with rows as samples, columns as features</p></td>
+    </tr>
+    <tr>
+      <th>class</th>
+      <td><p>true/reference class vector used for supervised learning</p></td>
+    </tr>
+    <tr>
+      <th>algs</th>
+      <td><p>character string of classification algorithm to use. See Details
+in <code><a href='splendid.html'>splendid</a></code> for a list of choices.</p></td>
+    </tr>
+    <tr>
+      <th>rfe</th>
+      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
+feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
+    </tr>
+    <tr>
+      <th>ova</th>
+      <td><p>logical; if <code>TRUE</code>, use the One-Vs-All approach for the
+<code>knn</code> algorithm.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>list of binary classifier fits on each class</p>
+    
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
+
+    <h2>Author</h2>
+    
+Dustin Johnson, Derek Chiu
+
   </div>
 </div>
 

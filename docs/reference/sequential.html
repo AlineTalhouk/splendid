@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Combine classification models into an ensemble — splendid_ensemble • splendid</title>
+<title>Sequential Algorithm — sequential • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -76,15 +76,17 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Combine classification models into an ensemble</h1>
+    <h1>Sequential Algorithm</h1>
     </div>
 
     
-    <p>Combine classification models into an ensemble</p>
+    <p>Sequentially train top ranked algorithms on each class ordered by class
+performance and predict a given class using the sequentially trained fits.</p>
     
 
-    <pre><span class='fu'>splendid_ensemble</span>(<span class='no'>sm</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre><span class='fu'>sequential_train</span>(<span class='no'>sm</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>boxplot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>sequential_pred</span>(<span class='no'>fit</span>, <span class='no'>sm</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>boxplot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -102,39 +104,58 @@
       <td><p>true/reference class vector used for supervised learning</p></td>
     </tr>
     <tr>
-      <th>top</th>
-      <td><p>the number of highest-performing algorithms to retain for ensemble</p></td>
+      <th>boxplot</th>
+      <td><p>if <code>TRUE</code>, boxplots are plotted showing the distribution
+of F1-scores per class, for every algorithm.</p></td>
     </tr>
     <tr>
-      <th>seed</th>
-      <td><p>random seed used for reproducibility in bootstrapping results</p></td>
-    </tr>
-    <tr>
-      <th>rfe</th>
-      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
-    </tr>
-    <tr>
-      <th>sequential</th>
-      <td><p>logical; if <code>TRUE</code>, a sequential model is fit on the
-algorithms that had the best performance with one-vs-all classification.</p></td>
+      <th>fit</th>
+      <td><p>list of fitted models from <code>sequential_train</code></p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>sequential_train</code> returns a list of fits over the top-ranked
+  sequence.
+
+<code>sequential_pred</code> returns a list of two elements</p>
+<dt>prob</dt><dd><p>predicted sequential probabilities</p></dd>
+<dt>cm</dt><dd><p>confusion matrices for each class</p></dd>
+
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>sequential_train</code> sequentially trains One-Vs-All models until all
+classes have been classified. Hence for <code>n</code> classes, there are <code>n -
+1</code> sequential fits. <code>sequential_pred</code> predicts class membership for each
+One-Vs-All sequential model. Performance is evaluated on by-class F1-scores,
+since these are better for evaluation than other metrics such as accuracy,
+precision, and recall.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
 <span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>]
-<span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='splendid_model.html'>splendid_model</a></span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"xgboost"</span>, <span class='st'>"lda"</span>))
-<span class='no'>se</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid_ensemble</span>(<span class='no'>sm</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>)</div></pre>
+<span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='splendid_model.html'>splendid_model</a></span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"xgboost"</span>, <span class='st'>"slda"</span>))
+<span class='no'>st</span> <span class='kw'>&lt;-</span> <span class='fu'>sequential_train</span>(<span class='no'>sm</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>)
+<span class='no'>sp</span> <span class='kw'>&lt;-</span> <span class='fu'>sequential_pred</span>(<span class='no'>st</span>, <span class='no'>sm</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    
+Dustin Johnson, Derek Chiu
 
   </div>
 </div>

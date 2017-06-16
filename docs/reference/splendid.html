@@ -86,7 +86,7 @@ variants.</p>
     
 
     <pre><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +128,15 @@ are prefixed with the string <code>ova_</code>.</p></td>
       <th>threshold</th>
       <td><p>a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.</p></td>
+    </tr>
+    <tr>
+      <th>top</th>
+      <td><p>the number of highest-performing algorithms to retain for ensemble</p></td>
+    </tr>
+    <tr>
+      <th>sequential</th>
+      <td><p>logical; if <code>TRUE</code>, a sequential model is fit on the
+algorithms that had the best performance with one-vs-all classification.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -182,7 +191,7 @@ Correlation Coefficient (MCC).</p>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
 <span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>]
 <span class='no'>sl_result</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid</span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"lda"</span>, <span class='st'>"knn"</span>,
-<span class='st'>"svm"</span>))</div></pre>
+<span class='st'>"xgboost"</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

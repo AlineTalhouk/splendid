@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • splendid</title>
+<title>One-Vs-All prediction approach — ova_prediction • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -36,7 +36,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -73,21 +73,71 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Vignette reference <small>version&nbsp;0.0.0.9012</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="ensemble_classification.html">Ensemble Classification using `splendid`</a></li>
-        <li><a href="model_extensions.html">Model Extensions</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>One-Vs-All prediction approach</h1>
     </div>
+
+    
+    <p>One-Vs-All prediction approach</p>
+    
+
+    <pre><span class='fu'>ova_prediction</span>(<span class='no'>fits</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='no'>class</span>, <span class='no'>train.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>fits</th>
+      <td><p>list of ova fits from <code>ova_classification</code></p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>data object with rows as samples, columns as features</p></td>
+    </tr>
+    <tr>
+      <th>test.id</th>
+      <td><p>integer vector of indices for test set</p></td>
+    </tr>
+    <tr>
+      <th>class</th>
+      <td><p>true/reference class vector used for supervised learning</p></td>
+    </tr>
+    <tr>
+      <th>train.id</th>
+      <td><p>integer vector of indices for training set ID. Only used for
+<code>knn</code> and <code>pamr</code> prediction methods.</p></td>
+    </tr>
+    <tr>
+      <th>threshold</th>
+      <td><p>a numeric indicating the lowest maximum class probability
+below which a sample will be unclassified.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments to be passed to or from methods</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>(tibble) predicted probabilities for each class</p>
+    
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
+
+    <h2>Author</h2>
+    
+Dustin Johnson, Derek Chiu
+
   </div>
 </div>
 
