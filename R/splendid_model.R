@@ -12,25 +12,29 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
   class <- as.factor(class)  # ensure class is a factor
-  train.idx <- training_id(data = data, class = class, n = n)
-  test.idx <- purrr::map(train.idx, ~ which(!seq_len(nrow(data)) %in% .x))
+  train.id <- training_id(data = data, class = class, n = n)
+  test.id <- purrr::map(train.id, ~ which(!seq_len(nrow(data)) %in% .x))
 
   # Classification algorithms to use and their model function calls
-  algs <- algorithms %||% ALG.NAME %>% purrr::set_names()  # if null, use all
+  algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
+
+  # Store lists of common arguments in model and pred operations
+  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe)
+  p_args <- dplyr::lst(test.id, train.id, data, class, threshold)
 
   # Apply training sets to models and predict on the test sets
-  models <- sp_mod(classification, train.idx, data, class, algs, rfe,
-                   ova = FALSE)
-  preds <- sp_pred(prediction, models, test.idx, train.idx, data, class,
-                   threshold)
+  models <- sp_mod %>%
+    purrr::invoke(c(m_args, f = classification, ova = FALSE))
+  preds <- sp_pred %>%
+    purrr::invoke(c(p_args, f = prediction, model = list(models)))
 
   # Train and predict One-Vs-All models if specified
   if (ova) {
-    ova_models <- sp_mod(ova_classification, train.idx, data, class, algs, rfe,
-                         ova = TRUE) %>%
-      purrr::set_names(paste("ova", algs, sep = "_"))
-    ova_preds <- sp_pred(ova_prediction, ova_models, test.idx, train.idx, data,
-                         class, threshold)
+    ova_models <- sp_mod %>%
+      purrr::invoke(c(m_args, f = ova_classification, ova = TRUE)) %>%
+      purrr::set_names(paste("ova", algorithms, sep = "_"))
+    ova_preds <- sp_pred %>%
+      purrr::invoke(c(p_args, f = ova_prediction, model = list(ova_models)))
 
     # Combine results with conventional approach
     models <- c(models, ova_models)
@@ -39,7 +43,7 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
 
   # Evaluate predictions
   evals <- preds %>% purrr::map(
-    ~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y) %>%
+    ~ purrr::map2(test.id, .x, ~ evaluation(class[.x], .y) %>%
                     purrr::flatten() %>%
                     unlist() %>%
                     data.frame())) %>%
@@ -71,11 +75,11 @@ sp_pred <- function(f, model, test.id, train.id, data, class, threshold, ...) {
 #' @noRd
 training_id <- function(data, class, n) {
   boot <- modelr::bootstrap(data, n)
-  train.idx <- purrr::map(boot$strap, "idx")
-  nc <- purrr::map_int(train.idx, ~ dplyr::n_distinct(class[.x]))
+  train.id <- purrr::map(boot$strap, "idx")
+  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
-    return(c(train.idx[all.cl], training_id(data, class, sum(!all.cl))))
+    return(c(train.id[all.cl], training_id(data, class, sum(!all.cl))))
   else
-    return(train.idx[all.cl])
+    return(train.id[all.cl])
 }
