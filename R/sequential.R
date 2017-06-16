@@ -12,6 +12,8 @@
 #'
 #' @inheritParams splendid_ensemble
 #' @param fit list of fitted models from \code{sequential_train}
+#' @param boxplot if \code{TRUE}, boxplots are plotted showing the distribution
+#'   of F1-scores per class, for every algorithm.
 #'
 #' @return \code{sequential_train} returns a list of fits over the top-ranked
 #'   sequence.
@@ -27,9 +29,9 @@
 #' sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "slda"))
 #' st <- sequential_train(sm, hgsc, class)
 #' sp <- sequential_pred(st, sm, hgsc, class)
-sequential_train <- function(sm, data, class) {
+sequential_train <- function(sm, data, class, boxplot = FALSE) {
   # prepare data and setup storage object(s)
-  model_rank <- sequential_rank(sm[["evals"]])
+  model_rank <- sequential_rank(sm[["evals"]], boxplot = boxplot)
   class_bin <- sequential_binarize(model_rank, class)
   fits <- class_bin %>%
     purrr::list_along() %>%
@@ -57,9 +59,9 @@ sequential_train <- function(sm, data, class) {
 
 #' @name sequential
 #' @export
-sequential_pred <- function(fit, sm, data, class) {
+sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
   # prepare data and setup storage object(s)
-  model_rank <- sequential_rank(sm[["evals"]])
+  model_rank <- sequential_rank(sm[["evals"]], boxplot = boxplot)
   class_bin <- sequential_binarize(model_rank, class)
   prob <- cm <- class_bin %>%
     purrr::list_along() %>%
@@ -96,9 +98,8 @@ sequential_pred <- function(fit, sm, data, class) {
 #' Rank top models for each sequentially fitted class based on maximum average
 #' F1-score across bootstrap replicates.
 #' @inheritParams sequential_ensemble
-#' @param boxplot if \code{TRUE}, boxplots are shown.
 #' @noRd
-sequential_rank <- function(sm, boxplot = FALSE) {
+sequential_rank <- function(sm, boxplot) {
   tidy_evals <- sequential_eval(sm)
   if (boxplot) {
     p <- tidy_evals %>%

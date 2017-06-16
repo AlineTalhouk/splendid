@@ -7,9 +7,9 @@
 \alias{sequential_pred}
 \title{Sequential Algorithm}
 \usage{
-sequential_train(sm, data, class)
+sequential_train(sm, data, class, boxplot = FALSE)
 
-sequential_pred(fit, sm, data, class)
+sequential_pred(fit, sm, data, class, boxplot = FALSE)
 }
 \arguments{
 \item{sm}{a \code{splendid_model} object}
@@ -17,6 +17,9 @@ sequential_pred(fit, sm, data, class)
 \item{data}{data object with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
+
+\item{boxplot}{if \code{TRUE}, boxplots are plotted showing the distribution
+of F1-scores per class, for every algorithm.}
 
 \item{fit}{list of fitted models from \code{sequential_train}}
 }
