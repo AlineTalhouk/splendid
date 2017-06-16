@@ -39,10 +39,10 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
 
   # Evaluate predictions
   evals <- preds %>% purrr::map(
-    ~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y))) %>%
-    purrr::modify_depth(2, ~ purrr::flatten(.x) %>%
-                          unlist() %>%
-                          data.frame()) %>%
+    ~ purrr::map2(test.idx, .x, ~ evaluation(class[.x], .y) %>%
+                    purrr::flatten() %>%
+                    unlist() %>%
+                    data.frame())) %>%
     purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n)))
 
   dplyr::lst(models, preds, evals)
