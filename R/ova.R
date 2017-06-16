@@ -25,15 +25,15 @@ ova_prediction <- function(fits, data, test.id, class, train.id,
                train.id = train.id) %>%
     purrr::map(`%@%`, "prob") %>%
     purrr::imap(~ {
-      if (is.null(colnames(.x)))
-        .x %>% magrittr::set_colnames(c("0", .y))  # for xgboost
-      else
-        .x
-      }) %>%
-    purrr::map_df(~ .x[, colnames(.x) != "0"]) %>%
-    as.matrix() %>%
-    sum_to_one() %>%
-    magrittr::set_rownames(rownames(data[test.id, ]))
+      colnames(.x) %>%
+        purrr::when(
+          is.null(.) ~ magrittr::set_colnames(.x, c("0", .y)),  # for xgboost
+          ~ .x
+        )
+    }) %>%
+    purrr::map(~ .x[, colnames(.x) != "0"]) %>%
+    as.data.frame() %>%
+    sum_to_one()
   pred <- colnames(prob)[max.col(prob)]
   prediction_output(pred, prob, class, test.id, threshold)
 }
