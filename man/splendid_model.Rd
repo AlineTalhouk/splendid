@@ -38,5 +38,5 @@ Train, predict, and evaluate classification models
 \examples{
 data(hgsc)
 class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
-sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "svm")
+sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 }

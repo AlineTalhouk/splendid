@@ -5,7 +5,7 @@
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
 splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
-  ova = FALSE, threshold = 0.5, ...)
+  ova = FALSE, threshold = 0.5, top = 3, sequential = FALSE, ...)
 }
 \arguments{
 \item{data}{data object with rows as samples, columns as features}
@@ -29,6 +29,11 @@ are prefixed with the string \code{ova_}.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
+
+\item{top}{the number of highest-performing algorithms to retain for ensemble}
+
+\item{sequential}{logical; if \code{TRUE}, a sequential model is fit on the
+algorithms that had the best performance with one-vs-all classification.}
 
 \item{...}{additional arguments to \code{splendid_model}}
 }
@@ -82,7 +87,7 @@ Correlation Coefficient (MCC).
 data(hgsc)
 class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
-"svm"))
+"xgboost"))
 }
 \author{
 Derek Chiu

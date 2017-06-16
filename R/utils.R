@@ -39,11 +39,21 @@ sum_to_one <- function(prob) {
 #'   membership
 #' @noRd
 binarize <- function(x) {
-  cl <- factor(x$class)
-  cl %>%
+  x %>%
+    factor() %>%
     levels() %>%
     purrr::set_names() %>%
-    purrr::map(~ ifelse(cl == .x, .x, 0)) %>%
-    purrr::prepend(list(class = as.character(cl))) %>%
+    purrr::map(~ ifelse(x == .x, .x, 0)) %>%
     data.frame(stringsAsFactors = FALSE)
+}
+
+#' Confusion matrix
+#' @noRd
+conf_mat <- function(reference, prediction)
+  as.matrix(table(reference = reference, prediction = prediction))
+
+#' Class error
+#' @noRd
+class_error <- function(confmat) {
+  1 - (sum(diag(confmat)) / sum(confmat))
 }

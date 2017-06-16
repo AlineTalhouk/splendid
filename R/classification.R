@@ -23,6 +23,8 @@
 #' @inheritParams splendid
 #' @param algs character string of classification algorithm to use. See Details
 #'   in \code{\link{splendid}} for a list of choices.
+#' @param ova logical; if \code{TRUE}, use the One-Vs-All approach for the
+#'   \code{knn} algorithm.
 #' @param sizes the range of sizes of features to test RFE algorithm
 #' @return The model object from running the classification algorithm
 #'   \code{"alg"}
