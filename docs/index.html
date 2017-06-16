@@ -80,7 +80,7 @@ class &lt;-<span class="st"> </span>stringr::<span class="kw">str_split_fixed</s
 sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">1</span>,
                       <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"rf"</span>, <span class="st">"xgboost"</span>))
 <span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)
-<span class="co">#&gt; List of 6</span>
+<span class="co">#&gt; List of 8</span>
 <span class="co">#&gt;  $ models       :List of 2</span>
 <span class="co">#&gt;   ..$ rf     :List of 1</span>
 <span class="co">#&gt;   ..$ xgboost:List of 1</span>
@@ -95,7 +95,9 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/sple
 <span class="co">#&gt;  $ ensemble_algs: chr "xgboost"</span>
 <span class="co">#&gt;  $ ensemble_mods:List of 1</span>
 <span class="co">#&gt;   ..$ :List of 6</span>
-<span class="co">#&gt;   .. ..- attr(*, "class")= chr "xgb.Booster"</span></code></pre></div>
+<span class="co">#&gt;   .. ..- attr(*, "class")= chr "xgb.Booster"</span>
+<span class="co">#&gt;  $ seq_mods     : NULL</span>
+<span class="co">#&gt;  $ seq_preds    : NULL</span></code></pre></div>
 </div>
 </div>
 </div>

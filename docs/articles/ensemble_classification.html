@@ -58,7 +58,7 @@
 </h1>
                         <h4 class="author">Derek Chiu</h4>
             
-            <h4 class="date">2017-06-12</h4>
+            <h4 class="date">2017-06-16</h4>
           </div>
 
     
@@ -116,7 +116,7 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <code>ensemble</code> is a list of model fits for each of the algorithms in <code>ensemble_algs</code>, fit on the full data.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)
-<span class="co">#&gt; List of 6</span>
+<span class="co">#&gt; List of 8</span>
 <span class="co">#&gt;  $ models       :List of 3</span>
 <span class="co">#&gt;   ..$ slda:List of 2</span>
 <span class="co">#&gt;   ..$ knn :List of 2</span>
@@ -134,7 +134,9 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <span class="co">#&gt;  $ ensemble_algs: chr "svm"</span>
 <span class="co">#&gt;  $ ensemble_mods:List of 1</span>
 <span class="co">#&gt;   ..$ :List of 29</span>
-<span class="co">#&gt;   .. ..- attr(*, "class")= chr "svm"</span></code></pre></div>
+<span class="co">#&gt;   .. ..- attr(*, "class")= chr "svm"</span>
+<span class="co">#&gt;  $ seq_mods     : NULL</span>
+<span class="co">#&gt;  $ seq_preds    : NULL</span></code></pre></div>
 </div>
 <div id="classification" class="section level2">
 <h2 class="hasAnchor">

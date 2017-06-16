@@ -21,6 +21,7 @@ reference:
   - prediction
   - evaluation
   - matches("ova")
+  - matches("sequential")
   - matches("splendid")
 - title: Data
   contents:

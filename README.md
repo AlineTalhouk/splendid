@@ -27,7 +27,7 @@ class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
 sl_result <- splendid(data = hgsc, class = class, n = 1,
                       algorithms = c("rf", "xgboost"))
 str(sl_result, max.level = 2)
-#> List of 6
+#> List of 8
 #>  $ models       :List of 2
 #>   ..$ rf     :List of 1
 #>   ..$ xgboost:List of 1
@@ -43,4 +43,6 @@ str(sl_result, max.level = 2)
 #>  $ ensemble_mods:List of 1
 #>   ..$ :List of 6
 #>   .. ..- attr(*, "class")= chr "xgb.Booster"
+#>  $ seq_mods     : NULL
+#>  $ seq_preds    : NULL
 ```
