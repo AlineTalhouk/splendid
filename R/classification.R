@@ -40,7 +40,7 @@ classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
   algs <- match.arg(algs, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- sizes %||% seq_len(round(min(table(class)) / 2)) %>%
-    magrittr::extract(. %% 5 == 0)
+    magrittr::extract(. %% 25 == 0)
   switch(algs,
          lda = {
            if (!rfe)
