@@ -12,8 +12,8 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
   class <- as.factor(class)  # ensure class is a factor
-  train.id <- training_id(data = data, class = class, n = n)
-  test.id <- purrr::map(train.id, ~ which(!seq_len(nrow(data)) %in% .x))
+  train.id <- boot_train(data = data, class = class, n = n)
+  test.id <- boot_test(data = data, train.id = train.id)
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -73,13 +73,19 @@ sp_pred <- function(f, model, test.id, train.id, data, class, threshold, ...) {
 #' Recurrsively create training set indices ensuring class representation
 #' in every bootstrap resample
 #' @noRd
-training_id <- function(data, class, n) {
+boot_train <- function(data, class, n) {
   boot <- modelr::bootstrap(data, n)
   train.id <- purrr::map(boot$strap, "idx")
   nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
-    return(c(train.id[all.cl], training_id(data, class, sum(!all.cl))))
+    return(c(train.id[all.cl], boot_train(data, class, sum(!all.cl))))
   else
     return(train.id[all.cl])
+}
+
+#' Obtain OOB sample to use as test set
+#' @noRd
+boot_test <- function(data, train.id) {
+  purrr::map(train.id, ~ which(!seq_len(nrow(data)) %in% .x))
 }
