@@ -1,7 +1,7 @@
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.0.0.9012
-Date: 2017-06-16
+Version: 0.0.0.9013
+Date: 2017-06-19
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"),
@@ -13,12 +13,16 @@ Description: Provides a bootstrapping and ensemble framework for supervised
     reliability plots visualize the classifier performances.
 Depends: R (>= 3.2.0)
 Imports:
-    dplyr,
-    purrr,
-    tidyr,
+    ggplot2,
     tibble,
+    tidyr,
+    purrr,
+    dplyr,
+    rlang,
+    forcats,
     modelr,
     magrittr,
+    grDevices,
     MASS,
     randomForest,
     nnet,
@@ -33,17 +37,12 @@ Imports:
     caret,
     kernlab,
     HandTill2001,
-    ggplot2,
-    grDevices,
     MLmetrics,
-    forcats,
-    sda,
-    rlang
+    sda
 Suggests:
-    stringr,
-    testthat,
     knitr,
     rmarkdown,
+    testthat,
     DiagrammeR
 Remotes: Dasonk/knnflex
 License: MIT + file LICENSE
