@@ -23,9 +23,10 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -85,7 +86,7 @@ replicates and an ensemble classifier is built and evaluated across these
 variants.</p>
     
 
-    <pre><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <pre class="usage"><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -189,7 +190,7 @@ Correlation Coefficient (MCC).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
-<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>]
+<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>attr</span>(<span class='no'>hgsc</span>, <span class='st'>"class.true"</span>)
 <span class='no'>sl_result</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid</span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"lda"</span>, <span class='st'>"knn"</span>,
 <span class='st'>"xgboost"</span>))</div></pre>
   </div>

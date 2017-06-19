@@ -23,9 +23,10 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -84,7 +85,7 @@
 measure for classification problems.</p>
     
 
-    <pre><span class='fu'>evaluation</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>evaluation</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -121,7 +122,7 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
-<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='kw'>stringr</span><span class='kw'>::</span><span class='fu'>str_split_fixed</span>(<span class='fu'>rownames</span>(<span class='no'>hgsc</span>), <span class='st'>"_"</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>)[, <span class='fl'>2</span>])
+<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='fu'>attr</span>(<span class='no'>hgsc</span>, <span class='st'>"class.true"</span>))
 <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
 <span class='no'>training.id</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fu'>seq_along</span>(<span class='no'>class</span>), <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>test.id</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(!<span class='fu'>seq_along</span>(<span class='no'>class</span>) <span class='kw'>%in%</span> <span class='no'>training.id</span>)

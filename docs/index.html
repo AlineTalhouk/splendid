@@ -9,7 +9,7 @@
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -76,7 +76,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"AlineTalhouk/
 <p>The following example shows how to use the main function of the package, <code><a href="reference/splendid.html">splendid()</a></code>. A data matrix <code>hgsc</code> contains a subset of gene expression measurements of High Grade Serous Carcinoma Ovarian cancer patients from the Cancer Genome Atlas publically available datasets. Samples as rows, features as columns. The function below runs the package through the <code><a href="reference/splendid.html">splendid()</a></code> function. First we extract the reference class labels (by TCGA) from the row names of <code>hgsc</code>. Then we fit the random forest and extreme gradient boosting classifiers to one bootstrapped replicate of the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(splendid)
 <span class="kw">data</span>(hgsc)
-class &lt;-<span class="st"> </span>stringr::<span class="kw">str_split_fixed</span>(<span class="kw">rownames</span>(hgsc), <span class="st">"_"</span>, <span class="dt">n =</span> <span class="dv">2</span>)[, <span class="dv">2</span>]
+class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)
 sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">1</span>,
                       <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"rf"</span>, <span class="st">"xgboost"</span>))
 <span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)
@@ -104,7 +104,8 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/sple
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Links</h2>
+    <h2 class="hasAnchor">
+<a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/AlineTalhouk/splendid">https://​github.com/​AlineTalhouk/​splendid</a>
 </li>
@@ -112,7 +113,7 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/sple
 </li>
 </ul>
 <h2>License</h2>
-<p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE">LICENSE</a></p>
+<p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE.html">LICENSE</a></p>
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Derek Chiu <br><small class="roles"> Author, maintainer </small> </li>
