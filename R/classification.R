@@ -21,7 +21,7 @@
 #' \code{\link{prediction}}.
 #'
 #' @inheritParams splendid
-#' @param algs character string of classification algorithm to use. See Details
+#' @param algorithms character string of classification algorithm to use. See Details
 #'   in \code{\link{splendid}} for a list of choices.
 #' @param ova logical; if \code{TRUE}, use the One-Vs-All approach for the
 #'   \code{knn} algorithm.
@@ -35,18 +35,18 @@
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
 #' classification(hgsc, class, "rf")
-classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
+classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            sizes = NULL) {
-  algs <- match.arg(algs, ALG.NAME)
+  algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- sizes %||% seq_len(round(min(table(class)) / 2)) %>%
     magrittr::extract(. %% 25 == 0)
-  switch(algs,
+  switch(algorithms,
          lda = {
            if (!rfe)
              suppressWarnings(MASS::lda(data, grouping = class))
            else
-             rfe_model(data, class, algs, sizes)
+             rfe_model(data, class, algorithms, sizes)
          },
          slda = sda::sda(as.matrix(data), class, diagonal = FALSE,
                          verbose = FALSE),
@@ -56,7 +56,7 @@ classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
            if (!rfe)
              randomForest::randomForest(data, y = class)
            else
-             rfe_model(data, class, algs, sizes)
+             rfe_model(data, class, algorithms, sizes)
          },
          multinom_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                         trace = FALSE),
@@ -81,7 +81,7 @@ classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
            if (!rfe) {
              opt_var <- names(data)
            } else {
-             mod <- rfe_model(data, class, algs, sizes)
+             mod <- rfe_model(data, class, algorithms, sizes)
              opt_var <- mod$optVariables
            }
            e1071::best.svm(x = data[, opt_var], y = class,
@@ -115,12 +115,12 @@ classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algs, sizes) {
-  funcs <- switch(algs,
+rfe_model <- function(data, class, algorithms, sizes) {
+  funcs <- switch(algorithms,
                   lda = caret::ldaFuncs,
                   rf = caret::rfFuncs,
                   svm = caret::caretFuncs)
-  method <- if (algs == "svm") "svmRadial" else NULL
+  method <- if (algorithms == "svm") "svmRadial" else NULL
   suppressPackageStartupMessages(suppressWarnings(
     caret::rfe(data, class, sizes = sizes, method = method,
                rfeControl = caret::rfeControl(functions = funcs, method = "cv",
