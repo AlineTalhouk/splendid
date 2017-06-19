@@ -1,7 +1,7 @@
 context("prediction")
 
 data(hgsc)
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 dat <- data.frame(hgsc, class)
 dat$class <- as.numeric(dat$class)
 

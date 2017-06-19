@@ -2,7 +2,7 @@ context("evaluation")
 
 test_that("evaluation plots can be outputted", {
   data(hgsc)
-  class <- factor(stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2])
+  class <- factor(attr(hgsc, "class.true"))
   set.seed(1)
   training.id <- sample(seq_along(class), replace = TRUE)
   test.id <- which(!seq_along(class) %in% training.id)

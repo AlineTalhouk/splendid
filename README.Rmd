@@ -33,7 +33,7 @@ The following example shows how to use the main function of the package, `splend
 ```{r example}
 library(splendid)
 data(hgsc)
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 sl_result <- splendid(data = hgsc, class = class, n = 1,
                       algorithms = c("rf", "xgboost"))
 str(sl_result, max.level = 2)

@@ -1,7 +1,7 @@
 context("splendid")
 
 data(hgsc)
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 
 test_that("missing algorithm parameter means use all", {
   sl_result <- splendid(hgsc, class, n = 1)

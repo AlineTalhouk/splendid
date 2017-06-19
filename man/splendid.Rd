@@ -85,7 +85,7 @@ Correlation Coefficient (MCC).
 }
 \examples{
 data(hgsc)
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 "xgboost"))
 }

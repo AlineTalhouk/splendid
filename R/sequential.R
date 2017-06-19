@@ -25,7 +25,7 @@
 #' @export
 #' @examples
 #' data(hgsc)
-#' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+#' class <- attr(hgsc, "class.true")
 #' sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "slda"))
 #' st <- sequential_train(sm, hgsc, class)
 #' sp <- sequential_pred(st, sm, hgsc, class)

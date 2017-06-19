@@ -4,7 +4,7 @@
 #' @export
 #' @examples
 #' data(hgsc)
-#' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+#' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
                            rfe = FALSE, ova = FALSE, threshold = 0.5, ...) {

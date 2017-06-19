@@ -44,7 +44,7 @@ The main function of `splendid` is `splendid()`, and the usage is intuitive:
 - `rfe`: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.
   
 ```{r splendid}
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 table(class)
 sl_result <- splendid(data = hgsc, class = class, n = 2,
                       algorithms = c("slda", "knn", "svm"), rfe = FALSE)
@@ -168,7 +168,7 @@ To assess the performance of a classifier, we can look at a discriminating plot 
 
 ```{r plots, fig.height=4.5, fig.width=6, fig.show='hold'}
 data(hgsc)
-class <- factor(stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2])
+class <- factor(attr(hgsc, "class.true"))
 set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) %in% training.id)

@@ -33,7 +33,7 @@
 #' @export
 #' @examples
 #' data(hgsc)
-#' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+#' class <- attr(hgsc, "class.true")
 #' classification(hgsc, class, "rf")
 classification <- function(data, class, algs, rfe = FALSE, ova = FALSE,
                            sizes = NULL) {

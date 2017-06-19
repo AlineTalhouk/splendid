@@ -2,7 +2,7 @@ context("ova")
 
 data(hgsc)
 dat <- hgsc[1:50, 1:25]
-class <- stringr::str_split_fixed(rownames(dat), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 
 test_that("knn ova is same as original because it's nonparametric", {
   sl_result <- splendid_model(dat, class, n = 1, algorithms = "knn",

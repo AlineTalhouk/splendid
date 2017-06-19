@@ -5,7 +5,7 @@
 #' @export
 #' @examples
 #' data(hgsc)
-#' class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+#' class <- attr(hgsc, "class.true")
 #' sm <- splendid_model(hgsc, class, n = 3, algorithms = c("xgboost", "lda"))
 #' se <- splendid_ensemble(sm, hgsc, class)
 splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE,

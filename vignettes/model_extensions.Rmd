@@ -35,7 +35,7 @@ data(hgsc)
 To build a one-vs-all model, or `ova` model for short, we first need to create a binarized class matrix, where each class is compared to its complement. Take the `hgsc` data set for example. The first 10 classes as predicted by TCGA are:
 
 ```{r hgsc_class}
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 head(class, 10)
 ```
 

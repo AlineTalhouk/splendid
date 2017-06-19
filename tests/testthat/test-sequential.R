@@ -1,7 +1,7 @@
 context("sequential")
 
 data(hgsc)
-class <- stringr::str_split_fixed(rownames(hgsc), "_", n = 2)[, 2]
+class <- attr(hgsc, "class.true")
 sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "slda"))
 
 test_that("sequential alg fits one fewer model than number of classes", {
