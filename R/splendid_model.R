@@ -36,7 +36,7 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
     ova_preds <- sp_pred %>%
       purrr::invoke(c(p_args, f = ova_prediction, model = list(ova_models)))
 
-    # Combine results with conventional approach
+    # Combine results with multiclass approach
     models <- c(models, ova_models)
     preds <- c(preds, ova_preds)
   }
@@ -79,9 +79,9 @@ boot_train <- function(data, class, n) {
   nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
-    return(c(train.id[all.cl], boot_train(data, class, sum(!all.cl))))
+    c(train.id[all.cl], boot_train(data, class, sum(!all.cl)))
   else
-    return(train.id[all.cl])
+    train.id[all.cl]
 }
 
 #' Obtain OOB sample to use as test set
