@@ -13,7 +13,7 @@ splendid_model <- function(data, class, n, seed = 1, algorithms = NULL,
   set.seed(seed)
   class <- as.factor(class)  # ensure class is a factor
   train.id <- boot_train(data = data, class = class, n = n)
-  test.id <- boot_test(data = data, train.id = train.id)
+  test.id <- boot_test(train.id = train.id)
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -86,6 +86,6 @@ boot_train <- function(data, class, n) {
 
 #' Obtain OOB sample to use as test set
 #' @noRd
-boot_test <- function(data, train.id) {
-  purrr::map(train.id, ~ which(!seq_len(nrow(data)) %in% .x))
+boot_test <- function(train.id) {
+  purrr::map(train.id, ~ which(!seq_along(.x) %in% .x))
 }
