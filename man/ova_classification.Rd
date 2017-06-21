@@ -11,9 +11,8 @@ ova_classification(data, class, algorithms, rfe, ova)
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{algorithms}{character vector of algorithms to use for supervised
-learning. See \strong{Algorithms} section for possible options. By default,
-this argument is \code{NULL}, in which case all algorithms are used.}
+\item{algorithms}{character string of algorithm to use for supervised
+learning. See \strong{Algorithms} section for possible options.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}

@@ -23,6 +23,8 @@
 #'
 #' @inheritParams splendid
 #' @inheritSection splendid Algorithms
+#' @param algorithms character string of algorithm to use for supervised
+#'   learning. See \strong{Algorithms} section for possible options.
 #' @param ova logical; if \code{TRUE}, use the One-Vs-All approach for the
 #'   \code{knn} algorithm.
 #' @param sizes the range of sizes of features to test RFE algorithm
