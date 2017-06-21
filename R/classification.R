@@ -39,8 +39,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            sizes = NULL) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
-  sizes <- sizes %||% seq_len(round(min(table(class)) / 2)) %>%
-    magrittr::extract(. %% 25 == 0)
+  sizes <- rfe_sizes(sizes, class)
   switch(algorithms,
          lda = {
            if (!rfe)
@@ -125,4 +124,16 @@ rfe_model <- function(data, class, algorithms, sizes) {
     caret::rfe(data, class, sizes = sizes, method = method,
                rfeControl = caret::rfeControl(functions = funcs, method = "cv",
                                               number = 2))))
+}
+
+#' RFE sizes
+#' @noRd
+rfe_sizes <- function(sizes, class) {
+  sizes <- sizes %||% class %>%
+    table() %>%
+    min() %>%
+    magrittr::divide_by_int(2) %>%
+    seq_len() %>%
+    magrittr::extract(. %% 25 == 0)
+  sizes
 }
