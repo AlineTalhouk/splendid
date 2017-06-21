@@ -10,9 +10,9 @@ test_that("knn ova is same as original because it's nonparametric", {
   expect_identical(sl_result$evals$knn, sl_result$evals$ova_knn)
 })
 
-test_that("multinom_nnet and nnet ova outputs need matrix coercion", {
+test_that("mlr_nnet and nnet ova outputs need matrix coercion", {
   sl_result <- splendid_model(dat, class, n = 1,
-                              algorithms = c("multinom_nnet", "nnet"),
+                              algorithms = c("mlr_nnet", "nnet"),
                               ova = TRUE)
   expect_is(sl_result$preds$ova_multinom_nnet[[1]] %@% "prob", "matrix")
   expect_is(sl_result$preds$ova_nnet[[1]] %@% "prob", "matrix")
