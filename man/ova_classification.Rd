@@ -4,12 +4,16 @@
 \alias{ova_classification}
 \title{One-Vs-All training approach}
 \usage{
-ova_classification(data, class, algs, rfe, ova)
+ova_classification(data, class, algorithms, rfe, ova)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
+
+\item{algorithms}{character vector of algorithms to use for supervised
+learning. See \strong{Algorithms} section for possible options. By default,
+this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}

@@ -41,12 +41,12 @@ sequential_train <- function(sm, data, class, boxplot = FALSE) {
   for (rank_i in seq_along(class_bin)) {
     # class and alg to fit ova model on
     cl <- model_rank[["class"]][rank_i]
-    algs <- model_rank[["model"]][rank_i]
-    ova <- if (algs == "knn") TRUE else FALSE  # always turn on ova for knn
+    algorithms <- model_rank[["model"]][rank_i]
+    ova <- if (algorithms == "knn") TRUE else FALSE  # ova is always on for knn
 
     # fit ranked model sequentially for each class
     fits[[rank_i]] <- class_bin[[cl]] %>%
-      classification(data = data, algs = algs, ova = ova)
+      classification(data = data, algorithms = algorithms, ova = ova)
 
     # drop class already fit and move to next binary fit
     cl.keep <- class != cl

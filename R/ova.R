@@ -4,10 +4,11 @@
 #' @return list of binary classifier fits on each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
-ova_classification <- function(data, class, algs, rfe, ova) {
+ova_classification <- function(data, class, algorithms, rfe, ova) {
   fits <- class %>%
     binarize() %>%
-    purrr::map(classification, data = data, algs = algs, rfe = rfe, ova = ova)
+    purrr::map(classification, data = data, algorithms = algorithms, rfe = rfe,
+               ova = ova)
   fits
 }
 
