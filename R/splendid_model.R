@@ -1,6 +1,7 @@
 #' Train, predict, and evaluate classification models
 #'
 #' @inheritParams splendid
+#' @inheritSection splendid Algorithms
 #' @export
 #' @examples
 #' data(hgsc)

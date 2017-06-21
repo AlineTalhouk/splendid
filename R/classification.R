@@ -1,28 +1,28 @@
-#' Machine learning classification algorithms
+#' Multiclass classification
 #'
-#' Runs a classification algorithm on a given dataset and reference class.
+#' Run a multiclass classification algorithm on a given dataset and reference
+#' class.
 #'
 #' Some of the classification algorithms implemented use pre-defined values that
-#' specify hyperparameters, settings, options, etc. \code{"multinom"} and
-#' \code{"nnet"} increase the maximum number of weights used to 2000, in case
-#' \code{data} is high dimensional and classification is time-consuming.
-#' \code{"nnet"} uses 3 nodes in its hidden layer, a choice that hopefully
-#' promotes sufficient complexity in many datasets. \code{"pamr"} considers 100
-#' thresholds when training, and uses a uniform prior. \code{"adaboost"}
-#' actually calls \code{\link[maboost]{maboost}} instead of
-#' \code{\link[adabag]{boosting}} because of faster performance. As a result, we
-#' use the "entrop" option, which uses the KL-divergence method and mimics
+#' specify settings and options while others need to tune hyperparameters.
+#' \code{"multinom"} and \code{"nnet"} use a maximum number of weights of 2000,
+#' in case \code{data} is high dimensional and classification is time-consuming.
+#' \code{"nnet"} also tunes the number of nodes (1-5) in the hidden layer.
+#' \code{"pam"} considers 100 thresholds when training, and uses a uniform
+#' prior. \code{"adaboost"} calls \code{\link[maboost]{maboost}} instead of
+#' \code{\link[adabag]{boosting}} for faster performance. As a result, we use
+#' the \code{"entrop"} option, which uses the KL-divergence method and mimics
 #' adaboost.
 #'
-#' When \code{alg = "knn"}, the result is \code{NULL} because the
-#' \code{\link[class]{knn}} does not have output an intermediate model object.
-#' The modelling and prediction is done in one step. However, a class attribute
-#' is still assigned to the result in order to enact the corresponding method in
-#' \code{\link{prediction}}.
+#' When \code{alg = "knn"}, the return value is \code{NULL} because
+#' \code{\link[class]{knn}} does not output an intermediate model object. The
+#' modelling and prediction is performed in one step. However, the class
+#' attribute "knn" is still assigned to the result in order to call the
+#' respective \code{\link{prediction}} method. An additional class "ova" is
+#' added if \code{ova = TRUE}.
 #'
 #' @inheritParams splendid
-#' @param algorithms character string of classification algorithm to use. See Details
-#'   in \code{\link{splendid}} for a list of choices.
+#' @inheritSection splendid Algorithms
 #' @param ova logical; if \code{TRUE}, use the One-Vs-All approach for the
 #'   \code{knn} algorithm.
 #' @param sizes the range of sizes of features to test RFE algorithm

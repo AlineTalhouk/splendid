@@ -2,17 +2,19 @@
 % Please edit documentation in R/classification.R
 \name{classification}
 \alias{classification}
-\title{Machine learning classification algorithms}
+\title{Multiclass classification}
 \usage{
-classification(data, class, algs, rfe = FALSE, ova = FALSE, sizes = NULL)
+classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
+  sizes = NULL)
 }
 \arguments{
-\item{data}{data object with rows as samples, columns as features}
+\item{data}{data frame with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{algs}{character string of classification algorithm to use. See Details
-in \code{\link{splendid}} for a list of choices.}
+\item{algorithms}{character vector of algorithms to use for supervised
+learning. See \strong{Algorithms} section for possible options. By default,
+this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
@@ -27,27 +29,48 @@ The model object from running the classification algorithm
   \code{"alg"}
 }
 \description{
-Runs a classification algorithm on a given dataset and reference class.
+Run a multiclass classification algorithm on a given dataset and reference
+class.
 }
 \details{
 Some of the classification algorithms implemented use pre-defined values that
-specify hyperparameters, settings, options, etc. \code{"multinom"} and
-\code{"nnet"} increase the maximum number of weights used to 2000, in case
-\code{data} is high dimensional and classification is time-consuming.
-\code{"nnet"} uses 3 nodes in its hidden layer, a choice that hopefully
-promotes sufficient complexity in many datasets. \code{"pamr"} considers 100
-thresholds when training, and uses a uniform prior. \code{"adaboost"}
-actually calls \code{\link[maboost]{maboost}} instead of
-\code{\link[adabag]{boosting}} because of faster performance. As a result, we
-use the "entrop" option, which uses the KL-divergence method and mimics
+specify settings and options while others need to tune hyperparameters.
+\code{"multinom"} and \code{"nnet"} use a maximum number of weights of 2000,
+in case \code{data} is high dimensional and classification is time-consuming.
+\code{"nnet"} also tunes the number of nodes (1-5) in the hidden layer.
+\code{"pam"} considers 100 thresholds when training, and uses a uniform
+prior. \code{"adaboost"} calls \code{\link[maboost]{maboost}} instead of
+\code{\link[adabag]{boosting}} for faster performance. As a result, we use
+the \code{"entrop"} option, which uses the KL-divergence method and mimics
 adaboost.
 
-When \code{alg = "knn"}, the result is \code{NULL} because the
-\code{\link[class]{knn}} does not have output an intermediate model object.
-The modelling and prediction is done in one step. However, a class attribute
-is still assigned to the result in order to enact the corresponding method in
-\code{\link{prediction}}.
+When \code{alg = "knn"}, the return value is \code{NULL} because
+\code{\link[class]{knn}} does not output an intermediate model object. The
+modelling and prediction is performed in one step. However, the class
+attribute "knn" is still assigned to the result in order to call the
+respective \code{\link{prediction}} method. An additional class "ova" is
+added if \code{ova = TRUE}.
 }
+\section{Algorithms}{
+ The classification algorithms currently supported are:
+\itemize{
+  \item Linear Discriminant Analysis ("lda")
+  \item Shrinkage Linear Discriminant Analysis ("slda")
+  \item Shrinkage Diagonal Discriminant Analysis ("sdda")
+  \item Random Forests ("rf")
+  \item Multinomial Classification using Neural Networks ("multinom_nnet")
+  \item Neural Networks ("nnet")
+  \item K-Nearest Neighbours ("knn")
+  \item Support Vector Machines ("svm")
+  \item Prediction Analysis for Microarrays ("pam")
+  \item Adaptive Boosting ("adaboost")
+  \item Extreme Gradient Boosting ("xgboost")
+  \item Naive Bayes ("nbayes")
+  \item Multinomial Models using the LASSO penalty ("lasso"), ridge ("ridge")
+  penalty, or no regularization ("multinom_glm")
+}
+}
+
 \examples{
 data(hgsc)
 class <- attr(hgsc, "class.true")

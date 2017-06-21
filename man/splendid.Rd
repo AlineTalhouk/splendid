@@ -8,7 +8,7 @@ splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
   ova = FALSE, threshold = 0.5, top = 3, sequential = FALSE, ...)
 }
 \arguments{
-\item{data}{data object with rows as samples, columns as features}
+\item{data}{data frame with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
 
@@ -16,9 +16,9 @@ splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
-\item{algorithms}{character vector of algorithm names to use for supervised
-learning. See Details for possible options. This argument is \code{NULL} by
-default, in which case uses all implemented algorithms.}
+\item{algorithms}{character vector of algorithms to use for supervised
+learning. See \strong{Algorithms} section for possible options. By default,
+this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
@@ -69,20 +69,30 @@ replacement. Test sets comprise of all remaining samples left out from each
 training set, also called Out-Of-Bag samples. This framework uses the 0.632
 bootstrap rule for large n.
 
-The classification algorithms currently supported are: Linear Discriminant
-Analysis ("lda"), Shrinkage Linear Discriminant Analysis ("slda"), Shrinkage
-Diagonal Discriminant Analysis ("sdda"), Random Forests ("rf"), Multinomial
-Classification using Neural Networks ("multinom_nnet"), Neural Networks
-("nnet"), K-Nearest Neighbours, ("knn"), Support Vector Machines ("svm"),
-Prediction Analysis for Microarrays ("pam"), Adaptive Boosting ("adaboost"),
-Extreme Gradient Boosting ("xgboost"), Naive Bayes ("nbayes"), and
-Generalized Linear Models using the LASSO penalty ("lasso"), ridge ("ridge")
-penalty, or no regularization ("multinom_glm").
-
 An ensemble classifier is constructed using Rank Aggregation across multiple
 evaluation measures such as precision, recall, F1-score, and Matthew's
 Correlation Coefficient (MCC).
 }
+\section{Algorithms}{
+ The classification algorithms currently supported are:
+\itemize{
+  \item Linear Discriminant Analysis ("lda")
+  \item Shrinkage Linear Discriminant Analysis ("slda")
+  \item Shrinkage Diagonal Discriminant Analysis ("sdda")
+  \item Random Forests ("rf")
+  \item Multinomial Classification using Neural Networks ("multinom_nnet")
+  \item Neural Networks ("nnet")
+  \item K-Nearest Neighbours ("knn")
+  \item Support Vector Machines ("svm")
+  \item Prediction Analysis for Microarrays ("pam")
+  \item Adaptive Boosting ("adaboost")
+  \item Extreme Gradient Boosting ("xgboost")
+  \item Naive Bayes ("nbayes")
+  \item Multinomial Models using the LASSO penalty ("lasso"), ridge ("ridge")
+  penalty, or no regularization ("multinom_glm")
+}
+}
+
 \examples{
 data(hgsc)
 class <- attr(hgsc, "class.true")
