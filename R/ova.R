@@ -24,7 +24,7 @@ ova_prediction <- function(fits, data, test.id, class, train.id,
     purrr::map(prediction, data = data, test.id = test.id, class = class,
                train.id = train.id) %>%
     purrr::map(`%@%`, "prob") %>%
-    purrr::imap(~ {
+    purrr::map2(.x = ., .y = names(.), ~ {
       colnames(.x) %>%
         purrr::when(
           is.null(.) ~ magrittr::set_colnames(.x, c("0", .y)),  # for xgboost
