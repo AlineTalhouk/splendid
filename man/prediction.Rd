@@ -20,7 +20,7 @@ prediction(mod, data, test.id, threshold = 0.5, class, ...)
 \arguments{
 \item{mod}{model object from \code{\link{classification}}}
 
-\item{data}{data object with rows as samples, columns as features}
+\item{data}{data frame with rows as samples, columns as features}
 
 \item{test.id}{integer vector of indices for test set}
 

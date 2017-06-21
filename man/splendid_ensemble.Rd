@@ -10,7 +10,7 @@ splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE,
 \arguments{
 \item{sm}{a \code{splendid_model} object}
 
-\item{data}{data object with rows as samples, columns as features}
+\item{data}{data frame with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
 

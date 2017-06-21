@@ -9,7 +9,7 @@ ova_prediction(fits, data, test.id, class, train.id, threshold = 0.5, ...)
 \arguments{
 \item{fits}{list of ova fits from \code{ova_classification}}
 
-\item{data}{data object with rows as samples, columns as features}
+\item{data}{data frame with rows as samples, columns as features}
 
 \item{test.id}{integer vector of indices for test set}
 
