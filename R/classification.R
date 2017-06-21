@@ -43,22 +43,20 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   class <- as.factor(class)  # ensure class is a factor
   sizes <- rfe_sizes(sizes, class)
   switch(algorithms,
-         lda = {
-           if (!rfe)
-             suppressWarnings(MASS::lda(data, grouping = class))
-           else
-             rfe_model(data, class, algorithms, sizes)
-         },
-         slda = sda::sda(as.matrix(data), class, diagonal = FALSE,
-                         verbose = FALSE),
-         sdda = sda::sda(as.matrix(data), class, diagonal = TRUE,
-                         verbose = FALSE),
          rf = {
            if (!rfe)
              randomForest::randomForest(data, y = class)
            else
-             rfe_model(data, class, algorithms, sizes)
+             rfe_model(data, class, "rf", sizes)
          },
+         lda = {
+           if (!rfe)
+             suppressWarnings(MASS::lda(data, grouping = class))
+           else
+             rfe_model(data, class, "lda", sizes)
+         },
+         slda = sda_model(data, class, "slda"),
+         sdda = sda_model(data, class, "sdda"),
          multinom_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000,
                                         trace = FALSE),
          nnet = {
@@ -82,7 +80,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
            if (!rfe) {
              opt_var <- names(data)
            } else {
-             mod <- rfe_model(data, class, algorithms, sizes)
+             mod <- rfe_model(data, class, "svm", sizes)
              opt_var <- mod$optVariables
            }
            e1071::best.svm(x = data[, opt_var], y = class,
@@ -112,6 +110,13 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
          multinom_glm = glmnet::glmnet(as.matrix(data), class, lambda = 0,
                                        family = "multinomial")
   )
+}
+
+#' sda model
+#' @noRd
+sda_model <- function(data, class, algorithms) {
+  diagonal <- switch(algorithms, slda = FALSE, sdda = TRUE)
+  sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
 }
 
 #' RFE model
