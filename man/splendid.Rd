@@ -4,7 +4,7 @@
 \alias{splendid}
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
-splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
+splendid(data, class, algorithms = NULL, n = 1, seed = 1, rfe = FALSE,
   ova = FALSE, threshold = 0.5, top = 3, sequential = FALSE, ...)
 }
 \arguments{
@@ -12,13 +12,13 @@ splendid(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{n}{number of bootstrap replicates to generate}
-
-\item{seed}{random seed used for reproducibility in bootstrapping results}
-
 \item{algorithms}{character vector of algorithms to use for supervised
 learning. See \strong{Algorithms} section for possible options. By default,
 this argument is \code{NULL}, in which case all algorithms are used.}
+
+\item{n}{number of bootstrap replicates to generate}
+
+\item{seed}{random seed used for reproducibility in bootstrapping results}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}

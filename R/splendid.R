@@ -33,11 +33,11 @@
 #'
 #' @param data data frame with rows as samples, columns as features
 #' @param class true/reference class vector used for supervised learning
-#' @param n number of bootstrap replicates to generate
-#' @param seed random seed used for reproducibility in bootstrapping results
 #' @param algorithms character vector of algorithms to use for supervised
 #'   learning. See \strong{Algorithms} section for possible options. By default,
 #'   this argument is \code{NULL}, in which case all algorithms are used.
+#' @param n number of bootstrap replicates to generate
+#' @param seed random seed used for reproducibility in bootstrapping results
 #' @param rfe logical; if \code{TRUE}, run Recursive Feature Elimination as a
 #'   feature selection method for "lda", "rf", and "svm" algorithms.
 #' @param ova logical; if \code{TRUE}, a One-Vs-All classification approach is
@@ -75,11 +75,11 @@
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "xgboost"))
-splendid <- function(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
-                     ova = FALSE, threshold = 0.5, top = 3, sequential = FALSE,
-                     ...) {
-  sm <- splendid_model(data = data, class = class, n = n,
-                       algorithms = algorithms, rfe = rfe, ova = ova, ...)
+splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
+                     rfe = FALSE, ova = FALSE, threshold = 0.5,
+                     top = 3, sequential = FALSE, ...) {
+  sm <- splendid_model(data = data, class = class, algorithms = algorithms,
+                       n = n, rfe = rfe, ova = ova, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class, top = top,
                           sequential = sequential)
   c(sm, se)

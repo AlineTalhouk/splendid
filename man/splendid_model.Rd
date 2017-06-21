@@ -4,21 +4,21 @@
 \alias{splendid_model}
 \title{Train, predict, and evaluate classification models}
 \usage{
-splendid_model(data, class, n, seed = 1, algorithms = NULL, rfe = FALSE,
-  ova = FALSE, threshold = 0.5, ...)
+splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
+  rfe = FALSE, ova = FALSE, threshold = 0.5, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{n}{number of bootstrap replicates to generate}
-
-\item{seed}{random seed used for reproducibility in bootstrapping results}
-
 \item{algorithms}{character vector of algorithms to use for supervised
 learning. See \strong{Algorithms} section for possible options. By default,
 this argument is \code{NULL}, in which case all algorithms are used.}
+
+\item{n}{number of bootstrap replicates to generate}
+
+\item{seed}{random seed used for reproducibility in bootstrapping results}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
