@@ -2,12 +2,12 @@
 globalVariables(".")
 
 # Algorithm functions and classes
-ALG.NAME <- c("lda", "slda", "sdda", "rf", "mlr_nnet", "nnet",
-              "knn", "svm", "pam", "adaboost", "xgboost", "nbayes", "mlr_lasso",
-              "mlr_ridge", "mlr_glm")
-ALG.CLASS <- c("lda", "sda", "randomForest", "multinom", "nnet.formula",
-               "knn", "svm", "pamrtrained", "maboost", "xgb.Booster",
-               "naiveBayes", "cv.glmnet", "glmnet", "rfe")
+ALG.NAME <- c("pam", "svm", "rf", "lda", "slda", "sdda", "mlr_glm", "mlr_lasso",
+              "mlr_ridge", "mlr_nnet", "nnet", "nbayes", "adaboost", "xgboost",
+              "knn")
+ALG.CLASS <- c("pamrtrained", "rfe", "svm", "randomForest", "lda", "sda",
+               "cv.glmnet", "glmnet", "multinom", "nnet.formula", "naiveBayes",
+               "maboost", "xgb.Booster", "knn")
 
 #' Redirect any console printouts from print() or cat() to null device
 #' @references

@@ -52,20 +52,24 @@ added if \code{ova = TRUE}.
 \section{Algorithms}{
  The classification algorithms currently supported are:
 \itemize{
+  \item Prediction Analysis for Microarrays ("pam")
+  \item Support Vector Machines ("svm")
+  \item Random Forests ("rf")
   \item Linear Discriminant Analysis ("lda")
   \item Shrinkage Linear Discriminant Analysis ("slda")
   \item Shrinkage Diagonal Discriminant Analysis ("sdda")
-  \item Random Forests ("rf")
-  \item Multinomial Classification using Neural Networks ("multinom_nnet")
+  \item Multinomial Logistic Regression using
+  \itemize{
+    \item Generalized Linear Model with no penalization ("mlr_glm")
+    \item GLM with LASSO penalty ("mlr_lasso")
+    \item GLM with ridge penalty ("mlr_ridge")
+    \item Neural Networks ("mlr_nnet")
+  }
   \item Neural Networks ("nnet")
-  \item K-Nearest Neighbours ("knn")
-  \item Support Vector Machines ("svm")
-  \item Prediction Analysis for Microarrays ("pam")
+  \item Naive Bayes ("nbayes")
   \item Adaptive Boosting ("adaboost")
   \item Extreme Gradient Boosting ("xgboost")
-  \item Naive Bayes ("nbayes")
-  \item Multinomial Models using the LASSO penalty ("lasso"), ridge ("ridge")
-  penalty, or no regularization ("multinom_glm")
+  \item K-Nearest Neighbours ("knn")
 }
 }
 
