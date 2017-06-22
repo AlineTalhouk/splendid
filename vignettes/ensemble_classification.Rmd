@@ -1,7 +1,5 @@
 ---
 title: "Ensemble Classification using `splendid`"
-author: "Derek Chiu"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Ensemble Classification using `splendid`}
@@ -71,20 +69,23 @@ The first step in the `splendid` pipeline is classification. Given explanatory d
 
 There exist a vast number of classification algorithms. Those currently in `splendid` are:
 
+- Prediction Analysis for Microarrays (`"pam"`)
+- Support Vector Machines using a Radial-Basis Kernel(`"svm"`)
+- Random Forests (`"rf"`)
 - Linear Discriminant Analysis (`"lda"`)
 - Shrinkage Linear Discriminant Analysis (`"slda"`)^1^
 - Shrinkage Diagonal Discriminant Analysis (`"sdda"`)^1^
-- Random Forests (`"rf"`)
-- Multinomial Classification using neural networks (`"multinom_nnet"`)
+- Multinomial Logistic Regression using
+    - Generalized Linear Model with no penalization (`"mlr_glm"`)^2^
+    - GLM with LASSO penalty (`"mlr_lasso"`)^2^
+    - GLM with ridge penalty (`"mlr_ridge"`)^2^
+    - Neural Networks (`"mlr_nnet"`)
 - Neural Networks with One Hidden Layer (`"nnet"`)
-- K-Nearest Neighbours (`"knn"`)
-- Support Vector Machines using a Radial-Basis Kernel(`"svm"`)
-- Prediction Analysis for Microarrays (`"pam"`)
+- Naive Bayes (`"nbayes"`)
 - Adaptive Boosting using Decision Trees (`"adaboost"`)
 - Extreme Gradient Boosting using Decision Trees (`"xgboost"`)
-- Naive Bayes (`"nbayes"`)
-- Multinomial Classification using an L1-penalty (`"lasso"`), L2-penalty (`"ridge"`), or no penalty (`"multinom_glm"`)^2^
-  
+- K-Nearest Neighbours (`"knn"`)  
+
 These algorithms are implemented in `classification()`.
 
 ### Hyperparameters and other Details

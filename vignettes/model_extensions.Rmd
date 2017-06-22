@@ -1,7 +1,5 @@
 ---
 title: "Model Extensions"
-author: "Derek Chiu"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Model Extensions}
