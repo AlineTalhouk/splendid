@@ -24,8 +24,7 @@ feature selection method for "lda", "rf", and "svm" algorithms.}
 \item{sizes}{the range of sizes of features to test RFE algorithm}
 }
 \value{
-The model object from running the classification algorithm
-  \code{"alg"}
+The model object from running the classification \code{algorithm}
 }
 \description{
 Run a multiclass classification algorithm on a given dataset and reference

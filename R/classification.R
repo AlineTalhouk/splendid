@@ -28,8 +28,7 @@
 #' @param ova logical; if \code{TRUE}, use the One-Vs-All approach for the
 #'   \code{knn} algorithm.
 #' @param sizes the range of sizes of features to test RFE algorithm
-#' @return The model object from running the classification algorithm
-#'   \code{"alg"}
+#' @return The model object from running the classification \code{algorithm}
 #'
 #' @author Derek Chiu
 #' @export
@@ -43,97 +42,72 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   class <- as.factor(class)  # ensure class is a factor
   sizes <- rfe_sizes(sizes, class)
   switch(algorithms,
-         rf = {
-           if (!rfe)
-             randomForest::randomForest(data, y = class)
-           else
-             rfe_model(data, class, "rf", sizes)
-         },
-         lda = {
-           if (!rfe)
-             suppressWarnings(MASS::lda(data, grouping = class))
-           else
-             rfe_model(data, class, "lda", sizes)
-         },
+         pam = pam_model(data, class),
+         svm = rfe_model(data, class, "svm", rfe, sizes),
+         rf = rfe_model(data, class, "rf", rfe, sizes),
+         lda = rfe_model(data, class, "lda", rfe, sizes),
          slda = sda_model(data, class, "slda"),
          sdda = sda_model(data, class, "sdda"),
-         multinom_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000,
-                                        trace = FALSE),
-         nnet = {
-           if (!"package:nnet" %in% search()) attachNamespace("nnet")
-           e1071::best.nnet(class ~ ., data = cbind(data, class),
-                            size = seq_len(5),
-                            decay = seq(0, 0.5, length.out = 5),
-                            MaxNWts = 2000,
-                            tunecontrol = e1071::tune.control(
-                              sampling = "fix"))
-         },
-         knn = {
-           if (ova) {
-             structure(list(unique(class[class != "0"])),
-                       class = c("knn", "ova"))
-           } else {
-             structure(list(), class = "knn")
-           }
-         },
-         svm = {
-           if (!rfe) {
-             opt_var <- names(data)
-           } else {
-             mod <- rfe_model(data, class, "svm", sizes)
-             opt_var <- mod$optVariables
-           }
-           e1071::best.svm(x = data[, opt_var], y = class,
-                           probability = TRUE,
-                           gamma = 1 / ncol(data) * 2 ^ (0:4),
-                           cost = 2 ^ (0:4),
-                           tunecontrol = e1071::tune.control(
-                             sampling = "fix"))
-         },
-         pam = sink_output(
-           pamr::pamr.train(list(x = t(data), y = class), n.threshold = 100,
-                            prior = rep(1 / dplyr::n_distinct(class),
-                                        dplyr::n_distinct(class)))),
-         adaboost = sink_output(maboost::maboost(data, class, breg = "entrop")),
-         xgboost = xgboost::xgb.train(
-           params = list("objective" = "multi:softprob",
-                         "eval_metric" = "mlogloss",
-                         "num_class" = dplyr::n_distinct(class)),
-           data = xgboost::xgb.DMatrix(data = as.matrix(data),
-                                       label = as.integer(class) - 1),
-           nrounds = 2),
-         nbayes = e1071::naiveBayes(data, class),
-         lasso = glmnet::cv.glmnet(as.matrix(data), class, alpha = 1,
-                                   family = "multinomial"),
-         ridge = glmnet::cv.glmnet(as.matrix(data), class, alpha = 0,
-                                   family = "multinomial"),
-         multinom_glm = glmnet::glmnet(as.matrix(data), class, lambda = 0,
-                                       family = "multinomial")
+         mlr_glm = mlr_model(data, class, "mlr_glm"),
+         mlr_lasso = mlr_model(data, class, "mlr_lasso"),
+         mlr_ridge = mlr_model(data, class, "mlr_ridge"),
+         mlr_nnet = mlr_model(data, class, "mlr_nnet"),
+         nnet = nnet_model(data, class),
+         nbayes = nbayes_model(data, class),
+         adaboost = boost_model(data, class, "adaboost"),
+         xgboost = boost_model(data, class, "xgboost"),
+         knn = knn_model(class, "knn", ova)
   )
 }
 
-#' sda model
+#' pam model
 #' @noRd
-sda_model <- function(data, class, algorithms) {
-  diagonal <- switch(algorithms, slda = FALSE, sdda = TRUE)
-  sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
+pam_model <- function(data, class) {
+  sink_output(pamr::pamr.train(
+    list(x = t(data),
+         y = class),
+    n.threshold = 100,
+    prior = pam_prior(class)
+  ))
+}
+
+#' Uniform prior probabilities for class representation
+#' @noRd
+pam_prior <- function(class) {
+  nc <- dplyr::n_distinct(class)
+  rep(1 / nc, nc)
 }
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, sizes) {
-  funcs <- switch(algorithms,
-                  lda = caret::ldaFuncs,
-                  rf = caret::rfFuncs,
-                  svm = caret::caretFuncs)
-  method <- if (algorithms == "svm") "svmRadial" else NULL
-  suppressPackageStartupMessages(suppressWarnings(
-    caret::rfe(data, class, sizes = sizes, method = method,
-               rfeControl = caret::rfeControl(functions = funcs, method = "cv",
-                                              number = 2))))
+rfe_model <- function(data, class, algorithms, rfe, sizes) {
+  if (rfe) {
+    funcs <- switch(algorithms,
+                    lda = caret::ldaFuncs,
+                    rf = caret::rfFuncs,
+                    svm = caret::caretFuncs)
+    method <- if (algorithms == "svm") "svmRadial" else NULL
+    mod <- suppressPackageStartupMessages(suppressWarnings(
+      caret::rfe(data, class, sizes = sizes, method = method,
+                 rfeControl = caret::rfeControl(functions = funcs,
+                                                method = "cv",
+                                                number = 2))))
+    if (algorithms != "svm") {
+      mod
+    } else {
+      svm_model(data, class, mod$optVariables)
+    }
+  } else {
+    switch(algorithms,
+           lda = suppressWarnings(MASS::lda(data, grouping = class)),
+           rf =  randomForest::randomForest(data, y = class),
+           svm = svm_model(data, class, names(data))
+    )
+  }
 }
 
-#' RFE sizes
+#' RFE sizes by default are equal to every 25th integer up to one-half of the
+#' smallest class size
 #' @noRd
 rfe_sizes <- function(sizes, class) {
   sizes <- sizes %||% class %>%
@@ -143,4 +117,76 @@ rfe_sizes <- function(sizes, class) {
     seq_len() %>%
     magrittr::extract(. %% 25 == 0)
   sizes
+}
+
+#' support vector machine model with tuning
+#' @noRd
+svm_model <- function(data, class, vars) {
+  e1071::best.svm(x = data[, vars], y = class, probability = TRUE,
+                  gamma = 1 / ncol(data) * 2 ^ (0:4), cost = 2 ^ (0:4),
+                  tunecontrol = e1071::tune.control(sampling = "fix"))
+}
+
+#' sda model
+#' @noRd
+sda_model <- function(data, class, algorithms) {
+  diagonal <- switch(algorithms, slda = FALSE, sdda = TRUE)
+  sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
+}
+
+#' mlr model
+#' @noRd
+mlr_model <- function(data, class, algorithms) {
+  if (algorithms == "mlr_nnet") {
+    nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE)
+  } else if (algorithms == "mlr_glm") {
+    glmnet::glmnet(as.matrix(data), class, lambda = 0, family = "multinomial")
+  } else {
+    alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
+    glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha,
+                      family = "multinomial")
+  }
+}
+
+#' neural network model
+#' @noRd
+nnet_model <- function(data, class) {
+  if (!"package:nnet" %in% search()) attachNamespace("nnet")
+  e1071::best.nnet(class ~ ., data = cbind(data, class),
+                   size = seq_len(5),
+                   decay = seq(0, 0.5, length.out = 5),
+                   MaxNWts = 2000,
+                   tunecontrol = e1071::tune.control(
+                     sampling = "fix"))
+}
+
+#' naive bayes model
+#' @noRd
+nbayes_model <- function(data, class) {
+  e1071::naiveBayes(data, class)
+}
+
+#' boosting models
+#' @noRd
+boost_model <- function(data, class, algorithms) {
+  switch(algorithms,
+         adaboost = sink_output(maboost::maboost(data, class, breg = "entrop")),
+         xgboost = xgboost::xgb.train(
+           params = list("objective" = "multi:softprob",
+                         "eval_metric" = "mlogloss",
+                         "num_class" = dplyr::n_distinct(class)),
+           data = xgboost::xgb.DMatrix(data = as.matrix(data),
+                                       label = as.integer(class) - 1),
+           nrounds = 2))
+}
+
+#' knn dummy model
+#' @noRd
+knn_model <- function(class, algorithms, ova) {
+  if (ova) {
+    structure(list(unique(class[class != "0"])),
+              class = c(algorithms, "ova"))
+  } else {
+    structure(list(), class = algorithms)
+  }
 }
