@@ -2,8 +2,8 @@
 % Please edit documentation in R/splendid-package.r
 \docType{package}
 \name{splendid-package}
-\alias{splendid}
 \alias{splendid-package}
+\alias{_PACKAGE}
 \title{splendid: SuPervised Learning ENsemble for Diagnostic IDentification}
 \description{
 Provides a bootstrapping and ensemble framework for supervised

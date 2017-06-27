@@ -1,3 +1,5 @@
+#' @name splendid-package
+#' @aliases splendid-package
 #' @keywords internal
 #' @docType package
 #' @import ggplot2
