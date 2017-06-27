@@ -2,11 +2,33 @@
 % Please edit documentation in R/splendid-package.r
 \docType{package}
 \name{splendid-package}
+\alias{splendid}
 \alias{splendid-package}
-\title{splendid}
+\title{splendid: SuPervised Learning ENsemble for Diagnostic IDentification}
 \description{
-The splendid package provides an ensemble framework for classifying,
-predicting, and evaluating supervised learning problems. An ensemble is built
-across bootstrap resamples as well as across different machine learning
-classification algorithms.
+Provides a bootstrapping and ensemble framework for supervised
+learning analyses using multiclass classification algorithms for modelling,
+prediction, and evaluation. Predicted classes are evaluated under metrics
+such as log loss, AUC, F1-score, Matthew's correlation coefficient, and
+accuracy. Discrimination and reliability plots visualize the classifier
+performances.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/AlineTalhouk/splendid}
+  \item Report bugs at \url{https://github.com/AlineTalhouk/splendid/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Derek Chiu \email{dchiu@bccrc.ca}
+
+Authors:
+\itemize{
+  \item Aline Talhouk \email{atalhouk@bccrc.ca}
+  \item Dustin Johnson \email{dustin.bwj@gmail.com}
+}
+
+}
+\keyword{internal}
