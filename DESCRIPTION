@@ -5,7 +5,8 @@ Date: 2017-06-22
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"),
-    person("Dustin", "Johnson", , "dustin.bwj@gmail.com", "aut"))
+    person("Dustin", "Johnson", , "dustin.bwj@gmail.com", "aut")
+    )
 Description: Provides a bootstrapping and ensemble framework for supervised
     learning analyses using multiclass classification algorithms. Predicted
     classes are evaluated under metrics such as log loss, AUC, F1-score,
@@ -26,7 +27,6 @@ Imports:
     MASS,
     randomForest,
     nnet,
-    class,
     e1071,
     pamr,
     maboost,
@@ -35,7 +35,6 @@ Imports:
     RankAggreg,
     knnflex,
     caret,
-    kernlab,
     HandTill2001,
     MLmetrics,
     sda
