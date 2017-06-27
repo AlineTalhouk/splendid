@@ -90,13 +90,13 @@ classifiers.</p>
 <span class='co'># S3 method for default</span>
 <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for knn</span>
-<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>, <span class='no'>train.id</span>,
-  <span class='no'>...</span>)
-
 <span class='co'># S3 method for pamrtrained</span>
 <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>,
-  <span class='no'>train.id</span>, <span class='no'>...</span>)</pre>
+  <span class='no'>train.id</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for knn</span>
+<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>, <span class='no'>train.id</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -107,7 +107,7 @@ classifiers.</p>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>data object with rows as samples, columns as features</p></td>
+      <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
       <th>test.id</th>

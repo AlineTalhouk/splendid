@@ -56,9 +56,7 @@
     <div class="page-header toc-ignore">
       <h1>Ensemble Classification using <code>splendid</code>
 </h1>
-                        <h4 class="author">Derek Chiu</h4>
             
-            <h4 class="date">2017-06-19</h4>
           </div>
 
     
@@ -147,22 +145,30 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <a href="#algorithms" class="anchor"></a>Algorithms</h3>
 <p>There exist a vast number of classification algorithms. Those currently in <code>splendid</code> are:</p>
 <ul>
+<li>Prediction Analysis for Microarrays (<code>"pam"</code>)</li>
+<li>Support Vector Machines using a Radial-Basis Kernel(<code>"svm"</code>)</li>
+<li>Random Forests (<code>"rf"</code>)</li>
 <li>Linear Discriminant Analysis (<code>"lda"</code>)</li>
 <li>Shrinkage Linear Discriminant Analysis (<code>"slda"</code>)<sup>1</sup>
 </li>
 <li>Shrinkage Diagonal Discriminant Analysis (<code>"sdda"</code>)<sup>1</sup>
 </li>
-<li>Random Forests (<code>"rf"</code>)</li>
-<li>Multinomial Classification using neural networks (<code>"multinom_nnet"</code>)</li>
+<li>Multinomial Logistic Regression using
+<ul>
+<li>Generalized Linear Model with no penalization (<code>"mlr_glm"</code>)<sup>2</sup>
+</li>
+<li>GLM with LASSO penalty (<code>"mlr_lasso"</code>)<sup>2</sup>
+</li>
+<li>GLM with ridge penalty (<code>"mlr_ridge"</code>)<sup>2</sup>
+</li>
+<li>Neural Networks (<code>"mlr_nnet"</code>)</li>
+</ul>
+</li>
 <li>Neural Networks with One Hidden Layer (<code>"nnet"</code>)</li>
-<li>K-Nearest Neighbours (<code>"knn"</code>)</li>
-<li>Support Vector Machines using a Radial-Basis Kernel(<code>"svm"</code>)</li>
-<li>Prediction Analysis for Microarrays (<code>"pam"</code>)</li>
+<li>Naive Bayes (<code>"nbayes"</code>)</li>
 <li>Adaptive Boosting using Decision Trees (<code>"adaboost"</code>)</li>
 <li>Extreme Gradient Boosting using Decision Trees (<code>"xgboost"</code>)</li>
-<li>Naive Bayes (<code>"nbayes"</code>)</li>
-<li>Multinomial Classification using an L1-penalty (<code>"lasso"</code>), L2-penalty (<code>"ridge"</code>), or no penalty (<code>"multinom_glm"</code>)<sup>2</sup>
-</li>
+<li>K-Nearest Neighbours (<code>"knn"</code>)</li>
 </ul>
 <p>These algorithms are implemented in <code><a href="../reference/classification.html">classification()</a></code>.</p>
 </div>

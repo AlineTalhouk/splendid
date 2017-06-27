@@ -84,23 +84,23 @@
     <p>One-Vs-All training approach</p>
     
 
-    <pre class="usage"><span class='fu'>ova_classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>, <span class='no'>rfe</span>, <span class='no'>ova</span>)</pre>
+    <pre class="usage"><span class='fu'>ova_classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algorithms</span>, <span class='no'>rfe</span>, <span class='no'>ova</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>data object with rows as samples, columns as features</p></td>
+      <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
       <th>class</th>
       <td><p>true/reference class vector used for supervised learning</p></td>
     </tr>
     <tr>
-      <th>algs</th>
-      <td><p>character string of classification algorithm to use. See Details
-in <code><a href='splendid.html'>splendid</a></code> for a list of choices.</p></td>
+      <th>algorithms</th>
+      <td><p>character string of algorithm to use for supervised
+learning. See <strong>Algorithms</strong> section for possible options.</p></td>
     </tr>
     <tr>
       <th>rfe</th>

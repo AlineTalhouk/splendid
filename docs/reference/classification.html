@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Machine learning classification algorithms — classification • splendid</title>
+<title>Multiclass classification — classification • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,30 +77,32 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Machine learning classification algorithms</h1>
+    <h1>Multiclass classification</h1>
     </div>
 
     
-    <p>Runs a classification algorithm on a given dataset and reference class.</p>
+    <p>Run a multiclass classification algorithm on a given dataset and reference
+class.</p>
     
 
-    <pre class="usage"><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algs</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algorithms</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>data object with rows as samples, columns as features</p></td>
+      <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
       <th>class</th>
       <td><p>true/reference class vector used for supervised learning</p></td>
     </tr>
     <tr>
-      <th>algs</th>
-      <td><p>character string of classification algorithm to use. See Details
-in <code><a href='splendid.html'>splendid</a></code> for a list of choices.</p></td>
+      <th>algorithms</th>
+      <td><p>character string of algorithm to use for supervised
+learning. See <strong>Algorithms</strong> section for possible options.</p></td>
     </tr>
     <tr>
       <th>rfe</th>
@@ -120,27 +122,48 @@ feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The model object from running the classification algorithm
-  <code>"alg"</code></p>
+    <p>The model object from running the classification <code>algorithm</code></p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Some of the classification algorithms implemented use pre-defined values that
-specify hyperparameters, settings, options, etc. <code>"multinom"</code> and
-<code>"nnet"</code> increase the maximum number of weights used to 2000, in case
-<code>data</code> is high dimensional and classification is time-consuming.
-<code>"nnet"</code> uses 3 nodes in its hidden layer, a choice that hopefully
-promotes sufficient complexity in many datasets. <code>"pamr"</code> considers 100
-thresholds when training, and uses a uniform prior. <code>"adaboost"</code>
-actually calls <code><a href='http://www.rdocumentation.org/packages/maboost/topics/maboost'>maboost</a></code> instead of
-<code><a href='http://www.rdocumentation.org/packages/adabag/topics/boosting'>boosting</a></code> because of faster performance. As a result, we
-use the "entrop" option, which uses the KL-divergence method and mimics
+specify settings and options while others need to tune hyperparameters.
+<code>"multinom"</code> and <code>"nnet"</code> use a maximum number of weights of 2000,
+in case <code>data</code> is high dimensional and classification is time-consuming.
+<code>"nnet"</code> also tunes the number of nodes (1-5) in the hidden layer.
+<code>"pam"</code> considers 100 thresholds when training, and uses a uniform
+prior. <code>"adaboost"</code> calls <code><a href='http://www.rdocumentation.org/packages/maboost/topics/maboost'>maboost</a></code> instead of
+<code><a href='http://www.rdocumentation.org/packages/adabag/topics/boosting'>boosting</a></code> for faster performance. As a result, we use
+the <code>"entrop"</code> option, which uses the KL-divergence method and mimics
 adaboost.</p>
-<p>When <code>alg = "knn"</code>, the result is <code>NULL</code> because the
-<code><a href='http://www.rdocumentation.org/packages/class/topics/knn'>knn</a></code> does not have output an intermediate model object.
-The modelling and prediction is done in one step. However, a class attribute
-is still assigned to the result in order to enact the corresponding method in
-<code><a href='prediction.html'>prediction</a></code>.</p>
+<p>When <code>alg = "knn"</code>, the return value is <code>NULL</code> because
+<code><a href='http://www.rdocumentation.org/packages/class/topics/knn'>knn</a></code> does not output an intermediate model object. The
+modelling and prediction is performed in one step. However, the class
+attribute "knn" is still assigned to the result in order to call the
+respective <code><a href='prediction.html'>prediction</a></code> method. An additional class "ova" is
+added if <code>ova = TRUE</code>.</p>
+    
+    <h2 class="hasAnchor" id="algorithms"><a class="anchor" href="#algorithms"></a>Algorithms</h2>
+
+    <p>The classification algorithms currently supported are:</p><ul>
+<li><p>Prediction Analysis for Microarrays ("pam")</p></li>
+<li><p>Support Vector Machines ("svm")</p></li>
+<li><p>Random Forests ("rf")</p></li>
+<li><p>Linear Discriminant Analysis ("lda")</p></li>
+<li><p>Shrinkage Linear Discriminant Analysis ("slda")</p></li>
+<li><p>Shrinkage Diagonal Discriminant Analysis ("sdda")</p></li>
+<li><p>Multinomial Logistic Regression using</p><ul>
+<li><p>Generalized Linear Model with no penalization ("mlr_glm")</p></li>
+<li><p>GLM with LASSO penalty ("mlr_lasso")</p></li>
+<li><p>GLM with ridge penalty ("mlr_ridge")</p></li>
+<li><p>Neural Networks ("mlr_nnet")</p></li>
+</ul></li>
+<li><p>Neural Networks ("nnet")</p></li>
+<li><p>Naive Bayes ("nbayes")</p></li>
+<li><p>Adaptive Boosting ("adaboost")</p></li>
+<li><p>Extreme Gradient Boosting ("xgboost")</p></li>
+<li><p>K-Nearest Neighbours ("knn")</p></li>
+</ul>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -169,6 +192,8 @@ is still assigned to the result in order to enact the corresponding method in
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#algorithms">Algorithms</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

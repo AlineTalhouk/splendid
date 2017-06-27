@@ -86,7 +86,7 @@ replicates and an ensemble classifier is built and evaluated across these
 variants.</p>
     
 
-    <pre class="usage"><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <pre class="usage"><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -94,11 +94,17 @@ variants.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>data object with rows as samples, columns as features</p></td>
+      <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
       <th>class</th>
       <td><p>true/reference class vector used for supervised learning</p></td>
+    </tr>
+    <tr>
+      <th>algorithms</th>
+      <td><p>character vector of algorithms to use for supervised
+learning. See <strong>Algorithms</strong> section for possible options. By default,
+this argument is <code>NULL</code>, in which case all algorithms are used.</p></td>
     </tr>
     <tr>
       <th>n</th>
@@ -107,12 +113,6 @@ variants.</p>
     <tr>
       <th>seed</th>
       <td><p>random seed used for reproducibility in bootstrapping results</p></td>
-    </tr>
-    <tr>
-      <th>algorithms</th>
-      <td><p>character vector of algorithm names to use for supervised
-learning. See Details for possible options. This argument is <code>NULL</code> by
-default, in which case uses all implemented algorithms.</p></td>
     </tr>
     <tr>
       <th>rfe</th>
@@ -174,18 +174,31 @@ top algorithms chosen.</p></dd>
 replacement. Test sets comprise of all remaining samples left out from each
 training set, also called Out-Of-Bag samples. This framework uses the 0.632
 bootstrap rule for large n.</p>
-<p>The classification algorithms currently supported are: Linear Discriminant
-Analysis ("lda"), Shrinkage Linear Discriminant Analysis ("slda"), Shrinkage
-Diagonal Discriminant Analysis ("sdda"), Random Forests ("rf"), Multinomial
-Classification using Neural Networks ("multinom_nnet"), Neural Networks
-("nnet"), K-Nearest Neighbours, ("knn"), Support Vector Machines ("svm"),
-Prediction Analysis for Microarrays ("pam"), Adaptive Boosting ("adaboost"),
-Extreme Gradient Boosting ("xgboost"), Naive Bayes ("nbayes"), and
-Generalized Linear Models using the LASSO penalty ("lasso"), ridge ("ridge")
-penalty, or no regularization ("multinom_glm").</p>
 <p>An ensemble classifier is constructed using Rank Aggregation across multiple
 evaluation measures such as precision, recall, F1-score, and Matthew's
 Correlation Coefficient (MCC).</p>
+    
+    <h2 class="hasAnchor" id="algorithms"><a class="anchor" href="#algorithms"></a>Algorithms</h2>
+
+    <p>The classification algorithms currently supported are:</p><ul>
+<li><p>Prediction Analysis for Microarrays ("pam")</p></li>
+<li><p>Support Vector Machines ("svm")</p></li>
+<li><p>Random Forests ("rf")</p></li>
+<li><p>Linear Discriminant Analysis ("lda")</p></li>
+<li><p>Shrinkage Linear Discriminant Analysis ("slda")</p></li>
+<li><p>Shrinkage Diagonal Discriminant Analysis ("sdda")</p></li>
+<li><p>Multinomial Logistic Regression using</p><ul>
+<li><p>Generalized Linear Model with no penalization ("mlr_glm")</p></li>
+<li><p>GLM with LASSO penalty ("mlr_lasso")</p></li>
+<li><p>GLM with ridge penalty ("mlr_ridge")</p></li>
+<li><p>Neural Networks ("mlr_nnet")</p></li>
+</ul></li>
+<li><p>Neural Networks ("nnet")</p></li>
+<li><p>Naive Bayes ("nbayes")</p></li>
+<li><p>Adaptive Boosting ("adaboost")</p></li>
+<li><p>Extreme Gradient Boosting ("xgboost")</p></li>
+<li><p>K-Nearest Neighbours ("knn")</p></li>
+</ul>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -202,6 +215,8 @@ Correlation Coefficient (MCC).</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#algorithms">Algorithms</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
