@@ -31,7 +31,8 @@ evaluation <- function(x, y, plot = FALSE) {
   # Remove unclassified cases unless they're all unclassified or remaining cases
   # does not span all classes
   y <- y %>% forcats::lvls_expand(levels(x))  # add levels with 0 predictions
-  y_thres <- y %@% "class.thres"
+  y_thres <- y %@% "class.thres" %>%
+    forcats::lvls_reorder(as.numeric(levels(.)))  # reorder levels
   keep_ind <- y_thres != "unclassified"
   n_class <- dplyr::n_distinct(y_thres[keep_ind])
   probs <- y %@% "prob"
