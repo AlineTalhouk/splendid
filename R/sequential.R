@@ -100,6 +100,7 @@ sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
 #' @inheritParams sequential_ensemble
 #' @noRd
 sequential_rank <- function(sm, boxplot) {
+  model <- value <- metric <- NULL
   tidy_evals <- sequential_eval(sm)
   if (boxplot) {
     p <- tidy_evals %>%
@@ -112,12 +113,12 @@ sequential_rank <- function(sm, boxplot) {
   }
   model_ranks <- tidy_evals %>%
     dplyr::group_by(class, model) %>%
-    dplyr::summarise(accuracy = mean(value)) %>%
+    dplyr::summarise(metric = mean(value)) %>%
     dplyr::group_by(class) %>%
-    dplyr::filter(accuracy == max(accuracy)) %>%
-    dplyr::arrange(desc(accuracy)) %>%
+    dplyr::filter(metric == max(metric)) %>%
+    dplyr::arrange(desc(metric)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-accuracy)
+    dplyr::select(-metric)
   model_ranks
 }
 
@@ -126,6 +127,7 @@ sequential_rank <- function(sm, boxplot) {
 #' @inheritParams splendid_ensemble
 #' @noRd
 sequential_eval <- function(sm) {
+  measure <- score <- value <- model <- boot <- NULL
   evals <- sm %>%
     purrr::map2(names(.), ~ .x %>% magrittr::set_colnames(
       paste(.y, colnames(.x), sep = "."))) %>%
