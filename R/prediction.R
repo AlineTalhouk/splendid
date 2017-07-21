@@ -204,10 +204,12 @@ prediction_output <- function(pred, prob, class, test.id, threshold) {
 class_threshold <- function(prob, threshold = 0.5) {
   prob %>%
     as.data.frame() %>%
-    dplyr::mutate(!!"max_prop" := purrr::pmap_dbl(., max),
-                  !!"max_class" := purrr::pmap(., list) %>%
-                    purrr::map_chr(~ names(which.max(.x))) %>%
-                    ifelse(.data$max_prop >= threshold, ., "unclassified")) %>%
+    dplyr::mutate_(.dots = stats::setNames(
+      list(~purrr::pmap_dbl(., max),
+           ~purrr::pmap(., list) %>%
+             purrr::map_chr(~ names(which.max(.x))) %>%
+             ifelse(max_prop >= threshold, ., "unclassified")),
+      c("max_prop", "max_class"))) %>%
     magrittr::extract2("max_class") %>%
     factor() %>%
     forcats::fct_expand(colnames(prob))
