@@ -111,14 +111,13 @@ sequential_rank <- function(sm, boxplot) {
     print(p)
   }
   model_ranks <- tidy_evals %>%
-    dplyr::group_by(.data$class, .data$model, .data$ova) %>%
-    dplyr::summarise(!!"metric" := mean(.data$value, na.rm = TRUE)) %>%
-    dplyr::group_by(!!quo(class)) %>%
-    dplyr::filter(.data$metric == max(.data$metric),
-                  !duplicated(.data$metric)) %>%
-    dplyr::arrange(desc(.data$metric)) %>%
+    dplyr::group_by(class, model) %>%
+    dplyr::summarise(accuracy = mean(value)) %>%
+    dplyr::group_by(class) %>%
+    dplyr::filter(accuracy == max(accuracy)) %>%
+    dplyr::arrange(desc(accuracy)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-.data$metric)
+    dplyr::select(-accuracy)
   model_ranks
 }
 
@@ -128,17 +127,17 @@ sequential_rank <- function(sm, boxplot) {
 #' @noRd
 sequential_eval <- function(sm) {
   evals <- sm %>%
+    purrr::map2(names(.), ~ .x %>% magrittr::set_colnames(
+      paste(.y, colnames(.x), sep = "."))) %>%
+    unname() %>%
     purrr::invoke(cbind, .) %>%
-    dplyr::mutate(!!"measure" := rownames(.)) %>%
-    dplyr::filter(grepl("f1\\.", .data$measure)) %>%
-    dplyr::mutate(!!"measure" := gsub("f1\\.", "", .data$measure)) %>%
-    dplyr::rename("class" = "measure") %>%
-    tidyr::gather_("score", "value",
-                   grep("class", names(.), value = TRUE, invert = TRUE)) %>%
-    tidyr::separate_("score", c("model", "boot"), sep = "\\.") %>%
-    dplyr::mutate(!!"ova" := grepl("ova", .data$model),
-                  !!"model" := gsub("ova_", "", .data$model)) %>%
-    dplyr::select("model", "ova", "boot", "class", "value")
+    dplyr::mutate(measure = rownames(.)) %>%
+    dplyr::filter(grepl("f1\\.", measure)) %>%
+    dplyr::mutate(measure = gsub("f1\\.", "", measure)) %>%
+    dplyr::rename(class = measure) %>%
+    tidyr::gather(score, value, -class) %>%
+    tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
+    dplyr::select(model, boot, class, value)
   evals
 }
 
