@@ -7,15 +7,16 @@
 \alias{prediction.knn}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, test.id, threshold = 0.5, class, ...)
+prediction(mod, data, test.id = NULL, threshold = 0.5, class, ...)
 
-\method{prediction}{default}(mod, data, test.id, threshold = 0.5, class, ...)
+\method{prediction}{default}(mod, data, test.id = NULL, threshold = 0.5,
+  class, ...)
 
-\method{prediction}{pamrtrained}(mod, data, test.id, threshold = 0.5, class,
+\method{prediction}{pamrtrained}(mod, data, test.id = NULL, threshold = 0.5,
+  class, train.id, ...)
+
+\method{prediction}{knn}(mod, data, test.id = NULL, threshold = 0.5, class,
   train.id, ...)
-
-\method{prediction}{knn}(mod, data, test.id, threshold = 0.5, class, train.id,
-  ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link{classification}}}

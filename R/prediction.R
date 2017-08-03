@@ -32,7 +32,7 @@
 #' mod <- classification(hgsc[training.id, ], class[training.id], "lda")
 #' pred <- prediction(mod, hgsc, test.id, class = class)
 #' table(true = class[test.id], pred)
-prediction <- function(mod, data, test.id, threshold = 0.5, class, ...) {
+prediction <- function(mod, data, test.id = NULL, threshold = 0.5, class, ...) {
   if (!inherits(mod, ALG.CLASS)) {
     match.arg(class(mod), ALG.CLASS)
   } else {
@@ -42,14 +42,15 @@ prediction <- function(mod, data, test.id, threshold = 0.5, class, ...) {
 
 #' @rdname prediction
 #' @export
-prediction.default <- function(mod, data, test.id, threshold = 0.5, class,
+prediction.default <- function(mod, data, test.id = NULL, threshold = 0.5, class,
                                ...) {
+  test.id <- test.id %||% seq_len(nrow(data))
   stats::predict(mod, data[test.id, ], ...)
 }
 
 #' @rdname prediction
 #' @export
-prediction.pamrtrained <- function(mod, data, test.id, threshold = 0.5,
+prediction.pamrtrained <- function(mod, data, test.id = NULL, threshold = 0.5,
                                    class, train.id, ...) {
   model.cv <- sink_output(
     pamr::pamr.cv(mod, list(x = t(data[train.id, ]), y = class[train.id]),
@@ -64,7 +65,8 @@ prediction.pamrtrained <- function(mod, data, test.id, threshold = 0.5,
 }
 
 #' @export
-prediction.rfe <- function(mod, data, test.id, threshold = 0.5, class, ...) {
+prediction.rfe <- function(mod, data, test.id = NULL, threshold = 0.5, class,
+                           ...) {
   p <- prediction.default(mod, data[, mod$optVariables], test.id)
   pred <- p$pred
   prob <- p[, names(p) != "pred"]
@@ -72,7 +74,8 @@ prediction.rfe <- function(mod, data, test.id, threshold = 0.5, class, ...) {
 }
 
 #' @export
-prediction.svm <- function(mod, data, test.id, threshold = 0.5, class, ...) {
+prediction.svm <- function(mod, data, test.id = NULL, threshold = 0.5, class,
+                           ...) {
   pred <- unname(prediction.default(mod, data, test.id, probability = TRUE))
   prob <- attr(pred, "probabilities")
   if (!("0" %in% mod$levels))
@@ -82,7 +85,7 @@ prediction.svm <- function(mod, data, test.id, threshold = 0.5, class, ...) {
 }
 
 #' @export
-prediction.randomForest <- function(mod, data, test.id, threshold = 0.5,
+prediction.randomForest <- function(mod, data, test.id = NULL, threshold = 0.5,
                                     class, ...) {
   pred <- unname(prediction.default(mod, data, test.id, type = "response"))
   prob <- prediction.default(mod, data, test.id, type = "prob")
@@ -90,7 +93,8 @@ prediction.randomForest <- function(mod, data, test.id, threshold = 0.5,
 }
 
 #' @export
-prediction.lda <- function(mod, data, test.id, threshold = 0.5, class, ...) {
+prediction.lda <- function(mod, data, test.id = NULL, threshold = 0.5, class,
+                           ...) {
   p <- prediction.default(mod, data, test.id, ...)
   pred <- p$class
   prob <- p$posterior %>% sum_to_one()
@@ -98,14 +102,15 @@ prediction.lda <- function(mod, data, test.id, threshold = 0.5, class, ...) {
 }
 
 #' @export
-prediction.sda <- function(mod, data, test.id, threshold = 0.5, class, ...) {
+prediction.sda <- function(mod, data, test.id = NULL, threshold = 0.5, class,
+                           ...) {
   prediction.lda(mod, as.matrix(data), test.id, threshold, class,
                  verbose = FALSE, ...)
 }
 
 #' @export
-prediction.cv.glmnet <- function(mod, data, test.id, threshold = 0.5, class,
-                                 ...) {
+prediction.cv.glmnet <- function(mod, data, test.id = NULL, threshold = 0.5,
+                                 class, ...) {
   pred <- factor(prediction.default(mod, as.matrix(data), test.id,
                                     type = "class"))
   prob <- prediction.default(mod, as.matrix(data), test.id,
@@ -114,13 +119,14 @@ prediction.cv.glmnet <- function(mod, data, test.id, threshold = 0.5, class,
 }
 
 #' @export
-prediction.glmnet <- function(mod, data, test.id, threshold = 0.5, class, ...) {
+prediction.glmnet <- function(mod, data, test.id = NULL, threshold = 0.5, class,
+                              ...) {
   prediction.cv.glmnet(mod, data, test.id, threshold, class, ...)
 }
 
 #' @export
-prediction.multinom <- function(mod, data, test.id, threshold = 0.5, class,
-                                ...) {
+prediction.multinom <- function(mod, data, test.id = NULL, threshold = 0.5,
+                                class, ...) {
   pred <- prediction.default(mod, data, test.id, type = "class")
   prob <- prediction.default(mod, data, test.id, type = "probs")
   if (!is.matrix(prob)) {  # for ova case
@@ -130,8 +136,8 @@ prediction.multinom <- function(mod, data, test.id, threshold = 0.5, class,
 }
 
 #' @export
-prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
-                                    ...) {
+prediction.nnet.formula <- function(mod, data, test.id = NULL, threshold = 0.5,
+                                    class, ...) {
   pred <- factor(prediction.default(mod, data, test.id, type = "class"))
   prob <- prediction.default(mod, data, test.id, type = "raw")
   if (ncol(prob) == 1) {  # for ova case
@@ -141,8 +147,8 @@ prediction.nnet.formula <- function(mod, data, test.id, threshold = 0.5, class,
 }
 
 #' @export
-prediction.naiveBayes <- function(mod, data, test.id, threshold = 0.5, class,
-                                  ...) {
+prediction.naiveBayes <- function(mod, data, test.id = NULL, threshold = 0.5,
+                                  class, ...) {
   pred <- prediction.default(mod, data, test.id, type = "class")
   prob <- prediction.default(mod, data, test.id, type = "raw") %>%
     magrittr::set_rownames(rownames(data[test.id, ]))
@@ -150,8 +156,8 @@ prediction.naiveBayes <- function(mod, data, test.id, threshold = 0.5, class,
 }
 
 #' @export
-prediction.maboost <- function(mod, data, test.id, threshold = 0.5, class,
-                               ...) {
+prediction.maboost <- function(mod, data, test.id = NULL, threshold = 0.5,
+                               class, ...) {
   names(data) <- make.names(names(data))
   both <- prediction.default(mod, data, test.id, type = "both")
   pred <- both$class
@@ -160,8 +166,8 @@ prediction.maboost <- function(mod, data, test.id, threshold = 0.5, class,
 }
 
 #' @export
-prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
-                                   ...) {
+prediction.xgb.Booster <- function(mod, data, test.id = NULL, threshold = 0.5,
+                                   class, ...) {
   class <- factor(class)
   prob <- prediction.default(mod, as.matrix(data), test.id, reshape = TRUE) %>%
     magrittr::set_rownames(rownames(data[test.id, ])) %>%
@@ -175,8 +181,8 @@ prediction.xgb.Booster <- function(mod, data, test.id, threshold = 0.5, class,
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, test.id, threshold = 0.5, class, train.id,
-                           ...) {
+prediction.knn <- function(mod, data, test.id = NULL, threshold = 0.5, class,
+                           train.id, ...) {
   if (inherits(mod, "ova")) {  # for ova case
     lev <- as.character(unlist(mod))
     if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
