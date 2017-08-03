@@ -23,7 +23,8 @@ prediction(mod, data, test.id = NULL, threshold = 0.5, class, ...)
 
 \item{data}{data frame with rows as samples, columns as features}
 
-\item{test.id}{integer vector of indices for test set}
+\item{test.id}{integer vector of indices for test set ID. By default,
+prediction occurs on the full data set.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}

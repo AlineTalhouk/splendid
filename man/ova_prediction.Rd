@@ -11,7 +11,8 @@ ova_prediction(fits, data, test.id, class, train.id, threshold = 0.5, ...)
 
 \item{data}{data frame with rows as samples, columns as features}
 
-\item{test.id}{integer vector of indices for test set}
+\item{test.id}{integer vector of indices for test set ID. By default,
+prediction occurs on the full data set.}
 
 \item{class}{true/reference class vector used for supervised learning}
 
