@@ -23,7 +23,7 @@
 #' @export
 #' @examples
 #' data(hgsc)
-#' class <- factor(attr(hgsc, "class.true"))
+#' class <- attr(hgsc, "class.true")
 #' set.seed(1)
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
@@ -34,7 +34,7 @@
 discrimination_plot <- function(x, pred.probs) {
 
   # turn into long-form for plotting
-  df.long <- data.frame(trueClass = x, pred.probs) %>%
+  df.long <- data.frame(trueClass = factor(x), pred.probs) %>%
     tidyr::gather(key = "class", value = "prob", -1, factor_key = TRUE)
 
   # create prevalance (base-line) class proportion table
@@ -66,7 +66,9 @@ discrimination_plot <- function(x, pred.probs) {
 reliability_plot <- function(x, pred.probs) {
 
   # cut each class into probability bins of 10, fit lowess
-  df <- levels(x) %>%
+  df <- x %>%
+    as.factor() %>%
+    levels() %>%
     purrr::set_names() %>%
     purrr::map(~ {
       prob <- pred.probs[, .x]

@@ -37,7 +37,7 @@ Both plots can be called from within \code{\link{evaluation}}.
 }
 \examples{
 data(hgsc)
-class <- factor(attr(hgsc, "class.true"))
+class <- attr(hgsc, "class.true")
 set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) \%in\% training.id)
