@@ -7,34 +7,35 @@
 \alias{prediction.knn}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, test.id = NULL, threshold = 0.5, class, ...)
+prediction(mod, data, class, test.id = NULL, train.id = NULL,
+  threshold = 0.5, ...)
 
-\method{prediction}{default}(mod, data, test.id = NULL, threshold = 0.5,
-  class, ...)
+\method{prediction}{default}(mod, data, class, test.id = NULL,
+  train.id = NULL, threshold = 0.5, ...)
 
-\method{prediction}{pamrtrained}(mod, data, test.id = NULL, threshold = 0.5,
-  class, train.id, ...)
+\method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
+  train.id = NULL, threshold = 0.5, ...)
 
-\method{prediction}{knn}(mod, data, test.id = NULL, threshold = 0.5, class,
-  train.id, ...)
+\method{prediction}{knn}(mod, data, class, test.id = NULL, train.id = NULL,
+  threshold = 0.5, ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link{classification}}}
 
 \item{data}{data frame with rows as samples, columns as features}
 
+\item{class}{true/reference class vector used for supervised learning}
+
 \item{test.id}{integer vector of indices for test set ID. By default,
 prediction occurs on the full data set.}
+
+\item{train.id}{integer vector of indices for training set ID. Only used for
+\code{knn} and \code{pamr} prediction methods.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
 
-\item{class}{true/reference class vector used for supervised learning}
-
 \item{...}{additional arguments to be passed to or from methods}
-
-\item{train.id}{integer vector of indices for training set ID. Only used for
-\code{knn} and \code{pamr} prediction methods.}
 }
 \value{
 A factor of predicted classes with labels in the same order as true
@@ -61,7 +62,7 @@ set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) \%in\% training.id)
 mod <- classification(hgsc[training.id, ], class[training.id], "lda")
-pred <- prediction(mod, hgsc, test.id, class = class)
+pred <- prediction(mod, hgsc, class, test.id)
 table(true = class[test.id], pred)
 }
 \author{

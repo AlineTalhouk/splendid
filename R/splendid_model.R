@@ -21,7 +21,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
 
   # Store lists of common arguments in model and pred operations
   m_args <- dplyr::lst(train.id, data, class, algorithms, rfe)
-  p_args <- dplyr::lst(test.id, train.id, data, class, threshold)
+  p_args <- dplyr::lst(data, class, test.id, train.id, threshold)
 
   # Apply training sets to models and predict on the test sets
   models <- sp_mod %>%
@@ -64,9 +64,9 @@ sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova) {
 
 #' Make prediction based on function f
 #' @noRd
-sp_pred <- function(f, model, test.id, train.id, data, class, threshold, ...) {
+sp_pred <- function(f, model, data, class, test.id, train.id, threshold, ...) {
   pred <- model %>% purrr::map(
-    ~ purrr::pmap(list(.x, test.id, train.id),
+    ~ purrr::pmap(list(.x, test.id = test.id, train.id = train.id),
                   f, data = data, class = class, threshold = threshold, ...))
   pred
 }
