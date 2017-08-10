@@ -7,16 +7,17 @@
 \alias{prediction.knn}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, class, test.id = NULL, threshold = 0.5, ...)
-
-\method{prediction}{default}(mod, data, class, test.id = NULL,
+prediction(mod, data, class, test.id = NULL, train.id = NULL,
   threshold = 0.5, ...)
 
-\method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
-  threshold = 0.5, train.id, ...)
+\method{prediction}{default}(mod, data, class, test.id = NULL,
+  train.id = NULL, threshold = 0.5, ...)
 
-\method{prediction}{knn}(mod, data, class, test.id = NULL, threshold = 0.5,
-  train.id, ...)
+\method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
+  train.id = NULL, threshold = 0.5, ...)
+
+\method{prediction}{knn}(mod, data, class, test.id = NULL, train.id = NULL,
+  threshold = 0.5, ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link{classification}}}
@@ -28,13 +29,13 @@ prediction(mod, data, class, test.id = NULL, threshold = 0.5, ...)
 \item{test.id}{integer vector of indices for test set ID. By default,
 prediction occurs on the full data set.}
 
+\item{train.id}{integer vector of indices for training set ID. Only used for
+\code{knn} and \code{pamr} prediction methods.}
+
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
 
 \item{...}{additional arguments to be passed to or from methods}
-
-\item{train.id}{integer vector of indices for training set ID. Only used for
-\code{knn} and \code{pamr} prediction methods.}
 }
 \value{
 A factor of predicted classes with labels in the same order as true
