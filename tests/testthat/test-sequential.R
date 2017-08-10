@@ -15,4 +15,5 @@ test_that("sequential alg fits one fewer model than number of classes", {
 
 test_that("boxplot showing F1-score distribution can be plotted", {
   expect_error(sequential_train(sm, hgsc, class, boxplot = TRUE), NA)
+  file.remove(list.files(pattern = "Rplots"))
 })
