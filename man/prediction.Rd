@@ -7,15 +7,15 @@
 \alias{prediction.knn}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, test.id = NULL, threshold = 0.5, class, ...)
+prediction(mod, data, class, test.id = NULL, threshold = 0.5, ...)
 
 \method{prediction}{default}(mod, data, test.id = NULL, threshold = 0.5,
-  class, ...)
+  ...)
 
-\method{prediction}{pamrtrained}(mod, data, test.id = NULL, threshold = 0.5,
-  class, train.id, ...)
+\method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
+  threshold = 0.5, train.id, ...)
 
-\method{prediction}{knn}(mod, data, test.id = NULL, threshold = 0.5, class,
+\method{prediction}{knn}(mod, data, class, test.id = NULL, threshold = 0.5,
   train.id, ...)
 }
 \arguments{
@@ -23,13 +23,13 @@ prediction(mod, data, test.id = NULL, threshold = 0.5, class, ...)
 
 \item{data}{data frame with rows as samples, columns as features}
 
+\item{class}{true/reference class vector used for supervised learning}
+
 \item{test.id}{integer vector of indices for test set ID. By default,
 prediction occurs on the full data set.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
-
-\item{class}{true/reference class vector used for supervised learning}
 
 \item{...}{additional arguments to be passed to or from methods}
 
@@ -61,7 +61,7 @@ set.seed(1)
 training.id <- sample(seq_along(class), replace = TRUE)
 test.id <- which(!seq_along(class) \%in\% training.id)
 mod <- classification(hgsc[training.id, ], class[training.id], "lda")
-pred <- prediction(mod, hgsc, test.id, class = class)
+pred <- prediction(mod, hgsc, class, test.id)
 table(true = class[test.id], pred)
 }
 \author{
