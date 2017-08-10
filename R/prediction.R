@@ -15,9 +15,9 @@
 #' @param mod model object from \code{\link{classification}}
 #' @param test.id integer vector of indices for test set ID. By default,
 #'   prediction occurs on the full data set.
-#' @param ... additional arguments to be passed to or from methods
 #' @param train.id integer vector of indices for training set ID. Only used for
 #'   \code{knn} and \code{pamr} prediction methods.
+#' @param ... additional arguments to be passed to or from methods
 #' @return A factor of predicted classes with labels in the same order as true
 #'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
 #'   list of length 2: the predicted class, and the threshold value.
