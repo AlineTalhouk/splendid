@@ -25,7 +25,7 @@
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
 #' mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
-#' pred <- prediction(mod, hgsc, test.id, class = class)
+#' pred <- prediction(mod, hgsc, class, test.id)
 #' evaluation(class[test.id], pred)
 evaluation <- function(x, y, plot = FALSE) {
   # Remove unclassified cases unless they're all unclassified or remaining cases
