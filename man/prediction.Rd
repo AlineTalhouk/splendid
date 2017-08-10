@@ -9,8 +9,8 @@
 \usage{
 prediction(mod, data, class, test.id = NULL, threshold = 0.5, ...)
 
-\method{prediction}{default}(mod, data, test.id = NULL, threshold = 0.5,
-  ...)
+\method{prediction}{default}(mod, data, class, test.id = NULL,
+  threshold = 0.5, ...)
 
 \method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
   threshold = 0.5, train.id, ...)
