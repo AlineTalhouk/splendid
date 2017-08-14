@@ -4,6 +4,5 @@
 ^data-raw$
 ^_pkgdown\.yaml$
 ^docs$
-^spld_select.R$
 ^README\.Rmd$
 ^README-.*\.png$
