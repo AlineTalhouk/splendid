@@ -84,7 +84,8 @@
     <p>One-Vs-All prediction approach</p>
     
 
-    <pre class="usage"><span class='fu'>ova_prediction</span>(<span class='no'>fits</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='no'>class</span>, <span class='no'>train.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>ova_prediction</span>(<span class='no'>fits</span>, <span class='no'>data</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>class</span>, <span class='no'>train.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -99,7 +100,8 @@
     </tr>
     <tr>
       <th>test.id</th>
-      <td><p>integer vector of indices for test set</p></td>
+      <td><p>integer vector of indices for test set ID. By default,
+prediction occurs on the full data set.</p></td>
     </tr>
     <tr>
       <th>class</th>

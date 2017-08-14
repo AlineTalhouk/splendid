@@ -127,7 +127,7 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
 <span class='no'>training.id</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fu'>seq_along</span>(<span class='no'>class</span>), <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>test.id</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(!<span class='fu'>seq_along</span>(<span class='no'>class</span>) <span class='kw'>%in%</span> <span class='no'>training.id</span>)
 <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"xgboost"</span>)
-<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>test.id</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='no'>class</span>)
+<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='no'>test.id</span>)
 <span class='fu'>evaluation</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>)</div><div class='output co'>#&gt; $logloss
 #&gt; [1] 0.678389
 #&gt; 

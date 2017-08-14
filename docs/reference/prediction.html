@@ -85,18 +85,20 @@
 classifiers.</p>
     
 
-    <pre class="usage"><span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>, <span class='no'>...</span>)
+<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for pamrtrained</span>
-<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>,
-  <span class='no'>train.id</span>, <span class='no'>...</span>)
+<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for knn</span>
-<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>test.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>class</span>, <span class='no'>train.id</span>,
-  <span class='no'>...</span>)</pre>
+<span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -110,8 +112,18 @@ classifiers.</p>
       <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
+      <th>class</th>
+      <td><p>true/reference class vector used for supervised learning</p></td>
+    </tr>
+    <tr>
       <th>test.id</th>
-      <td><p>integer vector of indices for test set</p></td>
+      <td><p>integer vector of indices for test set ID. By default,
+prediction occurs on the full data set.</p></td>
+    </tr>
+    <tr>
+      <th>train.id</th>
+      <td><p>integer vector of indices for training set ID. Only used for
+<code>knn</code> and <code>pamr</code> prediction methods.</p></td>
     </tr>
     <tr>
       <th>threshold</th>
@@ -119,17 +131,8 @@ classifiers.</p>
 below which a sample will be unclassified.</p></td>
     </tr>
     <tr>
-      <th>class</th>
-      <td><p>true/reference class vector used for supervised learning</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>additional arguments to be passed to or from methods</p></td>
-    </tr>
-    <tr>
-      <th>train.id</th>
-      <td><p>integer vector of indices for training set ID. Only used for
-<code>knn</code> and <code>pamr</code> prediction methods.</p></td>
     </tr>
     </table>
     
@@ -157,7 +160,7 @@ prediction methods make use of the default method.</p>
 <span class='no'>training.id</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fu'>seq_along</span>(<span class='no'>class</span>), <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>test.id</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(!<span class='fu'>seq_along</span>(<span class='no'>class</span>) <span class='kw'>%in%</span> <span class='no'>training.id</span>)
 <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"lda"</span>)
-<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>test.id</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='no'>class</span>)
+<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='no'>test.id</span>)
 <span class='fu'>table</span>(<span class='kw'>true</span> <span class='kw'>=</span> <span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>)</div><div class='output co'>#&gt;         pred
 #&gt; true     DIF.C4 IMM.C2 MES.C1 PRO.C5
 #&gt;   DIF.C4     15     17      5     20
