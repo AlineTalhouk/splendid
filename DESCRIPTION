@@ -38,7 +38,8 @@ Imports:
     caret,
     HandTill2001,
     MLmetrics,
-    sda
+    sda,
+    kernlab
 Suggests:
     knitr,
     rmarkdown,
