@@ -229,7 +229,7 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <a href="#prediction" class="anchor"></a>Prediction</h2>
 <p>There is a different prediction method for each classifier, since they are all imported from an external package. The <code><a href="../reference/prediction.html">prediction()</a></code> function calls each method based on the class of the model output from <code><a href="../reference/classification.html">classification()</a></code>. <code><a href="../reference/prediction.html">prediction()</a></code> also performs some manipulations so that the results all have the same data structure: unnamed factors, with labels given in the same order as the true class labels.</p>
 <p>The method for <code>"pam"</code> is an exception: the output from <code><a href="../reference/prediction.html">prediction()</a></code> not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set, named <code>delta</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sl_result$preds, <span class="dt">max.level =</span> <span class="dv">2</span>, <span class="dt">list.len =</span> <span class="dv">2</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(sl_result<span class="op">$</span>preds, <span class="dt">max.level =</span> <span class="dv">2</span>, <span class="dt">list.len =</span> <span class="dv">2</span>)
 <span class="co">#&gt; List of 3</span>
 <span class="co">#&gt;  $ slda:List of 2</span>
 <span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 3 4 2 4 2 4 2 ...</span>
@@ -431,7 +431,7 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 class &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>))
 <span class="kw">set.seed</span>(<span class="dv">1</span>)
 training.id &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">seq_along</span>(class), <span class="dt">replace =</span> <span class="ot">TRUE</span>)
-test.id &lt;-<span class="st"> </span><span class="kw">which</span>(!<span class="kw">seq_along</span>(class) %in%<span class="st"> </span>training.id)
+test.id &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="op">!</span><span class="kw">seq_along</span>(class) <span class="op">%in%</span><span class="st"> </span>training.id)
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/classification.html">classification</a></span>(hgsc[training.id, ], class[training.id], <span class="st">"adaboost"</span>)
 pred &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prediction.html">prediction</a></span>(mod, hgsc, test.id, <span class="dt">class =</span> class)
 evals &lt;-<span class="st"> </span><span class="kw"><a href="../reference/evaluation.html">evaluation</a></span>(class[test.id], pred, <span class="dt">plot =</span> <span class="ot">TRUE</span>)</code></pre></div>
