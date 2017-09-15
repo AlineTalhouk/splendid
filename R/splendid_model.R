@@ -10,14 +10,14 @@
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                            rfe = FALSE, ova = FALSE, threshold = 0.5, ...) {
 
+  # Classification algorithms to use and their model function calls
+  algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
+
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)
   class <- as.factor(class)  # ensure class is a factor
   train.id <- boot_train(data = data, class = class, n = n)
   test.id <- boot_test(train.id = train.id)
-
-  # Classification algorithms to use and their model function calls
-  algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
 
   # Store lists of common arguments in model and pred operations
   m_args <- dplyr::lst(train.id, data, class, algorithms, rfe)
