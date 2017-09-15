@@ -8,10 +8,14 @@
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
-                           rfe = FALSE, ova = FALSE, threshold = 0.5, ...) {
+                           convert = FALSE, rfe = FALSE, ova = FALSE,
+                           threshold = 0.5, ...) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
+
+  # Determine whether to convert data in the presence of categorical predictors
+  data <- splendid_convert(data, algorithms, convert)
 
   # Generate bootstrap resamples; test samples are those not chosen in training
   set.seed(seed)

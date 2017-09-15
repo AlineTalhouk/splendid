@@ -9,6 +9,9 @@ ALG.CLASS <- c("pamrtrained", "rfe", "svm", "randomForest", "lda", "sda",
                "cv.glmnet", "glmnet", "multinom", "nnet.formula", "naiveBayes",
                "maboost", "xgb.Booster", "knn")
 
+# Algorithms that need all continuous predictors
+ALG.CONT <- c("lda", "mlr_glm", "mlr_lasso", "mlr_ridge")
+
 #' Redirect any console printouts from print() or cat() to null device
 #' @references
 #'   http://stackoverflow.com/questions/5310393/disabling-the-cat-command

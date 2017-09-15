@@ -5,7 +5,7 @@
 \title{Train, predict, and evaluate classification models}
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
-  rfe = FALSE, ova = FALSE, threshold = 0.5, ...)
+  convert = FALSE, rfe = FALSE, ova = FALSE, threshold = 0.5, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -19,6 +19,10 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 \item{n}{number of bootstrap replicates to generate}
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
+
+\item{convert}{logical; if \code{TRUE}, converts all categorical variables in
+\code{data} to dummy variables. Certain algorithms only work with such
+limitations (e.g. LDA).}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
 feature selection method for "lda", "rf", and "svm" algorithms.}
