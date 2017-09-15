@@ -28,3 +28,19 @@ splendid_convert <- function(data, algorithms, convert = FALSE) {
   }
   data
 }
+
+#' Convert all categorical variables in a dataset to dummy variables
+#' @param data data frame
+#' @return A numeric data frame where dummy variables encode categorical
+#'   variables using multiple columns. Continuous variables are unchanged.
+#' @author Derek Chiu
+#' @export
+dummify <- function(data) {
+  data %>%
+    purrr::map(~ stats::model.matrix(~ .x - 1)) %>%
+    purrr::imap(~ magrittr::set_colnames(.x,
+                                         gsub("\\.x", .y, colnames(.x)))) %>%
+    purrr::invoke(cbind, .) %>%
+    as.data.frame() %>%
+    magrittr::set_rownames(NULL)
+}
