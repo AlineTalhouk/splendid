@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Train, predict, and evaluate classification models — splendid_model • splendid</title>
+<title>Convert covariate data — splendid_convert • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,15 +77,15 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Train, predict, and evaluate classification models</h1>
+    <h1>Convert covariate data</h1>
     </div>
 
     
-    <p>Train, predict, and evaluate classification models</p>
+    <p>Converts all categorical predictors to dummy variables in the dataset.
+Classification algorithms LDA and the MLR family have such a limitation.</p>
     
 
-    <pre class="usage"><span class='fu'>splendid_model</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>splendid_convert</span>(<span class='no'>data</span>, <span class='no'>algorithms</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -95,22 +95,10 @@
       <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
-      <th>class</th>
-      <td><p>true/reference class vector used for supervised learning</p></td>
-    </tr>
-    <tr>
       <th>algorithms</th>
       <td><p>character vector of algorithms to use for supervised
 learning. See <strong>Algorithms</strong> section for possible options. By default,
 this argument is <code>NULL</code>, in which case all algorithms are used.</p></td>
-    </tr>
-    <tr>
-      <th>n</th>
-      <td><p>number of bootstrap replicates to generate</p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p>random seed used for reproducibility in bootstrapping results</p></td>
     </tr>
     <tr>
       <th>convert</th>
@@ -118,65 +106,66 @@ this argument is <code>NULL</code>, in which case all algorithms are used.</p></
 <code>data</code> to dummy variables. Certain algorithms only work with such
 limitations (e.g. LDA).</p></td>
     </tr>
-    <tr>
-      <th>rfe</th>
-      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
-    </tr>
-    <tr>
-      <th>ova</th>
-      <td><p>logical; if <code>TRUE</code>, a One-Vs-All classification approach is
-performed for every algorithm in <code>algorithms</code>. The relevant results
-are prefixed with the string <code>ova_</code>.</p></td>
-    </tr>
-    <tr>
-      <th>threshold</th>
-      <td><p>a numeric indicating the lowest maximum class probability
-below which a sample will be unclassified.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments to <code>splendid_model</code></p></td>
-    </tr>
     </table>
     
-    <h2 class="hasAnchor" id="algorithms"><a class="anchor" href="#algorithms"></a>Algorithms</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The classification algorithms currently supported are:</p><ul>
-<li><p>Prediction Analysis for Microarrays ("pam")</p></li>
-<li><p>Support Vector Machines ("svm")</p></li>
-<li><p>Random Forests ("rf")</p></li>
-<li><p>Linear Discriminant Analysis ("lda")</p></li>
-<li><p>Shrinkage Linear Discriminant Analysis ("slda")</p></li>
-<li><p>Shrinkage Diagonal Discriminant Analysis ("sdda")</p></li>
-<li><p>Multinomial Logistic Regression using</p><ul>
-<li><p>Generalized Linear Model with no penalization ("mlr_glm")</p></li>
-<li><p>GLM with LASSO penalty ("mlr_lasso")</p></li>
-<li><p>GLM with ridge penalty ("mlr_ridge")</p></li>
-<li><p>Neural Networks ("mlr_nnet")</p></li>
-</ul></li>
-<li><p>Neural Networks ("nnet")</p></li>
-<li><p>Naive Bayes ("nbayes")</p></li>
-<li><p>Adaptive Boosting ("adaboost")</p></li>
-<li><p>Extreme Gradient Boosting ("xgboost")</p></li>
-<li><p>K-Nearest Neighbours ("knn")</p></li>
-</ul>
+    <p>A (potentially) transformed data frame.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If all the variables in the original data are already continuous, nothing is
+done. Otherwise, conversion is performed if <code>convert = TRUE</code>. An error
+message is thrown if there are categorical variables and <code>convert =
+FALSE</code>, indicating exactly which algorithms specified require data
+conversion.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
-<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>attr</span>(<span class='no'>hgsc</span>, <span class='st'>"class.true"</span>)
-<span class='no'>sl_result</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid_model</span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='st'>"xgboost"</span>)</div></pre>
+
+<span class='co'># Nothing happens if data is all continuous</span>
+<span class='no'>data_same</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid_convert</span>(<span class='no'>hgsc</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='st'>"lda"</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>identical</span>(<span class='no'>hgsc</span>, <span class='no'>data_same</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='co'># Dummy variables created if there are categorical variables</span>
+<span class='no'>data_dummy</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid_convert</span>(<span class='no'>iris</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='st'>"lda"</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>head</span>(<span class='no'>data_dummy</span>)</div><div class='output co'>#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width Speciessetosa
+#&gt; 1          5.1         3.5          1.4         0.2             1
+#&gt; 2          4.9         3.0          1.4         0.2             1
+#&gt; 3          4.7         3.2          1.3         0.2             1
+#&gt; 4          4.6         3.1          1.5         0.2             1
+#&gt; 5          5.0         3.6          1.4         0.2             1
+#&gt; 6          5.4         3.9          1.7         0.4             1
+#&gt;   Speciesversicolor Speciesvirginica
+#&gt; 1                 0                0
+#&gt; 2                 0                0
+#&gt; 3                 0                0
+#&gt; 4                 0                0
+#&gt; 5                 0                0
+#&gt; 6                 0                0</div><div class='input'>
+<span class='co'># Some algorithms are robust to the covariate data structure</span>
+<span class='no'>data_robust</span> <span class='kw'>&lt;-</span> <span class='fu'>splendid_convert</span>(<span class='no'>iris</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='st'>"rf"</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>identical</span>(<span class='no'>iris</span>, <span class='no'>data_robust</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+# Other algorithms require conversion
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>splendid_convert</span>(<span class='no'>iris</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='st'>"lda"</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#algorithms">Algorithms</a></li>
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    
+Derek Chiu
 
   </div>
 </div>

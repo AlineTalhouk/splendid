@@ -86,8 +86,9 @@ replicates and an ensemble classifier is built and evaluated across these
 variants.</p>
     
 
-    <pre class="usage"><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,6 +114,12 @@ this argument is <code>NULL</code>, in which case all algorithms are used.</p></
     <tr>
       <th>seed</th>
       <td><p>random seed used for reproducibility in bootstrapping results</p></td>
+    </tr>
+    <tr>
+      <th>convert</th>
+      <td><p>logical; if <code>TRUE</code>, converts all categorical variables in
+<code>data</code> to dummy variables. Certain algorithms only work with such
+limitations (e.g. LDA).</p></td>
     </tr>
     <tr>
       <th>rfe</th>
