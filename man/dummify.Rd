@@ -16,6 +16,10 @@ A numeric data frame where dummy variables encode categorical
 \description{
 Convert all categorical variables in a dataset to dummy variables
 }
+\examples{
+dummify(mtcars)
+dummify(iris)
+}
 \author{
 Derek Chiu
 }

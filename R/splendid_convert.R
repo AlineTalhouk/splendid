@@ -13,6 +13,25 @@
 #' @return A (potentially) transformed data frame.
 #' @author Derek Chiu
 #' @export
+#' @examples
+#' data(hgsc)
+#'
+#' # Nothing happens if data is all continuous
+#' data_same <- splendid_convert(hgsc, algorithms = "lda", convert = TRUE)
+#' identical(hgsc, data_same)
+#'
+#' # Dummy variables created if there are categorical variables
+#' data_dummy <- splendid_convert(iris, algorithms = "lda", convert = TRUE)
+#' head(data_dummy)
+#'
+#' # Some algorithms are robust to the covariate data structure
+#' data_robust <- splendid_convert(iris, algorithms = "rf", convert = FALSE)
+#' identical(iris, data_robust)
+#'
+#' # Other algorithms require conversion
+#' \dontrun{
+#' splendid_convert(iris, algorithms = "lda", convert = FALSE)
+#' }
 splendid_convert <- function(data, algorithms, convert = FALSE) {
   if (!all(purrr::map_lgl(data, is.numeric))) {
     if (convert) {
@@ -35,6 +54,9 @@ splendid_convert <- function(data, algorithms, convert = FALSE) {
 #'   variables using multiple columns. Continuous variables are unchanged.
 #' @author Derek Chiu
 #' @export
+#' @examples
+#' dummify(mtcars)
+#' dummify(iris)
 dummify <- function(data) {
   data %>%
     purrr::map(~ stats::model.matrix(~ .x - 1)) %>%
