@@ -47,18 +47,8 @@ prediction <- function(mod, data, class, test.id = NULL, train.id = NULL,
 prediction.default <- function(mod, data, class, test.id = NULL,
                                train.id = NULL, threshold = 0.5,
                                standardize = FALSE, ...) {
-  test.id <- test.id %||% seq_len(nrow(data))
-  train.id <- train.id %||% seq_len(nrow(data))
-  if (standardize) {
-    tr_dat <- scale(data[train.id, ])
-    te_dat <- scale(data[test.id, ],
-                    attr(tr_dat, "scaled:center"),
-                    attr(tr_dat, "scaled:scale")) %>%
-      purrr::when(inherits(data, "data.frame") ~ as.data.frame(.), ~ .)
-  } else {
-    te_dat <- data[test.id, ]
-  }
-  stats::predict(mod, te_dat, ...)
+  dat <- split_data(data, test.id, train.id, standardize)
+  stats::predict(mod, dat$test, ...)
 }
 
 #' @rdname prediction
@@ -66,23 +56,13 @@ prediction.default <- function(mod, data, class, test.id = NULL,
 prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0.5,
                                    standardize = FALSE, ...) {
-  test.id <- test.id %||% seq_len(nrow(data))
-  train.id <- train.id %||% seq_len(nrow(data))
-  if (standardize) {
-    tr_dat <- scale(data[train.id, ])
-    te_dat <- scale(data[test.id, ],
-                    attr(tr_dat, "scaled:center"),
-                    attr(tr_dat, "scaled:scale"))
-  } else {
-    tr_dat <- data[train.id, ]
-    te_dat <- data[test.id, ]
-  }
+  dat <- split_data(data, test.id, train.id, standardize)
   model.cv <- sink_output(
-    pamr::pamr.cv(mod, list(x = t(tr_dat), y = class[train.id]), nfold = 5))
+    pamr::pamr.cv(mod, list(x = t(dat$train), y = class[train.id]), nfold = 5))
   delta <- with(model.cv, threshold[which.min(error)])
-  pred <- pamr::pamr.predict(mod, t(te_dat), threshold = delta,
+  pred <- pamr::pamr.predict(mod, t(dat$test), threshold = delta,
                              type = "class")
-  prob <- pamr::pamr.predict(mod, t(te_dat), threshold = delta,
+  prob <- pamr::pamr.predict(mod, t(dat$test), threshold = delta,
                              type = "posterior")
   prediction_output(pred, prob, class, test.id, threshold) %>%
     structure(delta = delta)
@@ -241,19 +221,9 @@ prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0.5, standardize = FALSE, ...) {
-  test.id <- test.id %||% seq_len(nrow(data))
-  train.id <- train.id %||% seq_len(nrow(data))
-  if (standardize) {
-    tr_dat <- scale(data[train.id, ])
-    te_dat <- scale(data[test.id, ],
-                    attr(tr_dat, "scaled:center"),
-                    attr(tr_dat, "scaled:scale"))
-    dat <- rbind(tr_dat, te_dat) %>%
-      purrr::when(inherits(data, "data.frame") ~ as.data.frame(.), ~ .)
-  } else {
-    dat <- data[c(train.id, test.id), ]
+  dat <- split_data(data, test.id, train.id, standardize) %>% {
+    rbind(.$train, .$test)
   }
-
   if (inherits(mod, "ova")) {  # for ova case
     lev <- as.character(unlist(mod))
     if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
@@ -298,4 +268,31 @@ class_threshold <- function(prob, threshold = 0.5) {
 class_proportion <- function(pred) {
   good_ind <- pred != "unclassified"
   sum(good_ind) / length(good_ind)
+}
+
+#' Split data into training and test sets
+#'
+#' Split data into training and test sets, optionally standardizing by training
+#' set centers and standard deviations
+#'
+#' @inheritParams prediction
+#' @export
+split_data <- function(data, test.id = NULL, train.id = NULL,
+                       standardize = FALSE) {
+  test.id <- test.id %||% seq_len(nrow(data))
+  train.id <- train.id %||% seq_len(nrow(data))
+  if (standardize) {
+    train <- scale(data[train.id, ])
+    test <- scale(data[test.id, ],
+                  attr(train, "scaled:center"),
+                  attr(train, "scaled:scale"))
+    if (inherits(data, "data.frame")) {
+      train <- as.data.frame(train)
+      test <- as.data.frame(test)
+    }
+  } else {
+    train <- data[train.id, ]
+    test <- data[test.id, ]
+  }
+  dplyr::lst(train, test)
 }
