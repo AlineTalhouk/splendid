@@ -5,7 +5,7 @@
 \title{One-Vs-All prediction approach}
 \usage{
 ova_prediction(fits, data, test.id = NULL, class, train.id, threshold = 0.5,
-  ...)
+  standardize = FALSE, ...)
 }
 \arguments{
 \item{fits}{list of ova fits from \code{ova_classification}}
@@ -22,6 +22,11 @@ prediction occurs on the full data set.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
+
+\item{standardize}{logical; if \code{TRUE}, the training sets are
+standardized by per feature to have mean zero and unit variance. The test
+sets are standardized using the vectors of centers and standard deviations
+used in corresponding training sets.}
 
 \item{...}{additional arguments to be passed to or from methods}
 }

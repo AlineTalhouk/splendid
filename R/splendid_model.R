@@ -9,7 +9,7 @@
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
-                           threshold = 0.5, ...) {
+                           standardize = FALSE, threshold = 0.5, ...) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -24,8 +24,8 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   test.id <- boot_test(train.id = train.id)
 
   # Store lists of common arguments in model and pred operations
-  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe)
-  p_args <- dplyr::lst(data, class, test.id, train.id, threshold)
+  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe, standardize)
+  p_args <- dplyr::lst(data, class, test.id, train.id, threshold, standardize)
 
   # Apply training sets to models and predict on the test sets
   models <- sp_mod %>%
@@ -59,19 +59,22 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
 
 #' Train models based on function f
 #' @noRd
-sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova) {
+sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
+                   standardize) {
   mod <- algorithms %>% purrr::map(
     ~ purrr::map(train.id, function(id)
-      f(data[id, ], class[id], .x, rfe, ova)))
+      f(data[id, ], class[id], .x, rfe, ova, standardize)))
   mod
 }
 
 #' Make prediction based on function f
 #' @noRd
-sp_pred <- function(f, model, data, class, test.id, train.id, threshold, ...) {
+sp_pred <- function(f, model, data, class, test.id, train.id, threshold,
+                    standardize, ...) {
   pred <- model %>% purrr::map(
     ~ purrr::pmap(list(.x, test.id = test.id, train.id = train.id),
-                  f, data = data, class = class, threshold = threshold, ...))
+                  f, data = data, class = class, threshold = threshold,
+                  standardize = standardize, ...))
   pred
 }
 

@@ -4,7 +4,8 @@
 \alias{ova_classification}
 \title{One-Vs-All training approach}
 \usage{
-ova_classification(data, class, algorithms, rfe, ova)
+ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
+  standardize = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -19,6 +20,11 @@ feature selection method for "lda", "rf", and "svm" algorithms.}
 
 \item{ova}{logical; if \code{TRUE}, use the One-Vs-All approach for the
 \code{knn} algorithm.}
+
+\item{standardize}{logical; if \code{TRUE}, the training sets are
+standardized by per feature to have mean zero and unit variance. The test
+sets are standardized using the vectors of centers and standard deviations
+used in corresponding training sets.}
 }
 \value{
 list of binary classifier fits on each class
