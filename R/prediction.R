@@ -3,13 +3,13 @@
 #' Functions to predict class labels on the Out-Of-Bag (test) set for different
 #' classifiers.
 #'
-#' Only the \code{knn} and \code{pamr} prediction methods require the additional
-#' \code{train.id} and \code{class} arguments. For \code{knn}, the modelling and
-#' prediction are performed in one step, so the function takes in both training
-#' and test set identifiers. For \code{pamr}, the classifier needs to be
-#' cross-validated on the training set in order to find a shrinkage threshold
-#' with the minimum CV error to use in prediction on the test set. The other
-#' prediction methods make use of the default method.
+#' The \code{knn} and \code{pamr} prediction methods use the \code{train.id} and
+#' \code{class} arguments for additional modelling steps before prediction. For
+#' \code{knn}, the modelling and prediction are performed in one step, so the
+#' function takes in both training and test set identifiers. For \code{pamr},
+#' the classifier needs to be cross-validated on the training set in order to
+#' find a shrinkage threshold with the minimum CV error to use in prediction on
+#' the test set. The other prediction methods make use of the default method.
 #'
 #' @inheritParams splendid
 #' @param mod model object from \code{\link{classification}}
@@ -48,15 +48,17 @@ prediction.default <- function(mod, data, class, test.id = NULL,
                                train.id = NULL, threshold = 0.5,
                                standardize = FALSE, ...) {
   test.id <- test.id %||% seq_len(nrow(data))
+  train.id <- train.id %||% seq_len(nrow(data))
   if (standardize) {
-    tr_ctrs <- attr(scale(data[train.id, ]), "scaled:center")
-    tr_sds <- attr(scale(data[train.id, ]), "scaled:scale")
-    dat <- scale(data[test.id, ], center = tr_ctrs, scale = tr_sds)
-    if (inherits(data, "data.frame")) dat <- as.data.frame(dat)
+    tr_dat <- scale(data[train.id, ])
+    te_dat <- scale(data[test.id, ],
+                    attr(tr_dat, "scaled:center"),
+                    attr(tr_dat, "scaled:scale")) %>%
+      purrr::when(inherits(data, "data.frame") ~ as.data.frame(.), ~ .)
   } else {
-    dat <- data[test.id, ]
+    te_dat <- data[test.id, ]
   }
-  stats::predict(mod, dat, ...)
+  stats::predict(mod, te_dat, ...)
 }
 
 #' @rdname prediction
@@ -64,19 +66,24 @@ prediction.default <- function(mod, data, class, test.id = NULL,
 prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0.5,
                                    standardize = FALSE, ...) {
-  model.cv <- sink_output(
-    pamr::pamr.cv(mod, list(x = t(data[train.id, ]), y = class[train.id]),
-                  nfold = 5))
-  delta <- model.cv$threshold[which.min(model.cv$error)]
+  test.id <- test.id %||% seq_len(nrow(data))
+  train.id <- train.id %||% seq_len(nrow(data))
   if (standardize) {
-    tr_ctrs <- attr(scale(data[train.id, ]), "scaled:center")
-    tr_sds <- attr(scale(data[train.id, ]), "scaled:scale")
-    dat <- t(scale(data[test.id, ], center = tr_ctrs, scale = tr_sds))
+    tr_dat <- scale(data[train.id, ])
+    te_dat <- scale(data[test.id, ],
+                    attr(tr_dat, "scaled:center"),
+                    attr(tr_dat, "scaled:scale"))
   } else {
-    dat <- t(data[test.id, ])
+    tr_dat <- data[train.id, ]
+    te_dat <- data[test.id, ]
   }
-  pred <- pamr::pamr.predict(mod, dat, threshold = delta, type = "class")
-  prob <- pamr::pamr.predict(mod, dat, threshold = delta, type = "posterior")
+  model.cv <- sink_output(
+    pamr::pamr.cv(mod, list(x = t(tr_dat), y = class[train.id]), nfold = 5))
+  delta <- with(model.cv, threshold[which.min(error)])
+  pred <- pamr::pamr.predict(mod, t(te_dat), threshold = delta,
+                             type = "class")
+  prob <- pamr::pamr.predict(mod, t(te_dat), threshold = delta,
+                             type = "posterior")
   prediction_output(pred, prob, class, test.id, threshold) %>%
     structure(delta = delta)
 }
@@ -85,7 +92,7 @@ prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
 prediction.rfe <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0.5, standardize = FALSE, ...) {
   p <- prediction.default(mod, data[, mod$optVariables], test.id = test.id,
-                          train.id = train.id, standardize = standardize)
+                          train.id = train.id, standardize = standardize, ...)
   pred <- p$pred
   prob <- p[, names(p) != "pred"]
   prediction_output(pred, prob, class, test.id, threshold)
@@ -97,7 +104,7 @@ prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
   pred <- unname(prediction.default(mod, data, test.id = test.id,
                                     train.id = train.id,
                                     standardize = standardize,
-                                    probability = TRUE))
+                                    probability = TRUE, ...))
   prob <- attr(pred, "probabilities")
   if (!("0" %in% mod$levels))
     prob <- prob[, order(colnames(prob), names(table(class)))]
@@ -112,18 +119,18 @@ prediction.randomForest <- function(mod, data, class, test.id = NULL,
   pred <- unname(prediction.default(mod, data, test.id = test.id,
                                     train.id = train.id,
                                     standardize = standardize,
-                                    type = "response"))
+                                    type = "response", ...))
   prob <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
                              standardize = standardize,
-                             type = "prob")
+                             type = "prob", ...)
   prediction_output(pred, prob, class, test.id, threshold)
 }
 
 #' @export
 prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0.5, ...) {
+                           threshold = 0.5, standardize = FALSE, ...) {
   p <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                          ...)
+                          standardize = standardize, ...)
   pred <- p$class
   prob <- p$posterior %>% sum_to_one()
   prediction_output(pred, prob, class, test.id, threshold)
@@ -131,10 +138,10 @@ prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
 
 #' @export
 prediction.sda <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0.5, ...) {
+                           threshold = 0.5, standardize = FALSE, ...) {
   prediction.lda(mod = mod, data = as.matrix(data), class = class,
                  test.id = test.id, train.id = train.id, threshold = threshold,
-                 verbose = FALSE, ...)
+                 standardize = standardize, verbose = FALSE, ...)
 }
 
 #' @export
@@ -143,19 +150,20 @@ prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
                                  standardize = FALSE, ...) {
   pred <- factor(prediction.default(mod, as.matrix(data), test.id = test.id,
                                     train.id = train.id,
-                                    standardize = standardize, type = "class"))
+                                    standardize = standardize, type = "class",
+                                    ...))
   prob <- prediction.default(mod, as.matrix(data), test.id = test.id,
-                             train.id = train.id,
-                             standardize = standardize,
-                             type = "response")[, , 1]
+                             train.id = train.id, standardize = standardize,
+                             type = "response", ...)[, , 1]
   prediction_output(pred, prob, class, test.id, threshold)
 }
 
 #' @export
 prediction.glmnet <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                              threshold = 0.5, ...) {
+                              threshold = 0.5, standardize = FALSE, ...) {
   prediction.cv.glmnet(mod = mod, data = data, class = class, test.id = test.id,
-                       train.id = train.id, threshold = threshold, ...)
+                       train.id = train.id, threshold = threshold,
+                       standardize = standardize, ...)
 }
 
 #' @export
@@ -163,9 +171,9 @@ prediction.multinom <- function(mod, data, class, test.id = NULL,
                                 train.id = NULL, threshold = 0.5,
                                 standardize = FALSE, ...) {
   pred <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                             standardize = standardize, type = "class")
+                             standardize = standardize, type = "class", ...)
   prob <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                             standardize = standardize, type = "probs")
+                             standardize = standardize, type = "probs", ...)
   if (!is.matrix(prob)) {  # for ova case
     prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
   }
@@ -178,9 +186,10 @@ prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
                                     standardize = FALSE, ...) {
   pred <- factor(prediction.default(mod, data, test.id = test.id,
                                     train.id = train.id,
-                                    standardize = standardize, type = "class"))
+                                    standardize = standardize, type = "class",
+                                    ...))
   prob <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                             standardize = standardize, type = "raw")
+                             standardize = standardize, type = "raw", ...)
   if (ncol(prob) == 1) {  # for ova case
     prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
   }
@@ -192,9 +201,9 @@ prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
                                   train.id = NULL, threshold = 0.5,
                                   standardize = FALSE, ...) {
   pred <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                             standardize = standardize, type = "class")
+                             standardize = standardize, type = "class", ...)
   prob <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                             standardize = standardize, type = "raw") %>%
+                             standardize = standardize, type = "raw", ...) %>%
     magrittr::set_rownames(rownames(data[test.id, ]))
   prediction_output(pred, prob, class, test.id, threshold)
 }
@@ -205,7 +214,7 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
                                standardize = FALSE, ...) {
   names(data) <- make.names(names(data))
   both <- prediction.default(mod, data, test.id = test.id, train.id = train.id,
-                             standardize = standardize, type = "both")
+                             standardize = standardize, type = "both", ...)
   pred <- both$class
   prob <- both$probs %>% magrittr::set_rownames(rownames(data[test.id, ]))
   prediction_output(pred, prob, class, test.id, threshold)
@@ -217,8 +226,8 @@ prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
                                    standardize = FALSE, ...) {
   class <- factor(class)
   prob <- prediction.default(mod, as.matrix(data), test.id = test.id,
-                             train.id = train.id,
-                             standardize = standardize, reshape = TRUE) %>%
+                             train.id = train.id, standardize = standardize,
+                             reshape = TRUE, ...) %>%
     magrittr::set_rownames(rownames(data[test.id, ])) %>%
     sum_to_one()
   if (ncol(prob) == nlevels(class)) {
@@ -232,19 +241,24 @@ prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0.5, standardize = FALSE, ...) {
+  test.id <- test.id %||% seq_len(nrow(data))
+  train.id <- train.id %||% seq_len(nrow(data))
+  if (standardize) {
+    tr_dat <- scale(data[train.id, ])
+    te_dat <- scale(data[test.id, ],
+                    attr(tr_dat, "scaled:center"),
+                    attr(tr_dat, "scaled:scale"))
+    dat <- rbind(tr_dat, te_dat) %>%
+      purrr::when(inherits(data, "data.frame") ~ as.data.frame(.), ~ .)
+  } else {
+    dat <- data[c(train.id, test.id), ]
+  }
+
   if (inherits(mod, "ova")) {  # for ova case
     lev <- as.character(unlist(mod))
     if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
   }
-  if (standardize) {
-    tr_ctrs <- attr(scale(data[train.id, ]), "scaled:center")
-    tr_sds <- attr(scale(data[train.id, ]), "scaled:scale")
-    dat <- scale(data[c(train.id, test.id), ],
-                 center = tr_ctrs, scale = tr_sds)
-    if (inherits(data, "data.frame")) dat <- as.data.frame(dat)
-  } else {
-    dat <- data[c(train.id, test.id), ]
-  }
+
   kdist <- knnflex::knn.dist(dat)
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),

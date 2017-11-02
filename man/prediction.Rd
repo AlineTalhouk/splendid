@@ -52,13 +52,13 @@ Functions to predict class labels on the Out-Of-Bag (test) set for different
 classifiers.
 }
 \details{
-Only the \code{knn} and \code{pamr} prediction methods require the additional
-\code{train.id} and \code{class} arguments. For \code{knn}, the modelling and
-prediction are performed in one step, so the function takes in both training
-and test set identifiers. For \code{pamr}, the classifier needs to be
-cross-validated on the training set in order to find a shrinkage threshold
-with the minimum CV error to use in prediction on the test set. The other
-prediction methods make use of the default method.
+The \code{knn} and \code{pamr} prediction methods use the \code{train.id} and
+\code{class} arguments for additional modelling steps before prediction. For
+\code{knn}, the modelling and prediction are performed in one step, so the
+function takes in both training and test set identifiers. For \code{pamr},
+the classifier needs to be cross-validated on the training set in order to
+find a shrinkage threshold with the minimum CV error to use in prediction on
+the test set. The other prediction methods make use of the default method.
 }
 \examples{
 data(hgsc)
