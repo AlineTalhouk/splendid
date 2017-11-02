@@ -12,19 +12,19 @@ ova_prediction(fits, data, test.id = NULL, class, train.id, threshold = 0.5,
 
 \item{data}{data frame with rows as samples, columns as features}
 
-\item{test.id}{integer vector of indices for test set ID. By default,
-prediction occurs on the full data set.}
+\item{test.id}{integer vector of indices for test set. If \code{NULL}
+(default), all samples are used.}
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{train.id}{integer vector of indices for training set ID. Only used for
-\code{knn} and \code{pamr} prediction methods.}
+\item{train.id}{integer vector of indices for training set. If \code{NULL}
+(default), all samples are used.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
 
 \item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized by per feature to have mean zero and unit variance. The test
+standardized on features to have mean zero and unit variance. The test
 sets are standardized using the vectors of centers and standard deviations
 used in corresponding training sets.}
 

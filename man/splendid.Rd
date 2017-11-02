@@ -33,7 +33,7 @@ performed for every algorithm in \code{algorithms}. The relevant results
 are prefixed with the string \code{ova_}.}
 
 \item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized by per feature to have mean zero and unit variance. The test
+standardized on features to have mean zero and unit variance. The test
 sets are standardized using the vectors of centers and standard deviations
 used in corresponding training sets.}
 

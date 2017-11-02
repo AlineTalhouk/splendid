@@ -22,7 +22,7 @@ feature selection method for "lda", "rf", and "svm" algorithms.}
 \code{knn} algorithm.}
 
 \item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized by per feature to have mean zero and unit variance. The test
+standardized on features to have mean zero and unit variance. The test
 sets are standardized using the vectors of centers and standard deviations
 used in corresponding training sets.}
 

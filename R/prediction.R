@@ -13,10 +13,10 @@
 #'
 #' @inheritParams splendid
 #' @param mod model object from \code{\link{classification}}
-#' @param test.id integer vector of indices for test set ID. By default,
-#'   prediction occurs on the full data set.
-#' @param train.id integer vector of indices for training set ID. Only used for
-#'   \code{knn} and \code{pamr} prediction methods.
+#' @param test.id integer vector of indices for test set. If \code{NULL}
+#'   (default), all samples are used.
+#' @param train.id integer vector of indices for training set. If \code{NULL}
+#'   (default), all samples are used.
 #' @param ... additional arguments to be passed to or from methods
 #' @return A factor of predicted classes with labels in the same order as true
 #'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
@@ -279,20 +279,17 @@ class_proportion <- function(pred) {
 #' @export
 split_data <- function(data, test.id = NULL, train.id = NULL,
                        standardize = FALSE) {
-  test.id <- test.id %||% seq_len(nrow(data))
-  train.id <- train.id %||% seq_len(nrow(data))
+  train <- data[train.id %||% seq_len(nrow(data)), ]
+  test <- data[test.id %||% seq_len(nrow(data)), ]
   if (standardize) {
-    train <- scale(data[train.id, ])
-    test <- scale(data[test.id, ],
+    train <- scale(train)
+    test <- scale(test,
                   attr(train, "scaled:center"),
                   attr(train, "scaled:scale"))
     if (inherits(data, "data.frame")) {
       train <- as.data.frame(train)
       test <- as.data.frame(test)
     }
-  } else {
-    train <- data[train.id, ]
-    test <- data[test.id, ]
   }
   dplyr::lst(train, test)
 }
