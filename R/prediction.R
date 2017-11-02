@@ -56,11 +56,11 @@ prediction.default <- function(mod, data, class, test.id = NULL,
 prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0.5,
                                    standardize = FALSE, ...) {
-  dat <- split_data(data, test.id, train.id, standardize)
-  model.cv <- sink_output(
-    pamr::pamr.cv(mod, list(x = t(dat$train), y = class[train.id]), nfold = 5))
+  dat <- split_data(data, test.id, train.id, standardize) %>% purrr::map(t)
+  cvdat <- list(x = dat$train, y = class[train.id])
+  model.cv <- sink_output(pamr::pamr.cv(mod, cvdat, nfold = 5))
   delta <- with(model.cv, threshold[which.min(error)])
-  p_args <- dplyr::lst(fit = mod, newx = t(dat$test), threshold = delta)
+  p_args <- dplyr::lst(fit = mod, newx = dat$test, threshold = delta)
   pred <- purrr::invoke(pamr::pamr.predict, p_args, type = "class")
   prob <- purrr::invoke(pamr::pamr.predict, p_args, type = "posterior")
   prediction_output(pred, prob, class, test.id, threshold) %>%
