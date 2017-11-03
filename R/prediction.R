@@ -210,6 +210,8 @@ prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0.5, standardize = FALSE, ...) {
+  train.id <- train.id %||% seq_len(nrow(data))
+  test.id <- test.id %||% seq_len(nrow(data))
   dat <- split_data(data, test.id, train.id, standardize) %>% {
     rbind(.$train, .$test)
   }
