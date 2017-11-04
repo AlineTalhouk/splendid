@@ -42,6 +42,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
       purrr::invoke(c(p_args, f = ova_prediction, model = list(ova_models)))
 
     # Combine results with multiclass approach
+    algorithms <- rep(algorithms, 2)
     models <- c(models, ova_models)
     preds <- c(preds, ova_preds)
   }
@@ -57,8 +58,8 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                     purrr::flatten() %>%
                     unlist() %>%
                     data.frame())) %>%
-    purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n))) #%>%
-    # purrr::map2(err_632, ~ `attr<-`(.x, "err_632", .y))
+    purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n))) %>%
+    purrr::map2(err_632, ~ `attr<-`(.x, "err_632", .y))
 
   dplyr::lst(models, preds, evals)
 }
