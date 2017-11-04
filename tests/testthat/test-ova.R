@@ -2,7 +2,7 @@ context("ova")
 
 data(hgsc)
 dat <- hgsc[1:50, 1:25]
-class <- attr(hgsc, "class.true")
+class <- attr(hgsc, "class.true")[1:50]
 
 test_that("knn ova is same as original because it's nonparametric", {
   sl_result <- splendid_model(dat, class, n = 1, algorithms = "knn",
