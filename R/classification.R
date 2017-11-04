@@ -41,7 +41,15 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- rfe_sizes(sizes, class)
-  if (standardize) data <- as.data.frame(scale(data))
+  if (standardize) {
+    if (!is.null(attr(data, "dummy_vars"))) {
+      data <- dplyr::mutate_at(data,
+                               vars(-dplyr::one_of(attr(data, "dummy_vars"))),
+                               scale)
+    } else {
+      data <- dplyr::mutate_all(data, scale)
+    }
+  }
   switch(algorithms,
          pam = pam_model(data, class),
          svm = rfe_model(data, class, "svm", rfe, sizes),

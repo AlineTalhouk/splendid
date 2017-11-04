@@ -58,11 +58,16 @@ splendid_convert <- function(data, algorithms, convert = FALSE) {
 #' dummify(mtcars)
 #' dummify(iris)
 dummify <- function(data) {
-  data %>%
+  desmat <- data %>%
     purrr::map(~ stats::model.matrix(~ .x - 1)) %>%
     purrr::imap(~ magrittr::set_colnames(.x,
-                                         gsub("\\.x", .y, colnames(.x)))) %>%
+                                         gsub("\\.x", .y, colnames(.x))))
+  dummy_vars <- purrr::map(desmat, colnames) %>%
+    purrr::keep(~ length(.) > 1) %>%
+    purrr::flatten_chr()
+  desmat %>%
     purrr::invoke(cbind, .) %>%
     as.data.frame() %>%
-    magrittr::set_rownames(NULL)
+    magrittr::set_rownames(NULL) %>%
+    magrittr::set_attr("dummy_vars", dummy_vars)
 }
