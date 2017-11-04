@@ -43,9 +43,11 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   sizes <- rfe_sizes(sizes, class)
   if (standardize) {
     if (!is.null(attr(data, "dummy_vars"))) {
-      data <- dplyr::mutate_at(data,
-                               vars(-dplyr::one_of(attr(data, "dummy_vars"))),
-                               scale)
+      data <- dplyr::mutate_at(
+        data,
+        dplyr::vars(-dplyr::one_of(attr(data, "dummy_vars"))),
+        scale
+      )
     } else {
       data <- dplyr::mutate_all(data, scale)
     }
