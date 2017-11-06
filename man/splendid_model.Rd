@@ -6,7 +6,7 @@
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  threshold = 0.5, ...)
+  plus = TRUE, threshold = 0.5, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -36,6 +36,9 @@ are prefixed with the string \code{ova_}.}
 standardized on features to have mean zero and unit variance. The test
 sets are standardized using the vectors of centers and standard deviations
 used in corresponding training sets.}
+
+\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is
+calculated. Otherwise, the .632 estimator is calculated.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}

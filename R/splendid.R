@@ -54,6 +54,8 @@
 #'   standardized on features to have mean zero and unit variance. The test
 #'   sets are standardized using the vectors of centers and standard deviations
 #'   used in corresponding training sets.
+#' @param plus logical; if \code{TRUE} (default), the .632+ estimtor is
+#'   calculated. Otherwise, the .632 estimator is calculated.
 #' @param threshold a numeric indicating the lowest maximum class probability
 #'   below which a sample will be unclassified.
 #' @param top the number of highest-performing algorithms to retain for ensemble
@@ -88,7 +90,7 @@
 #' "xgboost"))
 splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
-                     standardize = FALSE, threshold = 0.5, top = 3,
+                     standardize = FALSE, plus = TRUE, threshold = 0.5, top = 3,
                      sequential = FALSE, ...) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -96,7 +98,7 @@ splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
 
   sm <- splendid_model(data = data, class = class, algorithms = algorithms,
                        n = n, convert = convert, rfe = rfe, ova = ova,
-                       standardize = standardize, ...)
+                       standardize = standardize, plus = plus, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class, top = top,
                           sequential = sequential)
   c(sm, se)
