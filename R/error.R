@@ -45,7 +45,7 @@ error_632 <- function(data, class, algorithm, pred, test.id, train.id,
     R_hat <- 0
   }
   w_hat <- .632 / (1 - .368 * R_hat)
-  (1 - w_hat) * err_train + w_hat * err_looboot %>% magrittr::set_class("err")
+  ((1 - w_hat) * err_train + w_hat * err_looboot) %>% `attributes<-`(NULL)
 }
 
 #' Training error rate
@@ -107,12 +107,4 @@ nier <- function(p, q) {
   q_hat <- table(q) / length(q)  # proportion of predictions for each class
   q_hat <- q_hat[match(names(p_hat), names(q_hat))] # ensure classes match
   drop(p_hat %*% (1 - q_hat))
-}
-
-#' Print method for err class to suppress printing attributes
-#' @param x object
-#' @noRd
-print.err <- function(x, ...) {
-  attributes(x) <- NULL
-  print(x)
 }
