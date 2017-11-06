@@ -9,7 +9,8 @@
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, threshold = 0.5, ...) {
+                           standardize = FALSE, plus = TRUE, threshold = 0.5,
+                           ...) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -50,7 +51,8 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   # Add .632 estimator error rates to evaluation object as attributes
   err_632 <- purrr::map2(
     algorithms, preds, error_632,
-    data = data, class = class, test.id = test.id, train.id = train.id
+    data = data, class = class, test.id = test.id, train.id = train.id,
+    plus = plus
   )
   # Evaluation object
   evals <- preds %>% purrr::map(
@@ -62,6 +64,28 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
     purrr::map2(err_632, ~ `attr<-`(.x, "err_632", .y))
 
   dplyr::lst(models, preds, evals)
+}
+
+#' Recurrsively create training set indices ensuring class representation
+#' in every bootstrap resample
+#' @inheritParams splendid
+#' @export
+boot_train <- function(data, class, n) {
+  boot <- modelr::bootstrap(data, n)
+  train.id <- purrr::map(boot$strap, "idx")
+  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
+  all.cl <- nc == nlevels(class)
+  if (any(!all.cl))
+    c(train.id[all.cl], boot_train(data, class, sum(!all.cl)))
+  else
+    train.id[all.cl]
+}
+
+#' Obtain OOB sample to use as test set
+#' @param train.id list of training set indices
+#' @export
+boot_test <- function(train.id) {
+  purrr::map(train.id, ~ which(!seq_along(.x) %in% .x))
 }
 
 #' Train models based on function f
@@ -83,24 +107,4 @@ sp_pred <- function(f, model, data, class, test.id, train.id, threshold,
                   f, data = data, class = class, threshold = threshold,
                   standardize = standardize, ...))
   pred
-}
-
-#' Recurrsively create training set indices ensuring class representation
-#' in every bootstrap resample
-#' @noRd
-boot_train <- function(data, class, n) {
-  boot <- modelr::bootstrap(data, n)
-  train.id <- purrr::map(boot$strap, "idx")
-  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
-  all.cl <- nc == nlevels(class)
-  if (any(!all.cl))
-    c(train.id[all.cl], boot_train(data, class, sum(!all.cl)))
-  else
-    train.id[all.cl]
-}
-
-#' Obtain OOB sample to use as test set
-#' @noRd
-boot_test <- function(train.id) {
-  purrr::map(train.id, ~ which(!seq_along(.x) %in% .x))
 }
