@@ -45,7 +45,7 @@ error_632 <- function(data, class, algorithm, pred, test.id, train.id,
     R_hat <- 0
   }
   w_hat <- .632 / (1 - .368 * R_hat)
-  ((1 - w_hat) * err_train + w_hat * err_looboot) %>% `attributes<-`(NULL)
+  `attributes<-`((1 - w_hat) * err_train + w_hat * err_looboot, NULL)
 }
 
 #' Training error rate
