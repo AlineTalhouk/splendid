@@ -36,16 +36,21 @@
 #' error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = TRUE)
 error_632 <- function(data, class, algorithm, pred, test.id, train.id,
                       plus = TRUE) {
-  err_train <- error_training(data, class, algorithm, plus)
-  err_looboot <- error_looboot(pred, class, test.id, train.id)
+  err <- error_training(data, class, algorithm, plus)
+  err_1 <- error_looboot(pred, class, test.id, train.id)
+  err_632 <- .368 * err + .632 * err_1
   if (plus) {
-    gamma_hat <- nier(class, attr(err_train, "pred_full"))
-    R_hat <- (err_looboot - err_train) / (gamma_hat - err_train)
+    gamma_hat <- nier(class, attr(err, "pred_full"))
+    err_1p <- min(err_1, gamma_hat)
+    R_hat_p <- ifelse(err_1p > err & gamma_hat > err,
+                      (err_1p - err) / (gamma_hat - err),
+                      0)
+    err_632plus <- err_632 + (err_1p - err) *
+      ((.368 * .632 * R_hat_p) / (1 - .368 * R_hat_p))
+    `attributes<-`(err_632plus, NULL)
   } else {
-    R_hat <- 0
+    `attributes<-`(err_632, NULL)
   }
-  w_hat <- .632 / (1 - .368 * R_hat)
-  `attributes<-`((1 - w_hat) * err_train + w_hat * err_looboot, NULL)
 }
 
 #' Training error rate
@@ -55,12 +60,9 @@ error_training <- function(data, class, algorithm, plus) {
   pred_out <- classification(data, class, algorithm) %>%
     prediction(data, class)  # prediction on same data as was used to classify
   prob <- adjust_prob(attr(pred_out, "prob"))  # predicted probability matrix
-  col <- factor(class) %>% match(levels(.))  # prob column for true class
 
   # Training error rate
-  seq_along(class) %>%
-    purrr::map_dbl(~ -1 / length(col) * log(prob[., col[.]])) %>%
-    mean() %>%
+  logloss(class, prob) %>%
     purrr::when(plus ~ magrittr::set_attr(., "pred_full", factor(pred_out)),
                 TRUE ~ .)
 }
@@ -77,7 +79,7 @@ error_looboot <- function(pred, class, test.id, train.id) {
         prob <- adjust_prob(attr(pred[[i]], "prob")) # predicted prob matrix
         col <- class[test.id[[i]]] %>% match(levels(.)) # prob column for true class
         idx <- match(obs, test.id[[i]]) # index for obs in prob and test set
-        - 1 / length(col) * log(prob[idx, col[idx]]) # logloss
+        - log(prob[idx, col[idx]]) # logloss
       })
     })
 
@@ -85,7 +87,7 @@ error_looboot <- function(pred, class, test.id, train.id) {
   looboot %>%
     purrr::compact() %>% # remove obs with |C_i| = 0
     purrr::map_dbl(mean) %>% # average within bootstrap samples for one obs
-    mean() # average over all obs
+    mean() # sum over all obs
 }
 
 #' Adjust predicted probability matrix so that extreme values do not cause
