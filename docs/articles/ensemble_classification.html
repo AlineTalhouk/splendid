@@ -83,13 +83,28 @@
 <li>
 <code>class</code>: the true/reference class labels with length equal to the number of samples</li>
 <li>
+<code>algorithms</code>: character vector of classification algorithms</li>
+<li>
 <code>n</code>: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).</li>
 <li>
 <code>seed</code>: constant for reproducibility in the bootstrap resampling</li>
 <li>
-<code>algorithms</code>: character vector of classification algorithms</li>
+<code>convert</code>: whether to convert categorical predictors to dummy variables</li>
 <li>
 <code>rfe</code>: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.</li>
+<li>
+<code>ova</code>: whether to run one-vs-all versions for each algorithm (e.g. class 1 vs. not class 1, class 2 vs. not class 2, etc.)</li>
+<li>
+<code>standardize</code>: whether to standardize the training set before classification and the test set (using training set centers &amp; standard deviations) during prediction</li>
+<li>
+<code>plus</code>: whether to calculate the .632+ or .632 estimator for the log loss error rate</li>
+<li>
+<code>threshold</code>: predicted probabilities below this value are classified as “unclassified” instead of imposing one of the labels from <code>class</code>
+</li>
+<li>
+<code>top</code>: how many of the top performing algorithms are chosen for the final ensemble?</li>
+<li>
+<code>sequential</code>: whether to run the sequential ensemble</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)
 <span class="kw">table</span>(class)
@@ -125,8 +140,11 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <span class="co">#&gt;   ..$ svm :List of 2</span>
 <span class="co">#&gt;  $ evals        :List of 3</span>
 <span class="co">#&gt;   ..$ slda:'data.frame': 24 obs. of  2 variables:</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.94</span>
 <span class="co">#&gt;   ..$ knn :'data.frame': 24 obs. of  2 variables:</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 2.34</span>
 <span class="co">#&gt;   ..$ svm :'data.frame': 24 obs. of  2 variables:</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.244</span>
 <span class="co">#&gt;  $ bests        : Named chr [1:2] "svm" "svm"</span>
 <span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "1" "2"</span>
 <span class="co">#&gt;  $ ensemble_algs: chr "svm"</span>
@@ -422,6 +440,10 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <p>Note that in the multiclass case, we have variants for some of the measures listed above, depending on how we are looking at the data. A <code>macro</code>-averaged metric calculates said metric on each of the one-vs-all confusion matrices and then takes the mean. A <code>micro</code>-averaged metric is calculated on the element-wise sum of all one-vs-all confusion matrices.</p>
 <p>Hence, there are <code>macro_ppv</code>, <code>macro_sensitivity</code>, and <code>macro_f1</code> macro-averaged metrics, and <code>micro_mcc</code> as the “only” micro-averaged metric. It turns out that <code>accuracy</code> is mathematically equivalent to micro-averaged PPV, sensitivity, and F1-score, so we don’t redundantly add those to the list. Furthermore, calculating <code>mcc</code> in a macro-averaged way is not recommended, so we use it on the full confusion matrix.</p>
 <p>Class-specific measures fill in the rest of the matrix, labelled with the naming scheme <code>metric.class</code>.</p>
+<p>The .632 estimator are implemented for the multiclass log loss function. This error estimate aims to make a compromise between an overbiased prediction like the leave-one-out bootstrap error with an underbiased prediction like the training (or apparent) error. If we set <code>plus = TRUE</code> in <code><a href="../reference/splendid.html">splendid()</a></code> (default), one can calculate the .632+ estimator, an improvement over the .632 estimator that takes into account the amount of overfitting.<sup>5</sup> The value is stored as an attribute in the evaluation object:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">vapply</span>(sl_result<span class="op">$</span>evals, attr, <span class="st">"err_632plus"</span>, <span class="dt">FUN.VALUE =</span> <span class="kw">double</span>(<span class="dv">1</span>))
+<span class="co">#&gt;      slda       knn       svm </span>
+<span class="co">#&gt; 1.9373620 2.3373843 0.2438748</span></code></pre></div>
 </div>
 <div id="plots" class="section level3">
 <h3 class="hasAnchor">
@@ -452,6 +474,7 @@ evals &lt;-<span class="st"> </span><span class="kw"><a href="../reference/evalu
 <li><a href="https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet_beta.pdf" class="uri">https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet_beta.pdf</a></li>
 <li><a href="https://topepo.github.io/caret/recursive-feature-elimination.html" class="uri">https://topepo.github.io/caret/recursive-feature-elimination.html</a></li>
 <li>Pihur, Vasyl, Susmita Datta, and Somnath Datta. “RankAggreg, an R package for weighted rank aggregation.” <em>BMC bioinformatics</em> 10.1 (2009): 62.</li>
+<li>Efron, Bradley and Tibshirani, Robert (1997), “Improvements on Cross-Validation: The .632+ Bootstrap Method,” Journal of American Statistical Association, 92, 438, 548-560.</li>
 </ol>
 </div>
 </div>

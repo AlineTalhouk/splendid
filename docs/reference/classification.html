@@ -86,7 +86,7 @@ class.</p>
     
 
     <pre class="usage"><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algorithms</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,6 +113,13 @@ feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
       <th>ova</th>
       <td><p>logical; if <code>TRUE</code>, use the One-Vs-All approach for the
 <code>knn</code> algorithm.</p></td>
+    </tr>
+    <tr>
+      <th>standardize</th>
+      <td><p>logical; if <code>TRUE</code>, the training sets are
+standardized on features to have mean zero and unit variance. The test
+sets are standardized using the vectors of centers and standard deviations
+used in corresponding training sets.</p></td>
     </tr>
     <tr>
       <th>sizes</th>
