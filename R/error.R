@@ -40,13 +40,10 @@ error_632 <- function(data, class, algorithm, pred, test.id, train.id,
   err_1 <- error_looboot(pred, class, test.id, train.id)
   err_632 <- .368 * err + .632 * err_1
   if (plus) {
-    gamma_hat <- nier(class, attr(err, "pred_full"))
-    err_1p <- min(err_1, gamma_hat)
-    R_hat_p <- ifelse(err_1p > err & gamma_hat > err,
-                      (err_1p - err) / (gamma_hat - err),
-                      0)
-    err_632plus <- err_632 + (err_1p - err) *
-      ((.368 * .632 * R_hat_p) / (1 - .368 * R_hat_p))
+    gamma <- nier(class, attr(err, "pred_full"))
+    err_1p <- min(err_1, gamma)
+    R <- ifelse(err_1p > err & gamma > err, (err_1p - err) / (gamma - err), 0)
+    err_632plus <- err_632 + (err_1p - err) * (.368 * .632 * R) / (1 - .368 * R)
     `attributes<-`(err_632plus, NULL)
   } else {
     `attributes<-`(err_632, NULL)
@@ -71,23 +68,23 @@ error_training <- function(data, class, algorithm, plus) {
 #' @inheritParams error_632
 #' @noRd
 error_looboot <- function(pred, class, test.id, train.id) {
-  # Error for each observation across bootstrap samples
+  # Error for each obs in boot samples where it wasn't selected to train
   looboot <- seq_along(class) %>%
     purrr::map(function(obs) {
-      C_i <- which(purrr::map_lgl(train.id, ~ !(obs %in% .))) # boot samples without obs
+      C_i <- which(purrr::map_lgl(train.id, ~ !(obs %in% .))) # boot id w/o obs
       purrr::map_dbl(C_i, function(i) {
         prob <- adjust_prob(attr(pred[[i]], "prob")) # predicted prob matrix
-        col <- class[test.id[[i]]] %>% match(levels(.)) # prob column for true class
-        idx <- match(obs, test.id[[i]]) # index for obs in prob and test set
-        - log(prob[idx, col[idx]]) # logloss
+        col <- class[test.id[[i]]] %>% match(levels(.)) # column index for class
+        idx <- match(obs, test.id[[i]]) # index for obs in prob and col
+        - log(prob[idx, col[idx]]) # logloss for single obs
       })
     })
 
-  # Leave-one-out bootstrap error rate
+  # Average errors after removing obs that were selected in all training sets
   looboot %>%
     purrr::compact() %>% # remove obs with |C_i| = 0
-    purrr::map_dbl(mean) %>% # average within bootstrap samples for one obs
-    mean() # sum over all obs
+    purrr::map_dbl(mean) %>% # average within bootstrap samples for each obs
+    mean() # average across all obs
 }
 
 #' Adjust predicted probability matrix so that extreme values do not cause
