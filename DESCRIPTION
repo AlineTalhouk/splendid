@@ -1,7 +1,7 @@
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.0.0.9019
-Date: 2017-09-15
+Version: 0.0.0.9021
+Date: 2017-11-07
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"),
@@ -12,7 +12,7 @@ Description: Provides a bootstrapping and ensemble framework for supervised
     prediction, and evaluation. Predicted classes are evaluated under metrics
     such as log loss, AUC, F1-score, Matthew's correlation coefficient, and
     accuracy. Discrimination and reliability plots visualize the classifier
-    performances.
+    performances. The .632+ estimator is implemented for the log loss function.
 Depends: R (>= 3.2.0)
 Imports:
     ggplot2,

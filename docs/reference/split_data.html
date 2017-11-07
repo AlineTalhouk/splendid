@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>One-Vs-All training approach — ova_classification • splendid</title>
+<title>Split data into training and test sets — split_data • splendid</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,15 +77,15 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>One-Vs-All training approach</h1>
+    <h1>Split data into training and test sets</h1>
     </div>
 
     
-    <p>One-Vs-All training approach</p>
+    <p>Split data into training and test sets, optionally standardizing by training
+set centers and standard deviations</p>
     
 
-    <pre class="usage"><span class='fu'>ova_classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algorithms</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>split_data</span>(<span class='no'>data</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -95,23 +95,14 @@
       <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
-      <th>class</th>
-      <td><p>true/reference class vector used for supervised learning</p></td>
+      <th>test.id</th>
+      <td><p>integer vector of indices for test set. If <code>NULL</code>
+(default), all samples are used.</p></td>
     </tr>
     <tr>
-      <th>algorithms</th>
-      <td><p>character string of algorithm to use for supervised
-learning. See <strong>Algorithms</strong> section for possible options.</p></td>
-    </tr>
-    <tr>
-      <th>rfe</th>
-      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
-    </tr>
-    <tr>
-      <th>ova</th>
-      <td><p>logical; if <code>TRUE</code>, use the One-Vs-All approach for the
-<code>knn</code> algorithm.</p></td>
+      <th>train.id</th>
+      <td><p>integer vector of indices for training set. If <code>NULL</code>
+(default), all samples are used.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
@@ -122,23 +113,13 @@ used in corresponding training sets.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>list of binary classifier fits on each class</p>
-    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
-
-    <h2>Author</h2>
-    
-Dustin Johnson, Derek Chiu
+                </ul>
 
   </div>
 </div>

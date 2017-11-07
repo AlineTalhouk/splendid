@@ -4,11 +4,12 @@
 #' @return list of binary classifier fits on each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
-ova_classification <- function(data, class, algorithms, rfe, ova) {
+ova_classification <- function(data, class, algorithms, rfe = FALSE,
+                               ova = FALSE, standardize = FALSE) {
   fits <- class %>%
     binarize() %>%
     purrr::map(classification, data = data, algorithms = algorithms, rfe = rfe,
-               ova = ova)
+               ova = ova, standardize = standardize)
   fits
 }
 
@@ -20,10 +21,10 @@ ova_classification <- function(data, class, algorithms, rfe, ova) {
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
-                           threshold = 0.5, ...) {
+                           threshold = 0.5, standardize = FALSE, ...) {
   prob <- fits %>%
     purrr::map(prediction, data = data, test.id = test.id, class = class,
-               train.id = train.id) %>%
+               train.id = train.id, standardize = standardize) %>%
     purrr::map(`%@%`, "prob") %>%
     purrr::map2(.x = ., .y = names(.), ~ {
       colnames(.x) %>%

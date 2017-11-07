@@ -37,10 +37,21 @@
 #' class <- attr(hgsc, "class.true")
 #' classification(hgsc, class, "rf")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
-                           sizes = NULL) {
+                           standardize = FALSE, sizes = NULL) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- rfe_sizes(sizes, class)
+  if (standardize) {
+    if (!is.null(attr(data, "dummy_vars"))) {
+      data <- dplyr::mutate_at(
+        data,
+        dplyr::vars(-dplyr::one_of(attr(data, "dummy_vars"))),
+        scale
+      )
+    } else {
+      data <- dplyr::mutate_all(data, scale)
+    }
+  }
   switch(algorithms,
          pam = pam_model(data, class),
          svm = rfe_model(data, class, "svm", rfe, sizes),
@@ -152,12 +163,14 @@ mlr_model <- function(data, class, algorithms) {
 #' @noRd
 nnet_model <- function(data, class) {
   if (!"package:nnet" %in% search()) attachNamespace("nnet")
-  e1071::best.nnet(class ~ ., data = cbind(data, class),
-                   size = seq_len(5),
-                   decay = seq(0, 0.5, length.out = 5),
-                   MaxNWts = 2000,
-                   tunecontrol = e1071::tune.control(
-                     sampling = "fix"))
+  e1071::best.nnet(
+    class ~ .,
+    data = cbind(data, class),
+    size = seq_len(5),
+    decay = seq(0, 0.5, length.out = 5),
+    MaxNWts = 2000,
+    tunecontrol = e1071::tune.control(sampling = "fix")
+  )
 }
 
 #' naive bayes model

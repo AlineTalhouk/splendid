@@ -36,10 +36,17 @@ The main function of `splendid` is `splendid()`, and the usage is intuitive:
 
 - `data`: your rectangular data in standard form (rows as samples/observations, columns as variables/features)
 - `class`: the true/reference class labels with length equal to the number of samples
+- `algorithms`: character vector of classification algorithms
 - `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).
 - `seed`: constant for reproducibility in the bootstrap resampling
-- `algorithms`: character vector of classification algorithms
+- `convert`: whether to convert categorical predictors to dummy variables
 - `rfe`: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.
+- `ova`: whether to run one-vs-all versions for each algorithm (e.g. class 1 vs. not class 1, class 2 vs. not class 2, etc.)
+- `standardize`: whether to standardize the training set before classification and the test set (using training set centers & standard deviations) during prediction
+- `plus`: whether to calculate the .632+ or .632 estimator for the log loss error rate
+- `threshold`: predicted probabilities below this value are classified as "unclassified" instead of imposing one of the labels from `class`
+- `top`: how many of the top performing algorithms are chosen for the final ensemble?
+- `sequential`: whether to run the sequential ensemble
   
 ```{r splendid}
 class <- attr(hgsc, "class.true")
@@ -163,6 +170,12 @@ Hence, there are `macro_ppv`, `macro_sensitivity`, and `macro_f1` macro-averaged
 
 Class-specific measures fill in the rest of the matrix, labelled with the naming scheme `metric.class`.
 
+The .632 estimator are implemented for the multiclass log loss function. This error estimate aims to make a compromise between an overbiased prediction like the leave-one-out bootstrap error with an underbiased prediction like the training (or apparent) error. If we set `plus = TRUE` in `splendid()` (default), one can calculate the .632+ estimator, an improvement over the .632 estimator that takes into account the amount of overfitting.^5^ The value is stored as an attribute in the evaluation object:
+
+```{r 632_estimator}
+vapply(sl_result$evals, attr, "err_632plus", FUN.VALUE = double(1))
+```
+
 ### Plots
 
 To assess the performance of a classifier, we can look at a discriminating plot and reliability plot.
@@ -188,5 +201,6 @@ After obtaining the list of top classifiers for each bootstrap replicate, we sor
 
 1. Ahdesmäki, Miika, and Korbinian Strimmer. "Feature selection in omics prediction problems using cat scores and false nondiscovery rate control." *The Annals of Applied Statistics* 4.1 (2010): 503-519.
 2. https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet_beta.pdf
-2. https://topepo.github.io/caret/recursive-feature-elimination.html
-3. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
+3. https://topepo.github.io/caret/recursive-feature-elimination.html
+4. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
+5. Efron, Bradley and Tibshirani, Robert (1997), "Improvements on Cross-Validation: The .632+ Bootstrap Method," Journal of American Statistical Association, 92, 438, 548-560.

@@ -5,7 +5,8 @@
 \title{Train, predict, and evaluate classification models}
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
-  convert = FALSE, rfe = FALSE, ova = FALSE, threshold = 0.5, ...)
+  convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
+  plus = TRUE, threshold = 0.5, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -30,6 +31,14 @@ feature selection method for "lda", "rf", and "svm" algorithms.}
 \item{ova}{logical; if \code{TRUE}, a One-Vs-All classification approach is
 performed for every algorithm in \code{algorithms}. The relevant results
 are prefixed with the string \code{ova_}.}
+
+\item{standardize}{logical; if \code{TRUE}, the training sets are
+standardized on features to have mean zero and unit variance. The test
+sets are standardized using the vectors of centers and standard deviations
+used in corresponding training sets.}
+
+\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is
+calculated. Otherwise, the .632 estimator is calculated.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}

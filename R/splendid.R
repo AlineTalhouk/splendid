@@ -50,6 +50,12 @@
 #' @param ova logical; if \code{TRUE}, a One-Vs-All classification approach is
 #'   performed for every algorithm in \code{algorithms}. The relevant results
 #'   are prefixed with the string \code{ova_}.
+#' @param standardize logical; if \code{TRUE}, the training sets are
+#'   standardized on features to have mean zero and unit variance. The test
+#'   sets are standardized using the vectors of centers and standard deviations
+#'   used in corresponding training sets.
+#' @param plus logical; if \code{TRUE} (default), the .632+ estimtor is
+#'   calculated. Otherwise, the .632 estimator is calculated.
 #' @param threshold a numeric indicating the lowest maximum class probability
 #'   below which a sample will be unclassified.
 #' @param top the number of highest-performing algorithms to retain for ensemble
@@ -83,14 +89,16 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
 #' "xgboost"))
 splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
-                     convert = FALSE, rfe = FALSE, ova = FALSE, threshold = 0.5,
-                     top = 3, sequential = FALSE, ...) {
+                     convert = FALSE, rfe = FALSE, ova = FALSE,
+                     standardize = FALSE, plus = TRUE, threshold = 0.5, top = 3,
+                     sequential = FALSE, ...) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   data <- splendid_convert(data, algorithms, convert)
 
   sm <- splendid_model(data = data, class = class, algorithms = algorithms,
-                       n = n, convert = convert, rfe = rfe, ova = ova, ...)
+                       n = n, convert = convert, rfe = rfe, ova = ova,
+                       standardize = standardize, plus = plus, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class, top = top,
                           sequential = sequential)
   c(sm, se)
