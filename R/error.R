@@ -31,7 +31,7 @@
 #' test.id <- boot_test(train.id = train.id)
 #' mod <- purrr::map(train.id, ~ classification(hgsc[., ], class[.], "xgboost"))
 #' pred <- purrr::pmap(list(mod = mod, test.id = test.id, train.id = train.id),
-#' prediction, data = data, class = class)
+#' prediction, data = hgsc, class = class)
 #' error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = FALSE)
 #' error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = TRUE)
 error_632 <- function(data, class, algorithm, pred, test.id, train.id,
