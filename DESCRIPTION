@@ -12,7 +12,8 @@ Description: Provides a bootstrapping and ensemble framework for supervised
     prediction, and evaluation. Predicted classes are evaluated under metrics
     such as log loss, AUC, F1-score, Matthew's correlation coefficient, and
     accuracy. Discrimination and reliability plots visualize the classifier
-    performances. The .632+ estimator is implemented for the log loss function.
+    performances. The .632+ estimator is implemented for the log loss error
+    rate.
 Depends: R (>= 3.2.0)
 Imports:
     ggplot2,
