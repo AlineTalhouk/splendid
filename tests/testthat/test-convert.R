@@ -17,7 +17,5 @@ test_that("error message is thrown for certain algorithms", {
     iris,
     splendid_convert(iris, algorithms = "algorithm_name", convert = FALSE)
   )
-  expect_error(
-    splendid_convert(iris, algorithms = "lda", convert = FALSE)
-  )
+  expect_error(splendid_convert(iris, algorithms = "lda", convert = FALSE))
 })

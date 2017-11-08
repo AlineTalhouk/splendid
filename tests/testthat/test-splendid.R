@@ -4,11 +4,11 @@ data(hgsc)
 class <- attr(hgsc, "class.true")
 
 test_that("missing algorithm parameter means use all", {
-  sl_result <- splendid(hgsc, class, n = 1)
+  sl_result <- splendid(iris[, -5], iris$Species, n = 1)
   expect_length(sl_result$models, length(ALG.NAME))
   expect_length(sl_result$preds, length(ALG.NAME))
   expect_equal(sum(purrr::map_int(sl_result$evals, nrow)),
-               length(ALG.NAME) * 24)
+               length(ALG.NAME) * 20)
 })
 
 test_that("unsupported algorithm call causes error", {
