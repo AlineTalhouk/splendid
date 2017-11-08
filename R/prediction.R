@@ -72,7 +72,7 @@ prediction.rfe <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0.5, standardize = FALSE, ...) {
   p_args <- dplyr::lst(mod, test.id, train.id, standardize)
   p <- purrr::invoke(prediction.default, p_args,
-                     data = data[, mod$optVariables], ...)
+                     data = data[, mod[["optVariables"]]], ...)
   pred <- p$pred
   prob <- p[, names(p) != "pred"]
   prediction_output(pred, prob, class, test.id, threshold)
@@ -147,7 +147,7 @@ prediction.multinom <- function(mod, data, class, test.id = NULL,
   p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, type = "class", ...)
   prob <- purrr::invoke(prediction.default, p_args, type = "probs", ...)
-  if (!is.matrix(prob)) {  # for ova case
+  if (!is.matrix(prob)) {
     prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
   }
   prediction_output(pred, prob, class, test.id, threshold)
@@ -160,7 +160,7 @@ prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
   p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
   pred <- factor(purrr::invoke(prediction.default, p_args, type = "class", ...))
   prob <- purrr::invoke(prediction.default, p_args, type = "raw", ...)
-  if (ncol(prob) == 1) {  # for ova case
+  if (ncol(prob) == 1) {
     prob <- matrix(c(1 - prob, prob), ncol = 2, dimnames = list(NULL, mod$lev))
   }
   prediction_output(pred, prob, class, test.id, threshold)
@@ -215,7 +215,7 @@ prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
   dat <- split_data(data, test.id, train.id, standardize) %>% {
     rbind(.$train, .$test)
   }
-  if (inherits(mod, "ova")) {  # for ova case
+  if (inherits(mod, "ova")) {
     lev <- as.character(unlist(mod))
     if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
   }

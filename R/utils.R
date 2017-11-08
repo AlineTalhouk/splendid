@@ -29,10 +29,12 @@ sink_output <- function(expr) {
 #'
 #' @noRd
 sum_to_one <- function(prob) {
-  apply(prob, 1, function(x) {
-    if (sum(x) == 0) x[sample(seq_along(x), size = 1)] <- 1
-    x / sum(x)
-  }) %>% t()
+  apply(prob, 1,
+        function(x) {
+          if (sum(x) == 0) x[sample(seq_along(x), size = 1)] <- 1
+          x / sum(x)
+        }
+  ) %>% t()
 }
 
 #' Add binary One-Vs-All matrix to class vector

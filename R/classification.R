@@ -106,7 +106,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes) {
     if (algorithms != "svm") {
       mod
     } else {
-      svm_model(data, class, mod$optVariables)
+      svm_model(data, class, mod[["optVariables"]])
     }
   } else {
     switch(algorithms,

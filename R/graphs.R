@@ -34,15 +34,15 @@
 discrimination_plot <- function(x, pred.probs) {
 
   # turn into long-form for plotting
-  df.long <- data.frame(trueClass = factor(x), pred.probs) %>%
+  df.long <- data.frame(true_class = factor(x), pred.probs) %>%
     tidyr::gather(key = "class", value = "prob", -1, factor_key = TRUE)
 
   # create prevalance (base-line) class proportion table
   df.prevalence <- df.long %>%
-    dplyr::group_by_("trueClass") %>%
-    dplyr::summarise_("classCount" = ~ length(trueClass)) %>%
-    dplyr::mutate_("totalCount" = ~ sum(classCount),
-                   "prevalence" = ~ classCount / totalCount)
+    dplyr::group_by_("true_class") %>%
+    dplyr::summarise_("class_count" = ~ length(true_class)) %>%
+    dplyr::mutate_("total_count" = ~ sum(class_count),
+                   "prevalence" = ~ class_count / total_count)
 
   # discrimination plot
   cols <- grDevices::rainbow(dplyr::n_distinct(x))
@@ -51,7 +51,7 @@ discrimination_plot <- function(x, pred.probs) {
     geom_hline(data = df.prevalence, aes_(yintercept = ~prevalence),
                colour = "lightgrey") +
     scale_fill_manual(values = cols) +
-    facet_wrap(~trueClass) +
+    facet_wrap(~true_class) +
     labs(title = "Discrimination Plot by True Class", x = "Predicted Class",
          y = "Risk of Predicted Class") +
     theme_bw() +
