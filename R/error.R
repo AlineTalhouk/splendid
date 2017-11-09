@@ -27,7 +27,7 @@
 #' data(hgsc)
 #' class <- as.factor(attr(hgsc, "class.true"))
 #' set.seed(1)
-#' train.id <- boot_train(data = hgsc, class = class, n = 10)
+#' train.id <- boot_train(data = hgsc, class = class, n = 5)
 #' test.id <- boot_test(train.id = train.id)
 #' mod <- purrr::map(train.id, ~ classification(hgsc[., ], class[.], "xgboost"))
 #' pred <- purrr::pmap(list(mod = mod, test.id = test.id, train.id = train.id),

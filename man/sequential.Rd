@@ -46,7 +46,7 @@ precision, and recall.
 \examples{
 data(hgsc)
 class <- attr(hgsc, "class.true")
-sm <- splendid_model(hgsc, class, n = 2, algorithms = c("xgboost", "slda"))
+sm <- splendid_model(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 st <- sequential_train(sm, hgsc, class)
 sp <- sequential_pred(st, sm, hgsc, class)
 }

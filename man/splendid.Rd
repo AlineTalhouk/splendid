@@ -113,8 +113,7 @@ Correlation Coefficient (MCC).
 \examples{
 data(hgsc)
 class <- attr(hgsc, "class.true")
-sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "knn",
-"xgboost"))
+sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 }
 \author{
 Derek Chiu
