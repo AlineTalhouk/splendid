@@ -85,7 +85,7 @@
 <li>
 <code>algorithms</code>: character vector of classification algorithms</li>
 <li>
-<code>n</code>: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).</li>
+<code>n</code>: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OOB).</li>
 <li>
 <code>seed</code>: constant for reproducibility in the bootstrap resampling</li>
 <li>
@@ -95,7 +95,7 @@
 <li>
 <code>ova</code>: whether to run one-vs-all versions for each algorithm (e.g. class 1 vs. not class 1, class 2 vs. not class 2, etc.)</li>
 <li>
-<code>standardize</code>: whether to standardize the training set before classification and the test set (using training set centers &amp; standard deviations) during prediction</li>
+<code>standardize</code>: whether to standardize the training set before classification and the test set (using training set centerings &amp; scalings) during prediction</li>
 <li>
 <code>plus</code>: whether to calculate the .632+ or .632 estimator for the log loss error rate</li>
 <li>

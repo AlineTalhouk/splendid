@@ -138,7 +138,7 @@ precision, and recall.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
 <span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>attr</span>(<span class='no'>hgsc</span>, <span class='st'>"class.true"</span>)
-<span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='splendid_model.html'>splendid_model</a></span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"xgboost"</span>, <span class='st'>"slda"</span>))
+<span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='splendid_model.html'>splendid_model</a></span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"lda"</span>, <span class='st'>"xgboost"</span>))
 <span class='no'>st</span> <span class='kw'>&lt;-</span> <span class='fu'>sequential_train</span>(<span class='no'>sm</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>)
 <span class='no'>sp</span> <span class='kw'>&lt;-</span> <span class='fu'>sequential_pred</span>(<span class='no'>st</span>, <span class='no'>sm</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>)</div></pre>
   </div>
