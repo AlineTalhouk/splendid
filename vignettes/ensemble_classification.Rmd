@@ -37,12 +37,12 @@ The main function of `splendid` is `splendid()`, and the usage is intuitive:
 - `data`: your rectangular data in standard form (rows as samples/observations, columns as variables/features)
 - `class`: the true/reference class labels with length equal to the number of samples
 - `algorithms`: character vector of classification algorithms
-- `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OBB).
+- `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OOB).
 - `seed`: constant for reproducibility in the bootstrap resampling
 - `convert`: whether to convert categorical predictors to dummy variables
 - `rfe`: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.
 - `ova`: whether to run one-vs-all versions for each algorithm (e.g. class 1 vs. not class 1, class 2 vs. not class 2, etc.)
-- `standardize`: whether to standardize the training set before classification and the test set (using training set centers & standard deviations) during prediction
+- `standardize`: whether to standardize the training set before classification and the test set (using training set centerings & scalings) during prediction
 - `plus`: whether to calculate the .632+ or .632 estimator for the log loss error rate
 - `threshold`: predicted probabilities below this value are classified as "unclassified" instead of imposing one of the labels from `class`
 - `top`: how many of the top performing algorithms are chosen for the final ensemble?
