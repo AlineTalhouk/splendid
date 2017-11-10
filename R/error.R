@@ -60,7 +60,7 @@ error_training <- function(data, class, algorithm, plus) {
 
   # Training error rate
   logloss(class, prob) %>%
-    purrr::when(plus ~ magrittr::set_attr(., "pred_full", factor(pred_out)),
+    purrr::when(plus ~ `attr<-`(., "pred_full", factor(pred_out)),
                 TRUE ~ .)
 }
 
