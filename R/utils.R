@@ -39,17 +39,17 @@ sum_to_one <- function(prob) {
 
 #' Add binary One-Vs-All matrix to class vector
 #'
-#' @param x data frame with class labels in a column vector
-#' @return data frame of \code{x} and one column for each binarized class
+#' @param x class label vector
+#' @return tibble of \code{x} and one column for each binarized class
 #'   membership
 #' @noRd
 binarize <- function(x) {
   x %>%
-    factor() %>%
-    levels() %>%
+    unique() %>%
+    sort() %>%
+    as.character() %>%
     purrr::set_names() %>%
-    purrr::map(~ ifelse(x == .x, .x, 0)) %>%
-    data.frame(stringsAsFactors = FALSE)
+    purrr::map_df(~ ifelse(x == ., ., 0))
 }
 
 #' Confusion matrix
