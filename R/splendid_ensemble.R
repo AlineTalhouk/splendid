@@ -24,10 +24,8 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE,
     purrr::map(~ purrr::invoke(rbind, .x)) %>%
     purrr::map_chr(~ {
       if (ncol(.x) > 1) {
-        RankAggreg::RankAggreg(.x, ncol(.x), method = "GA",
-                               seed = seed, verbose = FALSE) %>%
-          magrittr::use_series("top.list") %>%
-          head(1)
+        RankAggreg::RankAggreg(.x, ncol(.x), method = "GA", seed = seed,
+                               verbose = FALSE)$top.list[1]
       } else {
         .x[1]
       }
