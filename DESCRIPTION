@@ -1,3 +1,4 @@
+Type: Package
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
 Version: 0.0.0.9022
@@ -14,44 +15,45 @@ Description: Provides a bootstrapping and ensemble framework for supervised
     accuracy. Discrimination and reliability plots visualize the classifier
     performances. The .632+ estimator is implemented for the log loss error
     rate.
-Depends: R (>= 3.2.0)
-Imports:
-    ggplot2,
-    tibble,
-    tidyr,
-    purrr,
-    dplyr,
-    rlang,
-    forcats,
-    modelr,
-    magrittr,
-    grDevices,
-    MASS,
-    randomForest,
-    nnet,
-    e1071,
-    pamr,
-    maboost,
-    xgboost,
-    glmnet,
-    RankAggreg,
-    knnflex,
-    caret,
-    HandTill2001,
-    MLmetrics,
-    sda,
-    kernlab
-Suggests:
-    knitr,
-    rmarkdown,
-    testthat,
-    DiagrammeR
-Remotes: Dasonk/knnflex
 License: MIT + file LICENSE
 URL: https://github.com/AlineTalhouk/splendid
 BugReports: https://github.com/AlineTalhouk/splendid/issues
+Depends: 
+    R (>= 3.2.0)
+Imports: 
+    caret,
+    dplyr,
+    e1071,
+    forcats,
+    ggplot2,
+    glmnet,
+    grDevices,
+    HandTill2001,
+    kernlab,
+    knnflex,
+    maboost,
+    magrittr,
+    MASS,
+    MLmetrics,
+    modelr,
+    nnet,
+    pamr,
+    purrr,
+    randomForest,
+    RankAggreg,
+    rlang,
+    sda,
+    tibble,
+    tidyr,
+    xgboost
+Suggests: 
+    DiagrammeR,
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
-VignetteBuilder: knitr
+Remotes: Dasonk/knnflex
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1
