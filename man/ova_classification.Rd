@@ -15,16 +15,16 @@ ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
 \item{algorithms}{character string of algorithm to use for supervised
 learning. See \strong{Algorithms} section for possible options.}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.}
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a feature
+selection method for "lda", "rf", and "svm" algorithms.}
 
-\item{ova}{logical; if \code{TRUE}, use the One-Vs-All approach for the
-\code{knn} algorithm.}
+\item{ova}{logical; if \code{TRUE}, use the One-Vs-All approach for the \code{knn}
+algorithm.}
 
-\item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.}
+\item{standardize}{logical; if \code{TRUE}, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.}
 }
 \value{
 list of binary classifier fits on each class

@@ -24,8 +24,8 @@ sink_output <- function(expr) {
   invisible(force(expr))
 }
 
-#' Ensure all row sums of probability matrix equal 1
-#' If all probabilities are 0 from ova_model, randomly assign a class
+#' Ensure all row sums of probability matrix equal 1 If all probabilities are 0
+#' from ova_model, randomly assign a class
 #'
 #' @noRd
 sum_to_one <- function(prob) {
@@ -40,8 +40,7 @@ sum_to_one <- function(prob) {
 #' Add binary One-Vs-All matrix to class vector
 #'
 #' @param x class label vector
-#' @return tibble of \code{x} and one column for each binarized class
-#'   membership
+#' @return tibble of `x` and one column for each binarized class membership
 #' @noRd
 binarize <- function(x) {
   x %>%

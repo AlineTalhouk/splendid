@@ -15,7 +15,7 @@ ova_classification <- function(data, class, algorithms, rfe = FALSE,
 
 #' One-Vs-All prediction approach
 #'
-#' @param fits list of ova fits from \code{ova_classification}
+#' @param fits list of ova fits from `ova_classification`
 #' @inheritParams prediction
 #' @return (tibble) predicted probabilities for each class
 #' @author Dustin Johnson, Derek Chiu

@@ -27,9 +27,8 @@ Classification algorithms LDA and the MLR family have such a limitation.
 \details{
 If all the variables in the original data are already continuous, nothing is
 done. Otherwise, conversion is performed if \code{convert = TRUE}. An error
-message is thrown if there are categorical variables and \code{convert =
-FALSE}, indicating exactly which algorithms specified require data
-conversion.
+message is thrown if there are categorical variables and \code{convert = FALSE},
+indicating exactly which algorithms specified require data conversion.
 }
 \examples{
 data(hgsc)

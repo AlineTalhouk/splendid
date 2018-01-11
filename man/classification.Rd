@@ -15,16 +15,16 @@ classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
 \item{algorithms}{character string of algorithm to use for supervised
 learning. See \strong{Algorithms} section for possible options.}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.}
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a feature
+selection method for "lda", "rf", and "svm" algorithms.}
 
-\item{ova}{logical; if \code{TRUE}, use the One-Vs-All approach for the
-\code{knn} algorithm.}
+\item{ova}{logical; if \code{TRUE}, use the One-Vs-All approach for the \code{knn}
+algorithm.}
 
-\item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.}
+\item{standardize}{logical; if \code{TRUE}, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.}
 
 \item{sizes}{the range of sizes of features to test RFE algorithm}
 }
@@ -38,43 +38,41 @@ class.
 \details{
 Some of the classification algorithms implemented use pre-defined values that
 specify settings and options while others need to tune hyperparameters.
-\code{"multinom"} and \code{"nnet"} use a maximum number of weights of 2000,
-in case \code{data} is high dimensional and classification is time-consuming.
-\code{"nnet"} also tunes the number of nodes (1-5) in the hidden layer.
-\code{"pam"} considers 100 thresholds when training, and uses a uniform
-prior. \code{"adaboost"} calls \code{\link[maboost]{maboost}} instead of
-\code{\link[adabag]{boosting}} for faster performance. As a result, we use
-the \code{"entrop"} option, which uses the KL-divergence method and mimics
-adaboost.
+\code{"multinom"} and \code{"nnet"} use a maximum number of weights of 2000, in case
+\code{data} is high dimensional and classification is time-consuming. \code{"nnet"}
+also tunes the number of nodes (1-5) in the hidden layer. \code{"pam"} considers
+100 thresholds when training, and uses a uniform prior. \code{"adaboost"} calls
+\code{\link[maboost:maboost]{maboost::maboost()}} instead of \code{\link[adabag:boosting]{adabag::boosting()}} for faster performance.
+As a result, we use the \code{"entrop"} option, which uses the KL-divergence
+method and mimics adaboost.
 
-When \code{alg = "knn"}, the return value is \code{NULL} because
-\code{\link[class]{knn}} does not output an intermediate model object. The
-modelling and prediction is performed in one step. However, the class
-attribute "knn" is still assigned to the result in order to call the
-respective \code{\link{prediction}} method. An additional class "ova" is
-added if \code{ova = TRUE}.
+When \code{alg = "knn"}, the return value is \code{NULL} because \code{\link[class:knn]{class::knn()}} does
+not output an intermediate model object. The modelling and prediction is
+performed in one step. However, the class attribute "knn" is still assigned
+to the result in order to call the respective \code{\link[=prediction]{prediction()}} method. An
+additional class "ova" is added if \code{ova = TRUE}.
 }
 \section{Algorithms}{
  The classification algorithms currently supported are:
 \itemize{
-  \item Prediction Analysis for Microarrays ("pam")
-  \item Support Vector Machines ("svm")
-  \item Random Forests ("rf")
-  \item Linear Discriminant Analysis ("lda")
-  \item Shrinkage Linear Discriminant Analysis ("slda")
-  \item Shrinkage Diagonal Discriminant Analysis ("sdda")
-  \item Multinomial Logistic Regression using
-  \itemize{
-    \item Generalized Linear Model with no penalization ("mlr_glm")
-    \item GLM with LASSO penalty ("mlr_lasso")
-    \item GLM with ridge penalty ("mlr_ridge")
-    \item Neural Networks ("mlr_nnet")
-  }
-  \item Neural Networks ("nnet")
-  \item Naive Bayes ("nbayes")
-  \item Adaptive Boosting ("adaboost")
-  \item Extreme Gradient Boosting ("xgboost")
-  \item K-Nearest Neighbours ("knn")
+\item Prediction Analysis for Microarrays ("pam")
+\item Support Vector Machines ("svm")
+\item Random Forests ("rf")
+\item Linear Discriminant Analysis ("lda")
+\item Shrinkage Linear Discriminant Analysis ("slda")
+\item Shrinkage Diagonal Discriminant Analysis ("sdda")
+\item Multinomial Logistic Regression using
+\itemize{
+\item Generalized Linear Model with no penalization ("mlr_glm")
+\item GLM with LASSO penalty ("mlr_lasso")
+\item GLM with ridge penalty ("mlr_ridge")
+\item Neural Networks ("mlr_nnet")
+}
+\item Neural Networks ("nnet")
+\item Naive Bayes ("nbayes")
+\item Adaptive Boosting ("adaboost")
+\item Extreme Gradient Boosting ("xgboost")
+\item K-Nearest Neighbours ("knn")
 }
 }
 

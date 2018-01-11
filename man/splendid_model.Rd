@@ -25,20 +25,20 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 \code{data} to dummy variables. Certain algorithms only work with such
 limitations (e.g. LDA).}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.}
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a feature
+selection method for "lda", "rf", and "svm" algorithms.}
 
 \item{ova}{logical; if \code{TRUE}, a One-Vs-All classification approach is
-performed for every algorithm in \code{algorithms}. The relevant results
-are prefixed with the string \code{ova_}.}
+performed for every algorithm in \code{algorithms}. The relevant results are
+prefixed with the string \code{ova_}.}
 
-\item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.}
+\item{standardize}{logical; if \code{TRUE}, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.}
 
-\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is
-calculated. Otherwise, the .632 estimator is calculated.}
+\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is calculated.
+Otherwise, the .632 estimator is calculated.}
 
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
@@ -51,24 +51,24 @@ Train, predict, and evaluate classification models
 \section{Algorithms}{
  The classification algorithms currently supported are:
 \itemize{
-  \item Prediction Analysis for Microarrays ("pam")
-  \item Support Vector Machines ("svm")
-  \item Random Forests ("rf")
-  \item Linear Discriminant Analysis ("lda")
-  \item Shrinkage Linear Discriminant Analysis ("slda")
-  \item Shrinkage Diagonal Discriminant Analysis ("sdda")
-  \item Multinomial Logistic Regression using
-  \itemize{
-    \item Generalized Linear Model with no penalization ("mlr_glm")
-    \item GLM with LASSO penalty ("mlr_lasso")
-    \item GLM with ridge penalty ("mlr_ridge")
-    \item Neural Networks ("mlr_nnet")
-  }
-  \item Neural Networks ("nnet")
-  \item Naive Bayes ("nbayes")
-  \item Adaptive Boosting ("adaboost")
-  \item Extreme Gradient Boosting ("xgboost")
-  \item K-Nearest Neighbours ("knn")
+\item Prediction Analysis for Microarrays ("pam")
+\item Support Vector Machines ("svm")
+\item Random Forests ("rf")
+\item Linear Discriminant Analysis ("lda")
+\item Shrinkage Linear Discriminant Analysis ("slda")
+\item Shrinkage Diagonal Discriminant Analysis ("sdda")
+\item Multinomial Logistic Regression using
+\itemize{
+\item Generalized Linear Model with no penalization ("mlr_glm")
+\item GLM with LASSO penalty ("mlr_lasso")
+\item GLM with ridge penalty ("mlr_ridge")
+\item Neural Networks ("mlr_nnet")
+}
+\item Neural Networks ("nnet")
+\item Naive Bayes ("nbayes")
+\item Adaptive Boosting ("adaboost")
+\item Extreme Gradient Boosting ("xgboost")
+\item K-Nearest Neighbours ("knn")
 }
 }
 

@@ -1,22 +1,22 @@
 #' Discriminating graphs
 #'
-#' Graphs a \code{discrimination_plot} and \code{reliability_plot} based on true
-#' classes and predicted class probabilities.
+#' Graphs a `discrimination_plot` and `reliability_plot` based on true classes
+#' and predicted class probabilities.
 #'
-#' A \code{discrimination_plot} shows boxplots of the predicted probabilities
-#' for each class, separated by panels of the true class labels. The class
+#' A `discrimination_plot` shows boxplots of the predicted probabilities for
+#' each class, separated by panels of the true class labels. The class
 #' prevalence is also drawn as a horizontal line for each panel.
 #'
-#' A \code{reliability_plot} shows mean prediction vs. observed fraction on
-#' lowess smoother for each class. A line going thru the origin with slope of 1
-#' serves as a reference for perfect reliability.
+#' A `reliability_plot` shows mean prediction vs. observed fraction on lowess
+#' smoother for each class. A line going thru the origin with slope of 1 serves
+#' as a reference for perfect reliability.
 #'
-#' Both plots can be called from within \code{\link{evaluation}}.
+#' Both plots can be called from within [evaluation()].
 #'
 #' @param x true class labels
 #' @param pred.probs matrix of predicted class probabilities. Number of rows
-#'   must equal length of \code{x}
-#' @return \code{ggplot} objects for the desired plot
+#'   must equal length of `x`
+#' @return `ggplot` objects for the desired plot
 #' @name splendid_graphs
 #' @author Dustin Johnson, Derek Chiu
 #' @references http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract

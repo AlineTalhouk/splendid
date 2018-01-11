@@ -9,16 +9,16 @@ split_data(data, test.id = NULL, train.id = NULL, standardize = FALSE)
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
 
-\item{test.id}{integer vector of indices for test set. If \code{NULL}
-(default), all samples are used.}
+\item{test.id}{integer vector of indices for test set. If \code{NULL} (default),
+all samples are used.}
 
 \item{train.id}{integer vector of indices for training set. If \code{NULL}
 (default), all samples are used.}
 
-\item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.}
+\item{standardize}{logical; if \code{TRUE}, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.}
 }
 \description{
 Split data into training and test sets, optionally standardizing by training

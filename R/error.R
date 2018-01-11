@@ -4,13 +4,13 @@
 #' classifer. The .632+ estimator is an extension that reduces overfitting and
 #' is run by default.
 #'
-#' This function is intended to be used internally by \code{splendid_model}.
+#' This function is intended to be used internally by `splendid_model`.
 #'
 #' @inheritParams splendid
-#' @param algorithm character string for classifier. See \code{splendid} for
-#'   possible options.
+#' @param algorithm character string for classifier. See `splendid` for possible
+#'   options.
 #' @param pred vector of OOB predictions using the same classifier as
-#'   \code{algorithm}.
+#'   `algorithm`.
 #' @param test.id vector of test set indices for each bootstrap replicate
 #' @param train.id vector of training set indices for each bootstrap replicate
 #' @return the .632(+) log loss error rate

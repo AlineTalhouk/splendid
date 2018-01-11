@@ -18,30 +18,32 @@ sequential_pred(fit, sm, data, class, boxplot = FALSE)
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{boxplot}{if \code{TRUE}, boxplots are plotted showing the distribution
-of F1-scores per class, for every algorithm.}
+\item{boxplot}{if \code{TRUE}, boxplots are plotted showing the distribution of
+F1-scores per class, for every algorithm.}
 
 \item{fit}{list of fitted models from \code{sequential_train}}
 }
 \value{
 \code{sequential_train} returns a list of fits over the top-ranked
-  sequence.
+sequence.
 
 \code{sequential_pred} returns a list of two elements
-\item{prob}{predicted sequential probabilities}
-\item{cm}{confusion matrices for each class}
+\itemize{
+\item \code{prob}: predicted sequential probabilities
+\item \code{cm}: confusion matrices for each class
+}
 }
 \description{
 Sequentially train top ranked algorithms on each class ordered by class
 performance and predict a given class using the sequentially trained fits.
 }
 \details{
-\code{sequential_train} sequentially trains One-Vs-All models until all
-classes have been classified. Hence for \code{n} classes, there are \code{n -
-1} sequential fits. \code{sequential_pred} predicts class membership for each
-One-Vs-All sequential model. Performance is evaluated on by-class F1-scores,
-since these are better for evaluation than other metrics such as accuracy,
-precision, and recall.
+\code{sequential_train} sequentially trains One-Vs-All models until all classes
+have been classified. Hence for \code{n} classes, there are \code{n - 1} sequential
+fits. \code{sequential_pred} predicts class membership for each One-Vs-All
+sequential model. Performance is evaluated on by-class F1-scores, since these
+are better for evaluation than other metrics such as accuracy, precision, and
+recall.
 }
 \examples{
 data(hgsc)

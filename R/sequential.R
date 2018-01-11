@@ -3,23 +3,23 @@
 #' Sequentially train top ranked algorithms on each class ordered by class
 #' performance and predict a given class using the sequentially trained fits.
 #'
-#' \code{sequential_train} sequentially trains One-Vs-All models until all
-#' classes have been classified. Hence for \code{n} classes, there are \code{n -
-#' 1} sequential fits. \code{sequential_pred} predicts class membership for each
-#' One-Vs-All sequential model. Performance is evaluated on by-class F1-scores,
-#' since these are better for evaluation than other metrics such as accuracy,
-#' precision, and recall.
+#' `sequential_train` sequentially trains One-Vs-All models until all classes
+#' have been classified. Hence for `n` classes, there are `n - 1` sequential
+#' fits. `sequential_pred` predicts class membership for each One-Vs-All
+#' sequential model. Performance is evaluated on by-class F1-scores, since these
+#' are better for evaluation than other metrics such as accuracy, precision, and
+#' recall.
 #'
 #' @inheritParams splendid_ensemble
-#' @param fit list of fitted models from \code{sequential_train}
-#' @param boxplot if \code{TRUE}, boxplots are plotted showing the distribution
-#'   of F1-scores per class, for every algorithm.
+#' @param fit list of fitted models from `sequential_train`
+#' @param boxplot if `TRUE`, boxplots are plotted showing the distribution of
+#'   F1-scores per class, for every algorithm.
 #'
-#' @return \code{sequential_train} returns a list of fits over the top-ranked
+#' @return `sequential_train` returns a list of fits over the top-ranked
 #'   sequence.
-#' @return \code{sequential_pred} returns a list of two elements
-#' \item{prob}{predicted sequential probabilities}
-#' \item{cm}{confusion matrices for each class}
+#' @return `sequential_pred` returns a list of two elements
+#' * `prob`: predicted sequential probabilities
+#' * `cm`: confusion matrices for each class
 #' @name sequential
 #' @author Dustin Johnson, Derek Chiu
 #' @export
@@ -144,7 +144,7 @@ sequential_eval <- function(sm) {
 }
 
 #' Prepare binarized classes from ranked models for sequential algorithm
-#' @param mr model_rank output from \code{sequential_rank}
+#' @param mr model_rank output from `sequential_rank`
 #' @noRd
 sequential_binarize <- function(mr, class) {
   # Binarize classes and combine the last two ranked classes

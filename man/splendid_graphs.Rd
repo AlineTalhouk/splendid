@@ -21,19 +21,19 @@ must equal length of \code{x}}
 \code{ggplot} objects for the desired plot
 }
 \description{
-Graphs a \code{discrimination_plot} and \code{reliability_plot} based on true
-classes and predicted class probabilities.
+Graphs a \code{discrimination_plot} and \code{reliability_plot} based on true classes
+and predicted class probabilities.
 }
 \details{
-A \code{discrimination_plot} shows boxplots of the predicted probabilities
-for each class, separated by panels of the true class labels. The class
+A \code{discrimination_plot} shows boxplots of the predicted probabilities for
+each class, separated by panels of the true class labels. The class
 prevalence is also drawn as a horizontal line for each panel.
 
-A \code{reliability_plot} shows mean prediction vs. observed fraction on
-lowess smoother for each class. A line going thru the origin with slope of 1
-serves as a reference for perfect reliability.
+A \code{reliability_plot} shows mean prediction vs. observed fraction on lowess
+smoother for each class. A line going thru the origin with slope of 1 serves
+as a reference for perfect reliability.
 
-Both plots can be called from within \code{\link{evaluation}}.
+Both plots can be called from within \code{\link[=evaluation]{evaluation()}}.
 }
 \examples{
 data(hgsc)

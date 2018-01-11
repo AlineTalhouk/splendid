@@ -11,7 +11,7 @@ dummify(data)
 }
 \value{
 A numeric data frame where dummy variables encode categorical
-  variables using multiple columns. Continuous variables are unchanged.
+variables using multiple columns. Continuous variables are unchanged.
 }
 \description{
 Convert all categorical variables in a dataset to dummy variables

@@ -11,8 +11,8 @@ error_632(data, class, algorithm, pred, test.id, train.id, plus = TRUE)
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{algorithm}{character string for classifier. See \code{splendid} for
-possible options.}
+\item{algorithm}{character string for classifier. See \code{splendid} for possible
+options.}
 
 \item{pred}{vector of OOB predictions using the same classifier as
 \code{algorithm}.}
@@ -21,8 +21,8 @@ possible options.}
 
 \item{train.id}{vector of training set indices for each bootstrap replicate}
 
-\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is
-calculated. Otherwise, the .632 estimator is calculated.}
+\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is calculated.
+Otherwise, the .632 estimator is calculated.}
 }
 \value{
 the .632(+) log loss error rate
@@ -49,12 +49,12 @@ error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = TRUE)
 }
 \references{
 Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. The
-  elements of statistical learning. Vol. 1. New York: Springer series in
-  statistics, 2001.
+elements of statistical learning. Vol. 1. New York: Springer series in
+statistics, 2001.
 
 Efron, Bradley and Tibshirani, Robert (1997), "Improvements on
-  Cross-Validation: The .632+ Bootstrap Method," Journal of American
-  Statistical Association, 92, 438, 548-560.
+Cross-Validation: The .632+ Bootstrap Method," Journal of American
+Statistical Association, 92, 438, 548-560.
 }
 \author{
 Derek Chiu

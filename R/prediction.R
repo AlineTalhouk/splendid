@@ -3,24 +3,24 @@
 #' Functions to predict class labels on the Out-Of-Bag (test) set for different
 #' classifiers.
 #'
-#' The \code{knn} and \code{pamr} prediction methods use the \code{train.id} and
-#' \code{class} arguments for additional modelling steps before prediction. For
-#' \code{knn}, the modelling and prediction are performed in one step, so the
-#' function takes in both training and test set identifiers. For \code{pamr},
-#' the classifier needs to be cross-validated on the training set in order to
-#' find a shrinkage threshold with the minimum CV error to use in prediction on
-#' the test set. The other prediction methods make use of the default method.
+#' The `knn` and `pamr` prediction methods use the `train.id` and `class`
+#' arguments for additional modelling steps before prediction. For `knn`, the
+#' modelling and prediction are performed in one step, so the function takes in
+#' both training and test set identifiers. For `pamr`, the classifier needs to
+#' be cross-validated on the training set in order to find a shrinkage threshold
+#' with the minimum CV error to use in prediction on the test set. The other
+#' prediction methods make use of the default method.
 #'
 #' @inheritParams splendid
-#' @param mod model object from \code{\link{classification}}
-#' @param test.id integer vector of indices for test set. If \code{NULL}
-#'   (default), all samples are used.
-#' @param train.id integer vector of indices for training set. If \code{NULL}
+#' @param mod model object from [classification()]
+#' @param test.id integer vector of indices for test set. If `NULL` (default),
+#'   all samples are used.
+#' @param train.id integer vector of indices for training set. If `NULL`
 #'   (default), all samples are used.
 #' @param ... additional arguments to be passed to or from methods
 #' @return A factor of predicted classes with labels in the same order as true
-#'   class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
-#'   list of length 2: the predicted class, and the threshold value.
+#'   class. If `mod` is a `"pamr"` classifier, the return value is a list of
+#'   length 2: the predicted class, and the threshold value.
 #'
 #' @author Derek Chiu
 #' @export

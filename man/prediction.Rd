@@ -20,14 +20,14 @@ prediction(mod, data, class, test.id = NULL, train.id = NULL,
   threshold = 0.5, standardize = FALSE, ...)
 }
 \arguments{
-\item{mod}{model object from \code{\link{classification}}}
+\item{mod}{model object from \code{\link[=classification]{classification()}}}
 
 \item{data}{data frame with rows as samples, columns as features}
 
 \item{class}{true/reference class vector used for supervised learning}
 
-\item{test.id}{integer vector of indices for test set. If \code{NULL}
-(default), all samples are used.}
+\item{test.id}{integer vector of indices for test set. If \code{NULL} (default),
+all samples are used.}
 
 \item{train.id}{integer vector of indices for training set. If \code{NULL}
 (default), all samples are used.}
@@ -35,30 +35,30 @@ prediction(mod, data, class, test.id = NULL, train.id = NULL,
 \item{threshold}{a numeric indicating the lowest maximum class probability
 below which a sample will be unclassified.}
 
-\item{standardize}{logical; if \code{TRUE}, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.}
+\item{standardize}{logical; if \code{TRUE}, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.}
 
 \item{...}{additional arguments to be passed to or from methods}
 }
 \value{
 A factor of predicted classes with labels in the same order as true
-  class. If \code{mod} is a \code{"pamr"} classifier, the return value is a
-  list of length 2: the predicted class, and the threshold value.
+class. If \code{mod} is a \code{"pamr"} classifier, the return value is a list of
+length 2: the predicted class, and the threshold value.
 }
 \description{
 Functions to predict class labels on the Out-Of-Bag (test) set for different
 classifiers.
 }
 \details{
-The \code{knn} and \code{pamr} prediction methods use the \code{train.id} and
-\code{class} arguments for additional modelling steps before prediction. For
-\code{knn}, the modelling and prediction are performed in one step, so the
-function takes in both training and test set identifiers. For \code{pamr},
-the classifier needs to be cross-validated on the training set in order to
-find a shrinkage threshold with the minimum CV error to use in prediction on
-the test set. The other prediction methods make use of the default method.
+The \code{knn} and \code{pamr} prediction methods use the \code{train.id} and \code{class}
+arguments for additional modelling steps before prediction. For \code{knn}, the
+modelling and prediction are performed in one step, so the function takes in
+both training and test set identifiers. For \code{pamr}, the classifier needs to
+be cross-validated on the training set in order to find a shrinkage threshold
+with the minimum CV error to use in prediction on the test set. The other
+prediction methods make use of the default method.
 }
 \examples{
 data(hgsc)

@@ -11,11 +11,10 @@
 #'
 #' @param x actual class labels
 #' @param y predicted class labels
-#' @param plot logical; if \code{TRUE} a discrimination plot and reliability
-#'   plot are shown for each class
-#' @return A list with one element per evaluation measure except for the
-#'   \code{cs} element, which returns a list of class-specific evaluation
-#'   measures.
+#' @param plot logical; if `TRUE` a discrimination plot and reliability plot are
+#'   shown for each class
+#' @return A list with one element per evaluation measure except for the `cs`
+#'   element, which returns a list of class-specific evaluation measures.
 #' @author Derek Chiu
 #' @export
 #' @examples

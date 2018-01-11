@@ -1,7 +1,7 @@
 #' Combine classification models into an ensemble
 #'
 #' @inheritParams splendid
-#' @param sm a \code{splendid_model} object
+#' @param sm a `splendid_model` object
 #' @export
 #' @examples
 #' data(hgsc)

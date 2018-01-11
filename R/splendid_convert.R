@@ -4,10 +4,9 @@
 #' Classification algorithms LDA and the MLR family have such a limitation.
 #'
 #' If all the variables in the original data are already continuous, nothing is
-#' done. Otherwise, conversion is performed if \code{convert = TRUE}. An error
-#' message is thrown if there are categorical variables and \code{convert =
-#' FALSE}, indicating exactly which algorithms specified require data
-#' conversion.
+#' done. Otherwise, conversion is performed if `convert = TRUE`. An error
+#' message is thrown if there are categorical variables and `convert = FALSE`,
+#' indicating exactly which algorithms specified require data conversion.
 #'
 #' @inheritParams splendid
 #' @return A (potentially) transformed data frame.

@@ -18,8 +18,8 @@ splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE,
 
 \item{seed}{random seed used for reproducibility in bootstrapping results}
 
-\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.}
+\item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a feature
+selection method for "lda", "rf", and "svm" algorithms.}
 
 \item{sequential}{logical; if \code{TRUE}, a sequential model is fit on the
 algorithms that had the best performance with one-vs-all classification.}

@@ -5,30 +5,28 @@
 #'
 #' Some of the classification algorithms implemented use pre-defined values that
 #' specify settings and options while others need to tune hyperparameters.
-#' \code{"multinom"} and \code{"nnet"} use a maximum number of weights of 2000,
-#' in case \code{data} is high dimensional and classification is time-consuming.
-#' \code{"nnet"} also tunes the number of nodes (1-5) in the hidden layer.
-#' \code{"pam"} considers 100 thresholds when training, and uses a uniform
-#' prior. \code{"adaboost"} calls \code{\link[maboost]{maboost}} instead of
-#' \code{\link[adabag]{boosting}} for faster performance. As a result, we use
-#' the \code{"entrop"} option, which uses the KL-divergence method and mimics
-#' adaboost.
+#' `"multinom"` and `"nnet"` use a maximum number of weights of 2000, in case
+#' `data` is high dimensional and classification is time-consuming. `"nnet"`
+#' also tunes the number of nodes (1-5) in the hidden layer. `"pam"` considers
+#' 100 thresholds when training, and uses a uniform prior. `"adaboost"` calls
+#' [maboost::maboost()] instead of [adabag::boosting()] for faster performance.
+#' As a result, we use the `"entrop"` option, which uses the KL-divergence
+#' method and mimics adaboost.
 #'
-#' When \code{alg = "knn"}, the return value is \code{NULL} because
-#' \code{\link[class]{knn}} does not output an intermediate model object. The
-#' modelling and prediction is performed in one step. However, the class
-#' attribute "knn" is still assigned to the result in order to call the
-#' respective \code{\link{prediction}} method. An additional class "ova" is
-#' added if \code{ova = TRUE}.
+#' When `alg = "knn"`, the return value is `NULL` because [class::knn()] does
+#' not output an intermediate model object. The modelling and prediction is
+#' performed in one step. However, the class attribute "knn" is still assigned
+#' to the result in order to call the respective [prediction()] method. An
+#' additional class "ova" is added if `ova = TRUE`.
 #'
 #' @inheritParams splendid
 #' @inheritSection splendid Algorithms
 #' @param algorithms character string of algorithm to use for supervised
 #'   learning. See \strong{Algorithms} section for possible options.
-#' @param ova logical; if \code{TRUE}, use the One-Vs-All approach for the
-#'   \code{knn} algorithm.
+#' @param ova logical; if `TRUE`, use the One-Vs-All approach for the `knn`
+#'   algorithm.
 #' @param sizes the range of sizes of features to test RFE algorithm
-#' @return The model object from running the classification \code{algorithm}
+#' @return The model object from running the classification `algorithm`
 #'
 #' @author Derek Chiu
 #' @export
