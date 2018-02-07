@@ -68,5 +68,5 @@ dummify <- function(data) {
     purrr::invoke(cbind, .) %>%
     as.data.frame() %>%
     magrittr::set_rownames(NULL) %>%
-    magrittr::set_attr("dummy_vars", dummy_vars)
+    `attr<-`("dummy_vars", dummy_vars)
 }
