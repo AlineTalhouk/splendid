@@ -106,8 +106,8 @@ performance and predict a given class using the sequentially trained fits.</p>
     </tr>
     <tr>
       <th>boxplot</th>
-      <td><p>if <code>TRUE</code>, boxplots are plotted showing the distribution
-of F1-scores per class, for every algorithm.</p></td>
+      <td><p>if <code>TRUE</code>, boxplots are plotted showing the distribution of
+F1-scores per class, for every algorithm.</p></td>
     </tr>
     <tr>
       <th>fit</th>
@@ -118,21 +118,22 @@ of F1-scores per class, for every algorithm.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code>sequential_train</code> returns a list of fits over the top-ranked
-  sequence.
+sequence.
 
-<code>sequential_pred</code> returns a list of two elements</p>
-<dt>prob</dt><dd><p>predicted sequential probabilities</p></dd>
-<dt>cm</dt><dd><p>confusion matrices for each class</p></dd>
+<code>sequential_pred</code> returns a list of two elements</p><ul>
+<li><p><code>prob</code>: predicted sequential probabilities</p></li>
+<li><p><code>cm</code>: confusion matrices for each class</p></li>
+</ul>
 
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>sequential_train</code> sequentially trains One-Vs-All models until all
-classes have been classified. Hence for <code>n</code> classes, there are <code>n -
-1</code> sequential fits. <code>sequential_pred</code> predicts class membership for each
-One-Vs-All sequential model. Performance is evaluated on by-class F1-scores,
-since these are better for evaluation than other metrics such as accuracy,
-precision, and recall.</p>
+    <p><code>sequential_train</code> sequentially trains One-Vs-All models until all classes
+have been classified. Hence for <code>n</code> classes, there are <code>n - 1</code> sequential
+fits. <code>sequential_pred</code> predicts class membership for each One-Vs-All
+sequential model. Performance is evaluated on by-class F1-scores, since these
+are better for evaluation than other metrics such as accuracy, precision, and
+recall.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -167,7 +168,7 @@ Dustin Johnson, Derek Chiu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

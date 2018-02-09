@@ -86,26 +86,26 @@ classifiers.</p>
     
 
     <pre class="usage"><span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
 <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+  <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for pamrtrained</span>
 <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+  <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for knn</span>
 <span class='fu'>prediction</span>(<span class='no'>mod</span>, <span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>train.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod</th>
-      <td><p>model object from <code><a href='classification.html'>classification</a></code></p></td>
+      <td><p>model object from <code><a href='classification.html'>classification()</a></code></p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -117,8 +117,8 @@ classifiers.</p>
     </tr>
     <tr>
       <th>test.id</th>
-      <td><p>integer vector of indices for test set. If <code>NULL</code>
-(default), all samples are used.</p></td>
+      <td><p>integer vector of indices for test set. If <code>NULL</code> (default),
+all samples are used.</p></td>
     </tr>
     <tr>
       <th>train.id</th>
@@ -127,15 +127,15 @@ classifiers.</p>
     </tr>
     <tr>
       <th>threshold</th>
-      <td><p>a numeric indicating the lowest maximum class probability
-below which a sample will be unclassified.</p></td>
+      <td><p>a number between 0 and 1 indicating the lowest maximum class
+probability below which a sample will be unclassified.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>logical; if <code>TRUE</code>, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.</p></td>
+      <td><p>logical; if <code>TRUE</code>, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -146,18 +146,18 @@ used in corresponding training sets.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A factor of predicted classes with labels in the same order as true
-  class. If <code>mod</code> is a <code>"pamr"</code> classifier, the return value is a
-  list of length 2: the predicted class, and the threshold value.</p>
+class. If <code>mod</code> is a <code>"pamr"</code> classifier, the return value is a list of
+length 2: the predicted class, and the threshold value.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>knn</code> and <code>pamr</code> prediction methods use the <code>train.id</code> and
-<code>class</code> arguments for additional modelling steps before prediction. For
-<code>knn</code>, the modelling and prediction are performed in one step, so the
-function takes in both training and test set identifiers. For <code>pamr</code>,
-the classifier needs to be cross-validated on the training set in order to
-find a shrinkage threshold with the minimum CV error to use in prediction on
-the test set. The other prediction methods make use of the default method.</p>
+    <p>The <code>knn</code> and <code>pamr</code> prediction methods use the <code>train.id</code> and <code>class</code>
+arguments for additional modelling steps before prediction. For <code>knn</code>, the
+modelling and prediction are performed in one step, so the function takes in
+both training and test set identifiers. For <code>pamr</code>, the classifier needs to
+be cross-validated on the training set in order to find a shrinkage threshold
+with the minimum CV error to use in prediction on the test set. The other
+prediction methods make use of the default method.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -200,7 +200,7 @@ Derek Chiu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

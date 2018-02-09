@@ -106,20 +106,20 @@ learning. See <strong>Algorithms</strong> section for possible options.</p></td>
     </tr>
     <tr>
       <th>rfe</th>
-      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a
-feature selection method for "lda", "rf", and "svm" algorithms.</p></td>
+      <td><p>logical; if <code>TRUE</code>, run Recursive Feature Elimination as a feature
+selection method for "lda", "rf", and "svm" algorithms.</p></td>
     </tr>
     <tr>
       <th>ova</th>
-      <td><p>logical; if <code>TRUE</code>, use the One-Vs-All approach for the
-<code>knn</code> algorithm.</p></td>
+      <td><p>logical; if <code>TRUE</code>, use the One-Vs-All approach for the <code>knn</code>
+algorithm.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>logical; if <code>TRUE</code>, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.</p></td>
+      <td><p>logical; if <code>TRUE</code>, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.</p></td>
     </tr>
     <tr>
       <th>sizes</th>
@@ -135,20 +135,18 @@ used in corresponding training sets.</p></td>
 
     <p>Some of the classification algorithms implemented use pre-defined values that
 specify settings and options while others need to tune hyperparameters.
-<code>"multinom"</code> and <code>"nnet"</code> use a maximum number of weights of 2000,
-in case <code>data</code> is high dimensional and classification is time-consuming.
-<code>"nnet"</code> also tunes the number of nodes (1-5) in the hidden layer.
-<code>"pam"</code> considers 100 thresholds when training, and uses a uniform
-prior. <code>"adaboost"</code> calls <code><a href='http://www.rdocumentation.org/packages/maboost/topics/maboost'>maboost</a></code> instead of
-<code><a href='http://www.rdocumentation.org/packages/adabag/topics/boosting'>boosting</a></code> for faster performance. As a result, we use
-the <code>"entrop"</code> option, which uses the KL-divergence method and mimics
-adaboost.</p>
-<p>When <code>alg = "knn"</code>, the return value is <code>NULL</code> because
-<code><a href='http://www.rdocumentation.org/packages/class/topics/knn'>knn</a></code> does not output an intermediate model object. The
-modelling and prediction is performed in one step. However, the class
-attribute "knn" is still assigned to the result in order to call the
-respective <code><a href='prediction.html'>prediction</a></code> method. An additional class "ova" is
-added if <code>ova = TRUE</code>.</p>
+<code>"multinom"</code> and <code>"nnet"</code> use a maximum number of weights of 2000, in case
+<code>data</code> is high dimensional and classification is time-consuming. <code>"nnet"</code>
+also tunes the number of nodes (1-5) in the hidden layer. <code>"pam"</code> considers
+100 thresholds when training, and uses a uniform prior. <code>"adaboost"</code> calls
+<code><a href='http://www.rdocumentation.org/packages/maboost/topics/maboost'>maboost::maboost()</a></code> instead of <code><a href='http://www.rdocumentation.org/packages/adabag/topics/boosting'>adabag::boosting()</a></code> for faster performance.
+As a result, we use the <code>"entrop"</code> option, which uses the KL-divergence
+method and mimics adaboost.</p>
+<p>When <code>alg = "knn"</code>, the return value is <code>NULL</code> because <code><a href='http://www.rdocumentation.org/packages/class/topics/knn'>class::knn()</a></code> does
+not output an intermediate model object. The modelling and prediction is
+performed in one step. However, the class attribute "knn" is still assigned
+to the result in order to call the respective <code><a href='prediction.html'>prediction()</a></code> method. An
+additional class "ova" is added if <code>ova = TRUE</code>.</p>
     
     <h2 class="hasAnchor" id="algorithms"><a class="anchor" href="#algorithms"></a>Algorithms</h2>
 
@@ -218,7 +216,7 @@ Derek Chiu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

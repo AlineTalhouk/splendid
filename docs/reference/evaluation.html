@@ -100,16 +100,15 @@ measure for classification problems.</p>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>logical; if <code>TRUE</code> a discrimination plot and reliability
-plot are shown for each class</p></td>
+      <td><p>logical; if <code>TRUE</code> a discrimination plot and reliability plot are
+shown for each class</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with one element per evaluation measure except for the
-  <code>cs</code> element, which returns a list of class-specific evaluation
-  measures.</p>
+    <p>A list with one element per evaluation measure except for the <code>cs</code>
+element, which returns a list of class-specific evaluation measures.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -129,38 +128,38 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
 <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"xgboost"</span>)
 <span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='no'>test.id</span>)
 <span class='fu'>evaluation</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>)</div><div class='output co'>#&gt; $logloss
-#&gt; [1] 0.678389
+#&gt; [1] 0.9650857
 #&gt; 
 #&gt; $auc
-#&gt; [1] 0.9886179
+#&gt; [1] 0.912119
 #&gt; 
 #&gt; $accuracy
-#&gt; [1] 0.9358974
+#&gt; [1] 0.7089947
 #&gt; 
 #&gt; $macro_ppv
-#&gt; [1] 0.9491304
+#&gt; [1] 0.7067206
 #&gt; 
 #&gt; $macro_sensitivity
-#&gt; [1] 0.9298128
+#&gt; [1] 0.7132884
 #&gt; 
 #&gt; $macro_f1
-#&gt; [1] 0.9345154
+#&gt; [1] 0.7065146
 #&gt; 
 #&gt; $mcc
-#&gt; [1] 0.9163398
+#&gt; [1] 0.6136055
 #&gt; 
 #&gt; $micro_mcc
-#&gt; [1] 0.9145299
+#&gt; [1] 0.6119929
 #&gt; 
 #&gt; $cs
 #&gt;         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 
-#&gt;          1.0000000          1.0000000          0.9565217          0.8400000 
+#&gt;          0.7142857          0.5555556          0.7843137          0.7727273 
 #&gt; sensitivity.DIF.C4 sensitivity.IMM.C2 sensitivity.MES.C1 sensitivity.PRO.C5 
-#&gt;          0.7647059          1.0000000          1.0000000          0.9545455 
+#&gt;          0.6140351          0.6756757          0.8695652          0.6938776 
 #&gt;          f1.DIF.C4          f1.IMM.C2          f1.MES.C1          f1.PRO.C5 
-#&gt;          0.8666667          1.0000000          0.9777778          0.8936170 
+#&gt;          0.6603774          0.6097561          0.8247423          0.7311828 
 #&gt;         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 
-#&gt;          0.8471405          1.0000000          0.9692476          0.8515607 
+#&gt;          0.5319909          0.5068871          0.7663011          0.6454394 
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -188,7 +187,7 @@ Derek Chiu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

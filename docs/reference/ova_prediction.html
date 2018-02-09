@@ -84,7 +84,7 @@
     <p>One-Vs-All prediction approach</p>
     
 
-    <pre class="usage"><span class='fu'>ova_prediction</span>(<span class='no'>fits</span>, <span class='no'>data</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>class</span>, <span class='no'>train.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+    <pre class="usage"><span class='fu'>ova_prediction</span>(<span class='no'>fits</span>, <span class='no'>data</span>, <span class='kw'>test.id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>class</span>, <span class='no'>train.id</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -100,8 +100,8 @@
     </tr>
     <tr>
       <th>test.id</th>
-      <td><p>integer vector of indices for test set. If <code>NULL</code>
-(default), all samples are used.</p></td>
+      <td><p>integer vector of indices for test set. If <code>NULL</code> (default),
+all samples are used.</p></td>
     </tr>
     <tr>
       <th>class</th>
@@ -114,15 +114,15 @@
     </tr>
     <tr>
       <th>threshold</th>
-      <td><p>a numeric indicating the lowest maximum class probability
-below which a sample will be unclassified.</p></td>
+      <td><p>a number between 0 and 1 indicating the lowest maximum class
+probability below which a sample will be unclassified.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>logical; if <code>TRUE</code>, the training sets are
-standardized on features to have mean zero and unit variance. The test
-sets are standardized using the vectors of centers and standard deviations
-used in corresponding training sets.</p></td>
+      <td><p>logical; if <code>TRUE</code>, the training sets are standardized on
+features to have mean zero and unit variance. The test sets are
+standardized using the vectors of centers and standard deviations used in
+corresponding training sets.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -157,7 +157,7 @@ Dustin Johnson, Derek Chiu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
