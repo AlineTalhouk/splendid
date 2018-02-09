@@ -52,8 +52,8 @@
 #'   corresponding training sets.
 #' @param plus logical; if `TRUE` (default), the .632+ estimtor is calculated.
 #'   Otherwise, the .632 estimator is calculated.
-#' @param threshold a numeric indicating the lowest maximum class probability
-#'   below which a sample will be unclassified.
+#' @param threshold a number between 0 and 1 indicating the lowest maximum class
+#'   probability below which a sample will be unclassified.
 #' @param top the number of highest-performing algorithms to retain for ensemble
 #' @param sequential logical; if `TRUE`, a sequential model is fit on the
 #'   algorithms that had the best performance with one-vs-all classification.
@@ -85,7 +85,7 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
-                     standardize = FALSE, plus = TRUE, threshold = 0.5, top = 3,
+                     standardize = FALSE, plus = TRUE, threshold = 0, top = 3,
                      sequential = FALSE, ...) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()

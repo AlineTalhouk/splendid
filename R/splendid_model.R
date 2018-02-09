@@ -9,7 +9,7 @@
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, plus = TRUE, threshold = 0.5,
+                           standardize = FALSE, plus = TRUE, threshold = 0,
                            ...) {
 
   # Classification algorithms to use and their model function calls
