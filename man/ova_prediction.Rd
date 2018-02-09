@@ -4,7 +4,7 @@
 \alias{ova_prediction}
 \title{One-Vs-All prediction approach}
 \usage{
-ova_prediction(fits, data, test.id = NULL, class, train.id, threshold = 0.5,
+ova_prediction(fits, data, test.id = NULL, class, train.id, threshold = 0,
   standardize = FALSE, ...)
 }
 \arguments{
@@ -20,8 +20,8 @@ all samples are used.}
 \item{train.id}{integer vector of indices for training set. If \code{NULL}
 (default), all samples are used.}
 
-\item{threshold}{a numeric indicating the lowest maximum class probability
-below which a sample will be unclassified.}
+\item{threshold}{a number between 0 and 1 indicating the lowest maximum class
+probability below which a sample will be unclassified.}
 
 \item{standardize}{logical; if \code{TRUE}, the training sets are standardized on
 features to have mean zero and unit variance. The test sets are

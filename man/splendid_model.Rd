@@ -6,7 +6,7 @@
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0.5, ...)
+  plus = TRUE, threshold = 0, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -40,8 +40,8 @@ corresponding training sets.}
 \item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is calculated.
 Otherwise, the .632 estimator is calculated.}
 
-\item{threshold}{a numeric indicating the lowest maximum class probability
-below which a sample will be unclassified.}
+\item{threshold}{a number between 0 and 1 indicating the lowest maximum class
+probability below which a sample will be unclassified.}
 
 \item{...}{additional arguments to \code{splendid_model}}
 }
