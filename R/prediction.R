@@ -126,7 +126,7 @@ prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
                                  standardize = FALSE, ...) {
   p_args <- dplyr::lst(mod, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
-                        type = "class", ...)
+                        type = "class", ...) %>% factor()
   prob <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         type = "response", ...)[, , 1]
   prediction_output(pred, prob, class, test.id, threshold)
