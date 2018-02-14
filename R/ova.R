@@ -36,6 +36,6 @@ ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
     purrr::map(~ .x[, colnames(.x) != "0"]) %>%
     as.data.frame() %>%
     sum_to_one()
-  pred <- colnames(prob)[max.col(prob)]
+  pred <- factor(colnames(prob)[max.col(prob)])
   prediction_output(pred, prob, class, test.id, threshold)
 }
