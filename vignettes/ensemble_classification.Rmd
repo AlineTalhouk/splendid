@@ -200,7 +200,7 @@ After obtaining the list of top classifiers for each bootstrap replicate, we sor
 ## References
 
 1. Ahdesmäki, Miika, and Korbinian Strimmer. "Feature selection in omics prediction problems using cat scores and false nondiscovery rate control." *The Annals of Applied Statistics* 4.1 (2010): 503-519.
-2. https://cran.r-project.org/web/packages/glmnet/vignettes/glmnet_beta.pdf
+2. https://web.stanford.edu/~hastie/glmnet/glmnet_beta.html
 3. https://topepo.github.io/caret/recursive-feature-elimination.html
 4. Pihur, Vasyl, Susmita Datta, and Somnath Datta. "RankAggreg, an R package for weighted rank aggregation." *BMC bioinformatics* 10.1 (2009): 62.
 5. Efron, Bradley and Tibshirani, Robert (1997), "Improvements on Cross-Validation: The .632+ Bootstrap Method," Journal of American Statistical Association, 92, 438, 548-560.
