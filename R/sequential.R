@@ -115,7 +115,7 @@ sequential_rank <- function(sm, boxplot) {
     dplyr::group_by(class, model) %>%
     dplyr::summarise(metric = mean(value)) %>%
     dplyr::group_by(class) %>%
-    dplyr::filter(metric == max(metric)) %>%
+    dplyr::summarize(model = model[which.max(metric)], metric = max(metric)) %>%
     dplyr::arrange(desc(metric)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
     dplyr::select(-metric)
