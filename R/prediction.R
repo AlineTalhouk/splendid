@@ -220,12 +220,12 @@ prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
     if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
   }
 
-  kdist <- knnflex::knn.dist(dat)
+  kdist <- knn.dist(dat)
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),
                   y = factor(class[train.id]), dist.matrix = kdist, k = 5)
-  pred <- unname(factor(purrr::invoke(knnflex::knn.predict, kparams)))
-  prob <- t(purrr::invoke(knnflex::knn.probability, kparams))
+  pred <- unname(factor(purrr::invoke(knn.predict, kparams)))
+  prob <- t(purrr::invoke(knn.probability, kparams))
   prediction_output(pred, prob, class, test.id, threshold)
 }
 

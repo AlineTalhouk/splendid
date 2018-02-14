@@ -30,7 +30,6 @@ Imports:
     grDevices,
     HandTill2001,
     kernlab,
-    knnflex,
     maboost,
     magrittr,
     MASS,
@@ -52,8 +51,6 @@ Suggests:
     rmarkdown,
     testthat
 VignetteBuilder: knitr
-Remotes: 
-    Dasonk/knnflex
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
