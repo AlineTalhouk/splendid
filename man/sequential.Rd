@@ -46,11 +46,11 @@ are better for evaluation than other metrics such as accuracy, precision, and
 recall.
 }
 \examples{
-data(hgsc)
-class <- attr(hgsc, "class.true")
-sm <- splendid_model(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
-st <- sequential_train(sm, hgsc, class)
-sp <- sequential_pred(st, sm, hgsc, class)
+dat <- iris[, 1:4]
+class <- iris$Species
+sm <- splendid_model(dat, class, n = 2, algorithms = c("lda", "xgboost"))
+st <- sequential_train(sm, dat, class)
+sp <- sequential_pred(st, sm, dat, class)
 }
 \author{
 Dustin Johnson, Derek Chiu

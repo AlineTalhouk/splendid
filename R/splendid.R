@@ -80,9 +80,11 @@
 #' @author Derek Chiu
 #' @export
 #' @examples
+#' \dontrun{
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
+#' }
 splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE, plus = TRUE, threshold = 0, top = 3,

@@ -24,11 +24,11 @@
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 #' @examples
-#' data(hgsc)
-#' class <- attr(hgsc, "class.true")
-#' sm <- splendid_model(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
-#' st <- sequential_train(sm, hgsc, class)
-#' sp <- sequential_pred(st, sm, hgsc, class)
+#' dat <- iris[, 1:4]
+#' class <- iris$Species
+#' sm <- splendid_model(dat, class, n = 2, algorithms = c("lda", "xgboost"))
+#' st <- sequential_train(sm, dat, class)
+#' sp <- sequential_pred(st, sm, dat, class)
 sequential_train <- function(sm, data, class, boxplot = FALSE) {
   # prepare data and setup storage object(s)
   model_rank <- sequential_rank(sm[["evals"]], boxplot = boxplot)

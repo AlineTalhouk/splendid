@@ -24,6 +24,7 @@
 #'
 #' @export
 #' @examples
+#' \dontrun{
 #' data(hgsc)
 #' class <- as.factor(attr(hgsc, "class.true"))
 #' set.seed(1)
@@ -34,6 +35,7 @@
 #' prediction, data = hgsc, class = class)
 #' error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = FALSE)
 #' error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = TRUE)
+#' }
 error_632 <- function(data, class, algorithm, pred, test.id, train.id,
                       plus = TRUE) {
   err <- error_training(data, class, algorithm, plus)

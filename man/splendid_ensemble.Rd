@@ -28,8 +28,8 @@ algorithms that had the best performance with one-vs-all classification.}
 Combine classification models into an ensemble
 }
 \examples{
-data(hgsc)
-class <- attr(hgsc, "class.true")
-sm <- splendid_model(hgsc, class, n = 3, algorithms = c("xgboost", "lda"))
-se <- splendid_ensemble(sm, hgsc, class)
+dat <- iris[, 1:4]
+class <- iris$Species
+sm <- splendid_model(dat, class, n = 3, algorithms = c("xgboost", "lda"))
+se <- splendid_ensemble(sm, dat, class)
 }

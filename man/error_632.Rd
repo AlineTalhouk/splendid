@@ -36,6 +36,7 @@ is run by default.
 This function is intended to be used internally by \code{splendid_model}.
 }
 \examples{
+\dontrun{
 data(hgsc)
 class <- as.factor(attr(hgsc, "class.true"))
 set.seed(1)
@@ -46,6 +47,7 @@ pred <- purrr::pmap(list(mod = mod, test.id = test.id, train.id = train.id),
 prediction, data = hgsc, class = class)
 error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = FALSE)
 error_632(hgsc, class, "xgboost", pred, test.id, train.id, plus = TRUE)
+}
 }
 \references{
 Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. The

@@ -113,9 +113,11 @@ Correlation Coefficient (MCC).
 }
 
 \examples{
+\dontrun{
 data(hgsc)
 class <- attr(hgsc, "class.true")
 sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
+}
 }
 \author{
 Derek Chiu
