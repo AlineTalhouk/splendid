@@ -39,12 +39,12 @@ str(sl_result, max.level = 2)
 #>   .. ..- attr(*, "err_632plus")= num 0.447
 #>   ..$ xgboost:'data.frame':  24 obs. of  1 variable:
 #>   .. ..- attr(*, "err_632plus")= num 0.885
-#>  $ bests        : Named chr "xgboost"
+#>  $ bests        : Named chr "rf"
 #>   ..- attr(*, "names")= chr "1"
-#>  $ ensemble_algs: chr "xgboost"
+#>  $ ensemble_algs: chr "rf"
 #>  $ ensemble_mods:List of 1
-#>   ..$ :List of 6
-#>   .. ..- attr(*, "class")= chr "xgb.Booster"
+#>   ..$ :List of 18
+#>   .. ..- attr(*, "class")= chr "randomForest"
 #>  $ seq_mods     : NULL
 #>  $ seq_preds    : NULL
 ```
