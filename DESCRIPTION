@@ -6,7 +6,7 @@ Date: 2018-02-14
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"),
-    person("Dustin", "Johnson", , "dustin.bwj@gmail.com", "aut")
+    person("Dustin", "Johnson", , "djohnson@bccrc.ca", "aut")
     )
 Description: Provides a bootstrapping and ensemble framework for supervised
     learning analyses using multiclass classification algorithms for modelling,
