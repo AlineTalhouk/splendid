@@ -3,6 +3,11 @@
 splendid
 ========
 
+[![Travis build status](https://travis-ci.org/AlineTalhouk/splendid.svg?branch=master)](https://travis-ci.org/AlineTalhouk/splendid) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github//AlineTalhouk/splendid/?branch=master&svg=true)](https://ci.appveyor.com/project/AlineTalhouk/splendid) [![Coverage status](https://codecov.io/gh/AlineTalhouk/splendid/branch/master/graph/badge.svg)](https://codecov.io/github/AlineTalhouk/splendid?branch=master)
+
+Overview
+--------
+
 The goal of `splendid` is to provide a supervised learning pipeline that implements major components of a multiclass classification problem. We guide the user through fitting a classifier, obtaining predictions, and ultimately evaluating performance using metrics and visualizations.
 
 Installation

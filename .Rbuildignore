@@ -1,8 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^README\.md$
 ^data-raw$
-^_pkgdown\.yaml$
-^docs$
+^README\.md$
 ^README\.Rmd$
 ^README-.*\.png$
+^\.travis\.yml$
+^appveyor\.yml$
+^codecov\.yml$
+^_pkgdown\.yaml$
+^docs$
