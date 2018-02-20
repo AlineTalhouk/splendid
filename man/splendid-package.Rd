@@ -28,7 +28,7 @@ Useful links:
 Authors:
 \itemize{
   \item Aline Talhouk \email{atalhouk@bccrc.ca}
-  \item Dustin Johnson \email{dustin.bwj@gmail.com}
+  \item Dustin Johnson \email{djohnson@bccrc.ca}
 }
 
 }
