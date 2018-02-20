@@ -44,11 +44,12 @@ Imports:
     tidyr,
     xgboost
 Suggests: 
+    adabag,
+    covr,
     DiagrammeR,
     knitr,
     rmarkdown,
-    testthat,
-    covr
+    testthat
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
