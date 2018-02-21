@@ -19,14 +19,21 @@ reference:
   contents:
   - classification
   - prediction
+  - split_data
   - evaluation
-  - matches("ova")
-  - matches("sequential")
-  - matches("splendid")
+  - ends_with("_plot")
+  - starts_with("ova_")
+  - starts_with("sequential_")
+  - splendid
+  - splendid_model
+  - starts_with("boot_")
+  - splendid_ensemble
   - error_632
+  - splendid_convert
+  - dummify
 - title: Data
   contents:
   - hgsc
-- title: Package Doc
+- title: Package Documentation
   contents:
-  - matches("splendid-package")
+  - splendid-package
