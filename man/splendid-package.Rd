@@ -18,6 +18,7 @@ rate.
 Useful links:
 \itemize{
   \item \url{https://github.com/AlineTalhouk/splendid}
+  \item \url{https://alinetalhouk.github.io/splendid/}
   \item Report bugs at \url{https://github.com/AlineTalhouk/splendid/issues}
 }
 
