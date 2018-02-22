@@ -21,7 +21,7 @@ options.}
 
 \item{train.id}{vector of training set indices for each bootstrap replicate}
 
-\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is calculated.
+\item{plus}{logical; if \code{TRUE} (default), the .632+ estimator is calculated.
 Otherwise, the .632 estimator is calculated.}
 }
 \value{
@@ -29,7 +29,7 @@ the .632(+) log loss error rate
 }
 \description{
 The .632 estimator for the log loss error rate is calculated for a given
-classifer. The .632+ estimator is an extension that reduces overfitting and
+classifier. The .632+ estimator is an extension that reduces overfitting and
 is run by default.
 }
 \details{

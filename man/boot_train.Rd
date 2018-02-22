@@ -2,7 +2,7 @@
 % Please edit documentation in R/splendid_model.R
 \name{boot_train}
 \alias{boot_train}
-\title{Recurrsively create training set indices ensuring class representation
+\title{Recursively create training set indices ensuring class representation
 in every bootstrap resample}
 \usage{
 boot_train(data, class, n)
@@ -15,6 +15,6 @@ boot_train(data, class, n)
 \item{n}{number of bootstrap replicates to generate}
 }
 \description{
-Recurrsively create training set indices ensuring class representation
+Recursively create training set indices ensuring class representation
 in every bootstrap resample
 }

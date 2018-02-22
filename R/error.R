@@ -1,7 +1,7 @@
 #' .632(+) Estimator for log loss error rate
 #'
 #' The .632 estimator for the log loss error rate is calculated for a given
-#' classifer. The .632+ estimator is an extension that reduces overfitting and
+#' classifier. The .632+ estimator is an extension that reduces overfitting and
 #' is run by default.
 #'
 #' This function is intended to be used internally by `splendid_model`.

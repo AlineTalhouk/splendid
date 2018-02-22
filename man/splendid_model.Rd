@@ -37,7 +37,7 @@ features to have mean zero and unit variance. The test sets are
 standardized using the vectors of centers and standard deviations used in
 corresponding training sets.}
 
-\item{plus}{logical; if \code{TRUE} (default), the .632+ estimtor is calculated.
+\item{plus}{logical; if \code{TRUE} (default), the .632+ estimator is calculated.
 Otherwise, the .632 estimator is calculated.}
 
 \item{threshold}{a number between 0 and 1 indicating the lowest maximum class

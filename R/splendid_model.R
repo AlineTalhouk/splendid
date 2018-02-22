@@ -67,7 +67,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   dplyr::lst(models, preds, evals)
 }
 
-#' Recurrsively create training set indices ensuring class representation
+#' Recursively create training set indices ensuring class representation
 #' in every bootstrap resample
 #' @inheritParams splendid
 #' @export

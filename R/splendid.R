@@ -50,7 +50,7 @@
 #'   features to have mean zero and unit variance. The test sets are
 #'   standardized using the vectors of centers and standard deviations used in
 #'   corresponding training sets.
-#' @param plus logical; if `TRUE` (default), the .632+ estimtor is calculated.
+#' @param plus logical; if `TRUE` (default), the .632+ estimator is calculated.
 #'   Otherwise, the .632 estimator is calculated.
 #' @param threshold a number between 0 and 1 indicating the lowest maximum class
 #'   probability below which a sample will be unclassified.
