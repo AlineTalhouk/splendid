@@ -35,7 +35,7 @@
 #' class <- attr(hgsc, "class.true")
 #' classification(hgsc, class, "rf")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, sizes = NULL) {
+                           standardize = FALSE, sizes = NULL, trees = 500) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- rfe_sizes(sizes, class)
@@ -53,7 +53,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   switch(algorithms,
          pam = pam_model(data, class),
          svm = rfe_model(data, class, "svm", rfe, sizes),
-         rf = rfe_model(data, class, "rf", rfe, sizes),
+         rf = rfe_model(data, class, "rf", rfe, sizes, trees),
          lda = rfe_model(data, class, "lda", rfe, sizes),
          slda = sda_model(data, class, "slda"),
          sdda = sda_model(data, class, "sdda"),
@@ -63,7 +63,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
          mlr_nnet = mlr_model(data, class, "mlr_nnet"),
          nnet = nnet_model(data, class),
          nbayes = nbayes_model(data, class),
-         adaboost = boost_model(data, class, "adaboost"),
+         adaboost = boost_model(data, class, "adaboost", trees),
          xgboost = boost_model(data, class, "xgboost"),
          knn = knn_model(class, "knn", ova)
   )
@@ -89,7 +89,7 @@ pam_prior <- function(class) {
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes) {
+rfe_model <- function(data, class, algorithms, rfe, sizes, trees) {
   if (rfe) {
     funcs <- switch(algorithms,
                     lda = caret::ldaFuncs,
@@ -109,7 +109,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes) {
   } else {
     switch(algorithms,
            lda = suppressWarnings(MASS::lda(data, grouping = class)),
-           rf =  randomForest::randomForest(data, y = class),
+           rf =  randomForest::randomForest(data, y = class, ntree = trees),
            svm = svm_model(data, class, names(data))
     )
   }
@@ -179,9 +179,10 @@ nbayes_model <- function(data, class) {
 
 #' boosting models
 #' @noRd
-boost_model <- function(data, class, algorithms) {
+boost_model <- function(data, class, algorithms, trees) {
   switch(algorithms,
-         adaboost = sink_output(maboost::maboost(data, class, breg = "entrop")),
+         adaboost = sink_output(maboost::maboost(
+           x = data, y = class, breg = "entrop", iter = trees)),
          xgboost = xgboost::xgb.train(
            params = list("objective" = "multi:softprob",
                          "eval_metric" = "mlogloss",

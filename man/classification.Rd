@@ -5,7 +5,7 @@
 \title{Multiclass classification}
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sizes = NULL)
+  standardize = FALSE, sizes = NULL, trees = 500)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -27,6 +27,9 @@ standardized using the vectors of centers and standard deviations used in
 corresponding training sets.}
 
 \item{sizes}{the range of sizes of features to test RFE algorithm}
+
+\item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
+"adaboost"}
 }
 \value{
 The model object from running the classification \code{algorithm}

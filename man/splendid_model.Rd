@@ -6,7 +6,7 @@
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0, ...)
+  plus = TRUE, threshold = 0, trees = 500, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -42,6 +42,9 @@ Otherwise, the .632 estimator is calculated.}
 
 \item{threshold}{a number between 0 and 1 indicating the lowest maximum class
 probability below which a sample will be unclassified.}
+
+\item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
+"adaboost"}
 
 \item{...}{additional arguments to \code{splendid_model}}
 }

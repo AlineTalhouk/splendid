@@ -10,7 +10,7 @@
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, plus = TRUE, threshold = 0,
-                           ...) {
+                           trees = 500, ...) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -25,7 +25,8 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   test.id <- boot_test(train.id = train.id)
 
   # Store lists of common arguments in model and pred operations
-  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe, standardize)
+  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe, standardize,
+                       trees)
   p_args <- dplyr::lst(data, class, test.id, train.id, threshold, standardize)
 
   # Apply training sets to models and predict on the test sets
@@ -92,10 +93,10 @@ boot_test <- function(train.id) {
 #' Train models based on function f
 #' @noRd
 sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
-                   standardize) {
+                   standardize, trees) {
   mod <- algorithms %>% purrr::map(
     ~ purrr::map(train.id, function(id)
-      f(data[id, ], class[id], .x, rfe, ova, standardize)))
+      f(data[id, ], class[id], .x, rfe, ova, standardize, trees)))
   mod
 }
 

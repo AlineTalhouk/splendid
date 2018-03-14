@@ -5,7 +5,7 @@
 \title{One-Vs-All training approach}
 \usage{
 ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE)
+  standardize = FALSE, trees = 500)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -25,6 +25,9 @@ algorithm.}
 features to have mean zero and unit variance. The test sets are
 standardized using the vectors of centers and standard deviations used in
 corresponding training sets.}
+
+\item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
+"adaboost"}
 }
 \value{
 list of binary classifier fits on each class
