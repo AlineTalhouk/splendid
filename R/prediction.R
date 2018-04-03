@@ -178,6 +178,21 @@ prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
+prediction.boosting <- function(mod, data, class, test.id = NULL,
+                                train.id = NULL, threshold = 0,
+                                standardize = FALSE, ...) {
+  names(data) <- make.names(names(data))
+  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
+  p <- purrr::invoke(prediction.default, p_args, ...)
+  pred <- factor(p$class)
+  prob <- p$prob %>% magrittr::set_rownames(rownames(data[test.id, ]))
+  if (ncol(prob) == nlevels(class)) {
+    colnames(prob) <- levels(class)
+  }
+  prediction_output(pred, prob, class, test.id, threshold)
+}
+
+#' @export
 prediction.maboost <- function(mod, data, class, test.id = NULL,
                                train.id = NULL, threshold = 0,
                                standardize = FALSE, ...) {
@@ -193,7 +208,7 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
 prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
-  class <- factor(class)
+  class <- factor(class) # TO REMOVE
   p_args <- dplyr::lst(mod, test.id, train.id, standardize)
   prob <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         reshape = TRUE, ...) %>%

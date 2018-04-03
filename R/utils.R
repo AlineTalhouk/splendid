@@ -3,11 +3,11 @@ globalVariables(".")
 
 # Algorithm functions and classes
 ALG.NAME <- c("pam", "svm", "rf", "lda", "slda", "sdda", "mlr_glm", "mlr_lasso",
-              "mlr_ridge", "mlr_nnet", "nnet", "nbayes", "adaboost", "xgboost",
-              "knn")
+              "mlr_ridge", "mlr_nnet", "nnet", "nbayes", "adaboost",
+              "adaboost_m1", "xgboost", "knn")
 ALG.CLASS <- c("pamrtrained", "rfe", "svm", "randomForest", "lda", "sda",
                "cv.glmnet", "glmnet", "multinom", "nnet.formula", "naiveBayes",
-               "maboost", "xgb.Booster", "knn")
+               "maboost", "boosting", "xgb.Booster", "knn")
 
 # Algorithms that need all continuous predictors
 ALG.CONT <- c("lda", "mlr_glm", "mlr_lasso", "mlr_ridge")

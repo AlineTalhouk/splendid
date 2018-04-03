@@ -55,6 +55,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
          svm = rfe_model(data, class, "svm", rfe, sizes),
          rf = rfe_model(data, class, "rf", rfe, sizes, trees),
          lda = rfe_model(data, class, "lda", rfe, sizes),
+         adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes),
          slda = sda_model(data, class, "slda"),
          sdda = sda_model(data, class, "sdda"),
          mlr_glm = mlr_model(data, class, "mlr_glm"),
@@ -90,29 +91,64 @@ pam_prior <- function(class) {
 #' RFE model
 #' @noRd
 rfe_model <- function(data, class, algorithms, rfe, sizes, trees) {
+  if (algorithms == "adaboost_m1") names(data) <- make.names(names(data))
   if (rfe) {
-    funcs <- switch(algorithms,
-                    lda = caret::ldaFuncs,
-                    rf = caret::rfFuncs,
-                    svm = caret::caretFuncs)
-    method <- if (algorithms == "svm") "svmRadial" else NULL
-    mod <- suppressPackageStartupMessages(suppressWarnings(
-      caret::rfe(data, class, sizes = sizes, method = method,
-                 rfeControl = caret::rfeControl(functions = funcs,
-                                                method = "cv",
-                                                number = 2))))
-    if (algorithms != "svm") {
-      mod
-    } else {
-      svm_model(data, class, mod[["optVariables"]])
-    }
+    method <- switch(algorithms,
+                     lda = "lda",
+                     rf = "rf",
+                     svm = "svmRadial",
+                     adaboost_m1 = "AdaBoost.M1")
+    grids <- switch(algorithms,
+                    lda = NULL,
+                    rf = data.frame(mtry = floor(sqrt(ncol(data)))),
+                    svm = NULL,
+                    adaboost_m1 = data.frame(mfinal = 3,
+                                             maxdepth = 5,
+                                             coeflearn = "Breiman"))
+    rfe_args <- list(
+      x = data,
+      y = class,
+      sizes = sizes,
+      rfeControl = caret::rfeControl(method = "cv", number = 2),
+      trControl = caret::trainControl(method = "none")
+    )
+    mod <- purrr::invoke(caret::rfe, rfe_args, method = method, tuneGrid = grids)
+    # return(mod)
+    # if (algorithms != "svm") {
+    #   mod
+    # } else {
+    #   svm_model(data, class, mod[["optVariables"]])
+    # }
   } else {
     switch(algorithms,
            lda = suppressWarnings(MASS::lda(data, grouping = class)),
            rf =  randomForest::randomForest(data, y = class, ntree = trees),
-           svm = svm_model(data, class, names(data))
-    )
+           svm = svm_model(data, class, names(data)),
+           adaboost_m1 = adabag::boosting(class ~ ., cbind(data, class), mfinal = 3))
   }
+  # if (rfe) {
+  #   funcs <- switch(algorithms,
+  #                   lda = caret::ldaFuncs,
+  #                   rf = caret::rfFuncs,
+  #                   svm = caret::caretFuncs)
+  #   method <- if (algorithms == "svm") "svmRadial" else NULL
+  #   mod <- suppressPackageStartupMessages(suppressWarnings(
+  #     caret::rfe(data, class, sizes = sizes, method = method,
+  #                rfeControl = caret::rfeControl(functions = funcs,
+  #                                               method = "cv",
+  #                                               number = 2))))
+  #   if (algorithms != "svm") {
+  #     mod
+  #   } else {
+  #     svm_model(data, class, mod[["optVariables"]])
+  #   }
+  # } else {
+  #   switch(algorithms,
+  #          lda = suppressWarnings(MASS::lda(data, grouping = class)),
+  #          rf =  randomForest::randomForest(data, y = class, ntree = trees),
+  #          svm = svm_model(data, class, names(data))
+  #   )
+  # }
 }
 
 #' RFE sizes by default are equal to every 25th integer up to one-half of the
