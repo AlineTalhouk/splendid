@@ -110,7 +110,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, trees) {
       y = class,
       sizes = sizes,
       rfeControl = caret::rfeControl(method = "cv", number = 2),
-      trControl = caret::trainControl(method = "none")
+      trControl = caret::trainControl(method = "none", classProbs = TRUE)
     )
     mod <- purrr::invoke(caret::rfe, rfe_args, method = method, tuneGrid = grids)
     # return(mod)
