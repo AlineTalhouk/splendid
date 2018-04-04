@@ -90,65 +90,29 @@ pam_prior <- function(class) {
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes, trees) {
-  if (algorithms == "adaboost_m1") names(data) <- make.names(names(data))
+rfe_model <- function(data, class, algorithms, rfe, sizes, trees, tune) {
+  method <- rfe_method(algorithms)
+  type <- if (tune) "range" else "default"
+  tune_args <- dplyr::lst(class, method, trees, type)
+  if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
   if (rfe) {
-    method <- switch(algorithms,
-                     lda = "lda",
-                     rf = "rf",
-                     svm = "svmRadial",
-                     adaboost_m1 = "AdaBoost.M1")
-    grids <- switch(algorithms,
-                    lda = NULL,
-                    rf = data.frame(mtry = floor(sqrt(ncol(data)))),
-                    svm = NULL,
-                    adaboost_m1 = data.frame(mfinal = 3,
-                                             maxdepth = 5,
-                                             coeflearn = "Breiman"))
-    rfe_args <- list(
-      x = data,
-      y = class,
-      sizes = sizes,
-      rfeControl = caret::rfeControl(method = "cv", number = 2),
-      trControl = caret::trainControl(method = "none", classProbs = TRUE)
+    mod <- suppressWarnings(
+      caret::rfe(
+        x = data,
+        y = class,
+        sizes = sizes,
+        metric = "Accuracy",
+        rfeControl = caret::rfeControl(method = "cv", number = 2),
+        trControl = caret::trainControl(method = "none", classProbs = TRUE),
+        method = method,
+        tuneGrid = param_grids(data, method, type = "default")
+      )
     )
-    mod <- purrr::invoke(caret::rfe, rfe_args, method = method, tuneGrid = grids)
-    # return(mod)
-    # if (algorithms != "svm") {
-    #   mod
-    # } else {
-    #   svm_model(data, class, mod[["optVariables"]])
-    # }
+    data_ov <- data[mod[["optVariables"]]]
+    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
   } else {
-    switch(algorithms,
-           lda = suppressWarnings(MASS::lda(data, grouping = class)),
-           rf =  randomForest::randomForest(data, y = class, ntree = trees),
-           svm = svm_model(data, class, names(data)),
-           adaboost_m1 = adabag::boosting(class ~ ., cbind(data, class), mfinal = 3))
+    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
   }
-  # if (rfe) {
-  #   funcs <- switch(algorithms,
-  #                   lda = caret::ldaFuncs,
-  #                   rf = caret::rfFuncs,
-  #                   svm = caret::caretFuncs)
-  #   method <- if (algorithms == "svm") "svmRadial" else NULL
-  #   mod <- suppressPackageStartupMessages(suppressWarnings(
-  #     caret::rfe(data, class, sizes = sizes, method = method,
-  #                rfeControl = caret::rfeControl(functions = funcs,
-  #                                               method = "cv",
-  #                                               number = 2))))
-  #   if (algorithms != "svm") {
-  #     mod
-  #   } else {
-  #     svm_model(data, class, mod[["optVariables"]])
-  #   }
-  # } else {
-  #   switch(algorithms,
-  #          lda = suppressWarnings(MASS::lda(data, grouping = class)),
-  #          rf =  randomForest::randomForest(data, y = class, ntree = trees),
-  #          svm = svm_model(data, class, names(data))
-  #   )
-  # }
 }
 
 #' RFE sizes by default are equal to every 25th integer up to one-half of the
@@ -164,12 +128,60 @@ rfe_sizes <- function(sizes, class) {
   sizes
 }
 
-#' support vector machine model with tuning
+#' RFE methods
 #' @noRd
-svm_model <- function(data, class, vars) {
-  e1071::best.svm(x = data[, vars], y = class, probability = TRUE,
-                  gamma = 1 / ncol(data) * 2 ^ (0:4), cost = 2 ^ (0:4),
-                  tunecontrol = e1071::tune.control(sampling = "fix"))
+rfe_method <- function(algorithms) {
+  switch(
+    algorithms,
+    lda = "lda",
+    rf = "rf",
+    svm = "svmRadial",
+    adaboost_m1 = "AdaBoost.M1"
+  )
+}
+
+#' Hyperparameter search grids. A single set is used for type "default" whereas
+#' combinations of values are used for type "range"
+#' @noRd
+param_grids <- function(data, method, type = c("default", "range")) {
+  type <- match.arg(type)
+  switch(
+    type,
+    default = switch(
+      method,
+      lda = NULL,
+      rf = data.frame(mtry = floor(sqrt(ncol(data)))),
+      svmRadial = data.frame(sigma = mean(kernlab::sigest(as.matrix(data))[-2]),
+                             C = 1),
+      AdaBoost.M1 = data.frame(mfinal = 3, maxdepth = 5, coeflearn = "Breiman")
+    ),
+    range = switch(
+      method,
+      lda = NULL,
+      rf = data.frame(mtry = (1:5) ^ 2),
+      svmRadial = expand.grid(sigma = 1 / ncol(data) * 2 ^ (0:4),
+                              C = 2 ^ (0:4)),
+      AdaBoost.M1 = expand.grid(
+        mfinal = 1:5,
+        maxdepth = 1:5,
+        coeflearn = c("Breiman", "Freund", "Zhu")
+      )
+    )
+  )
+}
+
+#' Tune models with pre-specified search grids for hyperparameters
+#' @noRd
+tune_model <- function(data, class, method, trees, type) {
+  caret::train(
+    x = data,
+    y = class,
+    method = method,
+    metric = "Accuracy",
+    trControl = caret::trainControl(method = "cv", number = 2),
+    tuneGrid = param_grids(data, method, type = type),
+    ntree = trees
+  )
 }
 
 #' sda model
