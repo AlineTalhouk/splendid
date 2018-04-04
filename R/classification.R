@@ -35,7 +35,8 @@
 #' class <- attr(hgsc, "class.true")
 #' classification(hgsc, class, "rf")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, sizes = NULL, trees = 500) {
+                           standardize = FALSE, sizes = NULL, trees = 500,
+                           tune = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   sizes <- rfe_sizes(sizes, class)
@@ -52,10 +53,10 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   }
   switch(algorithms,
          pam = pam_model(data, class),
-         svm = rfe_model(data, class, "svm", rfe, sizes),
-         rf = rfe_model(data, class, "rf", rfe, sizes, trees),
-         lda = rfe_model(data, class, "lda", rfe, sizes),
-         adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes),
+         svm = rfe_model(data, class, "svm", rfe, sizes, tune = tune),
+         rf = rfe_model(data, class, "rf", rfe, sizes, trees, tune),
+         lda = rfe_model(data, class, "lda", rfe, sizes, tune = tune),
+         adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes, tune = tune),
          slda = sda_model(data, class, "slda"),
          sdda = sda_model(data, class, "sdda"),
          mlr_glm = mlr_model(data, class, "mlr_glm"),
