@@ -81,8 +81,10 @@ prediction.rfe <- function(mod, data, class, test.id = NULL, train.id = NULL,
 #' @export
 prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
                              threshold = 0, standardize = FALSE, ...) {
+  opt_vars <- head(names(mod[["trainingData"]]), -1)
+  if (mod[["method"]] == "AdaBoost.M1") names(data) <- make.names(names(data))
   p_args <- dplyr::lst(mod, test.id, train.id, standardize,
-                       data = data[head(names(mod[["trainingData"]]), -1)])
+                       data = data[opt_vars])
   pred <- purrr::invoke(prediction.default, p_args, type = "raw")
   prob <- purrr::invoke(prediction.default, p_args, type = "prob")
   prediction_output(pred, prob, class, test.id, threshold)
