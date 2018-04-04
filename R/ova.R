@@ -7,11 +7,10 @@
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
                                ova = FALSE, standardize = FALSE, trees = 500,
                                tune = FALSE) {
-  fits <- class %>%
+  ova_args <- dplyr::lst(data, algorithms, rfe, ova, standardize, trees, tune)
+  class %>%
     binarize() %>%
-    purrr::map(classification, data = data, algorithms = algorithms, rfe = rfe,
-               ova = ova, standardize = standardize, trees = trees, tune = tune)
-  fits
+    purrr::map(~ purrr::invoke(classification, ova_args, class = .))
 }
 
 #' One-Vs-All prediction approach
