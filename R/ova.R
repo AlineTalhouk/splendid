@@ -5,11 +5,12 @@
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
-                               ova = FALSE, standardize = FALSE, trees = 500) {
+                               ova = FALSE, standardize = FALSE, trees = 500,
+                               tune = FALSE) {
   fits <- class %>%
     binarize() %>%
     purrr::map(classification, data = data, algorithms = algorithms, rfe = rfe,
-               ova = ova, standardize = standardize, trees = trees)
+               ova = ova, standardize = standardize, trees = trees, tune = tune)
   fits
 }
 
