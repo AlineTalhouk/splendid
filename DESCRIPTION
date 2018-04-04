@@ -30,6 +30,7 @@ Imports:
     glmnet,
     grDevices,
     HandTill2001,
+    kernlab,
     maboost,
     magrittr,
     MASS,
