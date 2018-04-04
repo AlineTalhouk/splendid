@@ -79,6 +79,16 @@ prediction.rfe <- function(mod, data, class, test.id = NULL, train.id = NULL,
 }
 
 #' @export
+prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
+                             threshold = 0, standardize = FALSE, ...) {
+  p_args <- dplyr::lst(mod, test.id, train.id, standardize,
+                       data = data[head(names(mod[["trainingData"]]), -1)])
+  pred <- purrr::invoke(prediction.default, p_args, type = "raw")
+  prob <- purrr::invoke(prediction.default, p_args, type = "prob")
+  prediction_output(pred, prob, class, test.id, threshold)
+}
+
+#' @export
 prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
   p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
