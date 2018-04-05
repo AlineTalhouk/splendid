@@ -68,17 +68,6 @@ prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.rfe <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, test.id, train.id, standardize)
-  p <- purrr::invoke(prediction.default, p_args,
-                     data = data[, mod[["optVariables"]]], ...)
-  pred <- p$pred
-  prob <- p[, names(p) != "pred"]
-  prediction_output(pred, prob, class, test.id, threshold)
-}
-
-#' @export
 prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
                              threshold = 0, standardize = FALSE, ...) {
   opt_vars <- head(names(mod[["trainingData"]]), -1)
@@ -87,40 +76,6 @@ prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
                        data = data[opt_vars])
   pred <- purrr::invoke(prediction.default, p_args, type = "raw")
   prob <- purrr::invoke(prediction.default, p_args, type = "prob")
-  prediction_output(pred, prob, class, test.id, threshold)
-}
-
-#' @export
-prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
-  pred <- purrr::invoke(prediction.default, p_args, probability = TRUE, ...) %>%
-    unname()
-  prob <- attr(pred, "probabilities")
-  if (!("0" %in% mod$levels))
-    prob <- prob[, order(colnames(prob), names(table(class)))]
-  prediction_output(pred, prob, class, test.id, threshold) %>%
-    structure(probabilities = NULL)
-}
-
-#' @export
-prediction.randomForest <- function(mod, data, class, test.id = NULL,
-                                    train.id = NULL, threshold = 0,
-                                    standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
-  pred <- purrr::invoke(prediction.default, p_args, type = "response", ...) %>%
-    unname()
-  prob <- purrr::invoke(prediction.default, p_args, type = "prob", ...)
-  prediction_output(pred, prob, class, test.id, threshold)
-}
-
-#' @export
-prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
-  p <- purrr::invoke(prediction.default, p_args, ...)
-  pred <- p$class
-  prob <- p$posterior %>% sum_to_one()
   prediction_output(pred, prob, class, test.id, threshold)
 }
 
