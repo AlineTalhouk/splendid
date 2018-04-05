@@ -28,6 +28,7 @@
 #' * Neural Networks ("nnet")
 #' * Naive Bayes ("nbayes")
 #' * Adaptive Boosting ("adaboost")
+#' * AdaBoost.M1 ("adaboost_m1")
 #' * Extreme Gradient Boosting ("xgboost")
 #' * K-Nearest Neighbours ("knn")
 #'

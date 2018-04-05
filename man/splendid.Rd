@@ -113,6 +113,7 @@ Correlation Coefficient (MCC).
 \item Neural Networks ("nnet")
 \item Naive Bayes ("nbayes")
 \item Adaptive Boosting ("adaboost")
+\item AdaBoost.M1 ("adaboost_m1")
 \item Extreme Gradient Boosting ("xgboost")
 \item K-Nearest Neighbours ("knn")
 }
