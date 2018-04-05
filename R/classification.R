@@ -53,10 +53,10 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   }
   switch(algorithms,
          pam = pam_model(data, class),
-         svm = rfe_model(data, class, "svm", rfe, sizes, trees, tune),
-         rf = rfe_model(data, class, "rf", rfe, sizes, trees, tune),
-         lda = rfe_model(data, class, "lda", rfe, sizes, trees, tune),
-         adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes, trees, tune),
+         svm = rfe_model(data, class, "svm", rfe, sizes, tune),
+         rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees),
+         lda = rfe_model(data, class, "lda", rfe, sizes, tune),
+         adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes, tune, trees),
          slda = sda_model(data, class, "slda"),
          sdda = sda_model(data, class, "sdda"),
          mlr_glm = mlr_model(data, class, "mlr_glm"),
@@ -91,7 +91,7 @@ pam_prior <- function(class) {
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes, trees, tune) {
+rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
   method <- rfe_method(algorithms)
   type <- if (tune) "range" else "default"
   tune_args <- dplyr::lst(class, method, trees, type)
@@ -176,17 +176,23 @@ param_grids <- function(data, method, type = c("default", "range")) {
 #' Tune models with pre-specified search grids for hyperparameters
 #' @noRd
 tune_model <- function(data, class, method, trees, type) {
-  caret::train(
+  tune_args <- list(
     x = data,
     y = class,
     method = method,
     metric = "Accuracy",
-    trControl = caret::trainControl(method = "cv",
-                                    number = 5,
-                                    classProbs = TRUE),
-    tuneGrid = param_grids(data, method, type = type),
-    ntree = trees
+    trControl = caret::trainControl(
+      method = "cv",
+      number = 5,
+      classProbs = TRUE
+    ),
+    tuneGrid = param_grids(data, method, type = type)
   )
+  if (is.null(trees)) {
+    purrr::invoke(caret::train, tune_args)
+  } else {
+    purrr::invoke(caret::train, tune_args, ntree = trees)
+  }
 }
 
 #' sda model
