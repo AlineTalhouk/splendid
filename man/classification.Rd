@@ -5,7 +5,7 @@
 \title{Multiclass classification}
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sizes = NULL, trees = 500)
+  standardize = FALSE, sizes = NULL, trees = 500, tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -30,6 +30,8 @@ corresponding training sets.}
 
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}
+
+\item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 }
 \value{
 The model object from running the classification \code{algorithm}

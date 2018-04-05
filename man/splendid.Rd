@@ -6,7 +6,7 @@
 \usage{
 splendid(data, class, algorithms = NULL, n = 1, seed = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0, trees = 500, top = 3,
+  plus = TRUE, threshold = 0, trees = 500, tune = FALSE, top = 3,
   sequential = FALSE, ...)
 }
 \arguments{
@@ -46,6 +46,8 @@ probability below which a sample will be unclassified.}
 
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}
+
+\item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 
 \item{top}{the number of highest-performing algorithms to retain for ensemble}
 

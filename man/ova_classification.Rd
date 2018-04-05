@@ -5,7 +5,7 @@
 \title{One-Vs-All training approach}
 \usage{
 ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, trees = 500)
+  standardize = FALSE, trees = 500, tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -28,6 +28,8 @@ corresponding training sets.}
 
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}
+
+\item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 }
 \value{
 list of binary classifier fits on each class

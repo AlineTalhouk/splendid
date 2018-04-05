@@ -56,6 +56,7 @@
 #'   probability below which a sample will be unclassified.
 #' @param trees number of trees to use in "rf" or boosting iterations (trees) in
 #'   "adaboost"
+#' @param tune logical; if `TRUE`, algorithms with hyperparameters are tuned
 #' @param top the number of highest-performing algorithms to retain for ensemble
 #' @param sequential logical; if `TRUE`, a sequential model is fit on the
 #'   algorithms that had the best performance with one-vs-all classification.
@@ -90,7 +91,8 @@
 splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE, plus = TRUE, threshold = 0,
-                     trees = 500, top = 3, sequential = FALSE, ...) {
+                     trees = 500, tune = FALSE, top = 3, sequential = FALSE,
+                     ...) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   data <- splendid_convert(data, algorithms, convert)
@@ -98,7 +100,7 @@ splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   sm <- splendid_model(data = data, class = class, algorithms = algorithms,
                        n = n, convert = convert, rfe = rfe, ova = ova,
                        standardize = standardize, plus = plus, trees = trees,
-                       ...)
+                       tune = tune, ...)
   se <- splendid_ensemble(sm = sm, data = data, class = class, top = top,
                           sequential = sequential)
   c(sm, se)

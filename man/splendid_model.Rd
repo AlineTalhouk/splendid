@@ -6,7 +6,7 @@
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0, trees = 500, ...)
+  plus = TRUE, threshold = 0, trees = 500, tune = FALSE, ...)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -45,6 +45,8 @@ probability below which a sample will be unclassified.}
 
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}
+
+\item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 
 \item{...}{additional arguments to \code{splendid_model}}
 }
