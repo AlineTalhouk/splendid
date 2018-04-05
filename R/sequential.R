@@ -26,7 +26,7 @@
 #' @examples
 #' dat <- iris[, 1:4]
 #' class <- iris$Species
-#' sm <- splendid_model(dat, class, n = 2, algorithms = c("lda", "xgboost"))
+#' sm <- splendid_model(dat, class, n = 2, algorithms = c("slda", "xgboost"))
 #' st <- sequential_train(sm, dat, class)
 #' sp <- sequential_pred(st, sm, dat, class)
 sequential_train <- function(sm, data, class, boxplot = FALSE) {

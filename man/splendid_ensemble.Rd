@@ -31,6 +31,6 @@ Combine classification models into an ensemble
 \examples{
 dat <- iris[, 1:4]
 class <- iris$Species
-sm <- splendid_model(dat, class, n = 3, algorithms = c("xgboost", "lda"))
+sm <- splendid_model(dat, class, n = 3, algorithms = c("xgboost", "slda"))
 se <- splendid_ensemble(sm, dat, class)
 }

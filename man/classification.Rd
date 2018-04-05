@@ -86,7 +86,7 @@ additional class "ova" is added if \code{ova = TRUE}.
 \examples{
 data(hgsc)
 class <- attr(hgsc, "class.true")
-classification(hgsc, class, "rf")
+classification(hgsc, class, "xgboost")
 }
 \author{
 Derek Chiu

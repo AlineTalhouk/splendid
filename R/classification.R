@@ -34,7 +34,7 @@
 #' @examples
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
-#' classification(hgsc, class, "rf")
+#' classification(hgsc, class, "xgboost")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, sizes = NULL, trees = 500,
                            tune = FALSE) {
