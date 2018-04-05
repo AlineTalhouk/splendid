@@ -10,7 +10,7 @@
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, plus = TRUE, threshold = 0,
-                           trees = 500, tune = FALSE, ...) {
+                           trees = 500, tune = FALSE) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
