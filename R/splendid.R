@@ -38,7 +38,8 @@
 #'   learning. See \strong{Algorithms} section for possible options. By default,
 #'   this argument is `NULL`, in which case all algorithms are used.
 #' @param n number of bootstrap replicates to generate
-#' @param seed random seed used for reproducibility in bootstrapping results
+#' @param seed_boot random seed used for reproducibility in bootstrapping
+#'   training sets for model generation
 #' @param convert logical; if `TRUE`, converts all categorical variables in
 #'   `data` to dummy variables. Certain algorithms only work with such
 #'   limitations (e.g. LDA).
@@ -59,6 +60,8 @@
 #'   "adaboost"
 #' @param tune logical; if `TRUE`, algorithms with hyperparameters are tuned
 #' @param top the number of highest-performing algorithms to retain for ensemble
+#' @param seed_rank random seed used for reproducibility in rank aggregation of
+#'   ensemble algorithms
 #' @param sequential logical; if `TRUE`, a sequential model is fit on the
 #'   algorithms that had the best performance with one-vs-all classification.
 #' @return A nested list with five elements
@@ -88,17 +91,21 @@
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 #' }
-splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
+splendid <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE, plus = TRUE, threshold = 0,
-                     trees = 500, tune = FALSE, top = 3, sequential = FALSE) {
+                     trees = 500, tune = FALSE, top = 3, seed_rank = 1,
+                     sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   data <- splendid_convert(data, algorithms, convert)
-  sm_args <- tibble::lst(data, class, algorithms, n, seed, convert, rfe, ova,
-                         standardize, plus, threshold, trees, tune)
+
+  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, convert, rfe,
+                         ova, standardize, plus, threshold, trees, tune)
   sm <- purrr::invoke(splendid_model, sm_args)
-  se_args <- tibble::lst(sm, data, class, top, seed, rfe, sequential)
+
+  se_args <- tibble::lst(sm, data, class, top, seed_rank, rfe, sequential)
   se <- purrr::invoke(splendid_ensemble, se_args)
+
   c(sm, se)
 }

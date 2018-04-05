@@ -4,10 +4,10 @@
 \alias{splendid}
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
-splendid(data, class, algorithms = NULL, n = 1, seed = 1,
+splendid(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
   plus = TRUE, threshold = 0, trees = 500, tune = FALSE, top = 3,
-  sequential = FALSE)
+  seed_rank = 1, sequential = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -20,7 +20,8 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{n}{number of bootstrap replicates to generate}
 
-\item{seed}{random seed used for reproducibility in bootstrapping results}
+\item{seed_boot}{random seed used for reproducibility in bootstrapping
+training sets for model generation}
 
 \item{convert}{logical; if \code{TRUE}, converts all categorical variables in
 \code{data} to dummy variables. Certain algorithms only work with such
@@ -50,6 +51,9 @@ probability below which a sample will be unclassified.}
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 
 \item{top}{the number of highest-performing algorithms to retain for ensemble}
+
+\item{seed_rank}{random seed used for reproducibility in rank aggregation of
+ensemble algorithms}
 
 \item{sequential}{logical; if \code{TRUE}, a sequential model is fit on the
 algorithms that had the best performance with one-vs-all classification.}

@@ -7,7 +7,7 @@
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
-splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
+splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, plus = TRUE, threshold = 0,
                            trees = 500, tune = FALSE, ...) {
@@ -19,7 +19,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   data <- splendid_convert(data, algorithms, convert)
 
   # Generate bootstrap resamples; test samples are those not chosen in training
-  set.seed(seed)
+  set.seed(seed_boot)
   class <- as.factor(class)  # ensure class is a factor
   train.id <- boot_train(data = data, class = class, n = n)
   test.id <- boot_test(train.id = train.id)

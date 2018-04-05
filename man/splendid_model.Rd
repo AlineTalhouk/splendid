@@ -4,7 +4,7 @@
 \alias{splendid_model}
 \title{Train, predict, and evaluate classification models}
 \usage{
-splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
+splendid_model(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
   plus = TRUE, threshold = 0, trees = 500, tune = FALSE, ...)
 }
@@ -19,7 +19,8 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{n}{number of bootstrap replicates to generate}
 
-\item{seed}{random seed used for reproducibility in bootstrapping results}
+\item{seed_boot}{random seed used for reproducibility in bootstrapping
+training sets for model generation}
 
 \item{convert}{logical; if \code{TRUE}, converts all categorical variables in
 \code{data} to dummy variables. Certain algorithms only work with such

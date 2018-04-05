@@ -8,8 +8,8 @@
 #' class <- iris$Species
 #' sm <- splendid_model(dat, class, n = 3, algorithms = c("xgboost", "lda"))
 #' se <- splendid_ensemble(sm, dat, class)
-splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE,
-                              sequential = FALSE) {
+splendid_ensemble <- function(sm, data, class, top = 3, seed_rank = 1,
+                              rfe = FALSE, sequential = FALSE) {
   # vector of best performing algorithms from each bootstrap replicate
   bests <- sm$evals %>%
     do.call(cbind, .) %>%
@@ -24,7 +24,7 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed = 1, rfe = FALSE,
     purrr::map(~ purrr::invoke(rbind, .x)) %>%
     purrr::map_chr(~ {
       if (ncol(.x) > 1) {
-        RankAggreg::RankAggreg(.x, ncol(.x), method = "GA", seed = seed,
+        RankAggreg::RankAggreg(.x, ncol(.x), method = "GA", seed = seed_rank,
                                verbose = FALSE)$top.list[1]
       } else {
         .x[1]
