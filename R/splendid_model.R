@@ -96,7 +96,8 @@ sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
                    standardize, trees, tune) {
   mod <- algorithms %>% purrr::map(
     ~ purrr::map(train.id, function(id)
-      f(data[id, ], class[id], .x, rfe, ova, standardize, trees, tune)))
+      f(data = data[id, ], class = class[id], algorithms = ., rfe = rfe,
+        ova = ova, standardize = standardize, trees = trees, tune = tune)))
   mod
 }
 
