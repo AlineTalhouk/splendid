@@ -30,7 +30,7 @@
 #' set.seed(1)
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
-#' mod <- classification(hgsc[training.id, ], class[training.id], "lda")
+#' mod <- classification(hgsc[training.id, ], class[training.id], "slda")
 #' pred <- prediction(mod, hgsc, class, test.id)
 #' table(true = class[test.id], pred)
 prediction <- function(mod, data, class, test.id = NULL, train.id = NULL,
