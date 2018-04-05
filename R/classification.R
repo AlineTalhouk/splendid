@@ -95,7 +95,7 @@ pam_prior <- function(class) {
 rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
   method <- rfe_method(algorithms)
   type <- if (tune) "range" else "default"
-  tune_args <- dplyr::lst(class, method, trees, type)
+  tune_args <- tibble::lst(class, method, trees, type)
   if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
   if (rfe) {
     mod <- suppressWarnings(

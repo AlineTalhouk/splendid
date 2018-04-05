@@ -25,9 +25,9 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   test.id <- boot_test(train.id = train.id)
 
   # Store lists of common arguments in model and pred operations
-  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe, standardize,
-                       trees, tune)
-  p_args <- dplyr::lst(data, class, test.id, train.id, threshold, standardize)
+  m_args <- tibble::lst(train.id, data, class, algorithms, rfe, standardize,
+                        trees, tune)
+  p_args <- tibble::lst(data, class, test.id, train.id, threshold, standardize)
 
   # Apply training sets to models and predict on the test sets
   models <- sp_mod %>%
@@ -65,7 +65,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
     purrr::map2(err_632, ~ `attr<-`(.x, ifelse(plus, "err_632plus", "err_632"),
                                     .y))
 
-  dplyr::lst(models, preds, evals)
+  tibble::lst(models, preds, evals)
 }
 
 #' Recursively create training set indices ensuring class representation

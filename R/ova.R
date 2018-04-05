@@ -7,7 +7,7 @@
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
                                ova = FALSE, standardize = FALSE, trees = 500,
                                tune = FALSE) {
-  ova_args <- dplyr::lst(data, algorithms, rfe, ova, standardize, trees, tune)
+  ova_args <- tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune)
   class %>%
     binarize() %>%
     purrr::map(~ purrr::invoke(classification, ova_args, class = .))

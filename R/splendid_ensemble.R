@@ -47,5 +47,5 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed_rank = 1,
   seq_preds <- sequential %>%
     purrr::when(. ~ sequential_pred(seq_mods, sm, data, class))
 
-  dplyr::lst(bests, ensemble_algs, ensemble_mods, seq_mods, seq_preds)
+  tibble::lst(bests, ensemble_algs, ensemble_mods, seq_mods, seq_preds)
 }

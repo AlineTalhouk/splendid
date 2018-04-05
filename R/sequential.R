@@ -92,7 +92,7 @@ sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
     class_bin <- class_bin[cl.keep, ]
     class <- class[cl.keep]
   }
-  dplyr::lst(prob, cm)
+  tibble::lst(prob, cm)
 }
 
 #' Rank top models for each sequentially fitted class based on maximum average
