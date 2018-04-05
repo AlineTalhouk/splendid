@@ -117,16 +117,18 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, trees, tune) {
 }
 
 #' RFE sizes by default are equal to every 25th integer up to one-half of the
-#' smallest class size
+#' smallest class size. If class sizes are too small, use size = 1
 #' @noRd
 rfe_sizes <- function(sizes, class) {
-  sizes <- sizes %||% class %>%
-    table() %>%
-    min() %>%
-    magrittr::divide_by_int(2) %>%
-    seq_len() %>%
-    magrittr::extract(. %% 25 == 0)
-  sizes
+  sizes <- sizes %||% {
+    class %>%
+      table() %>%
+      min() %>%
+      magrittr::divide_by_int(2) %>%
+      seq_len() %>%
+      magrittr::extract(. %% 25 == 0)
+  }
+  ifelse(length(sizes) == 0, 1, sizes)
 }
 
 #' RFE methods
