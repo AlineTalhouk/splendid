@@ -49,7 +49,8 @@ also tunes the number of nodes (1-5) in the hidden layer. \code{"pam"} considers
 100 thresholds when training, and uses a uniform prior. \code{"adaboost"} calls
 \code{\link[maboost:maboost]{maboost::maboost()}} instead of \code{\link[adabag:boosting]{adabag::boosting()}} for faster performance.
 As a result, we use the \code{"entrop"} option, which uses the KL-divergence
-method and mimics adaboost.
+method and mimics adaboost. However, \code{"adaboost_m1} calls
+\code{\link[adabag:boosting]{adabag::boosting()}} which supports hyperparameter tuning.
 
 When \code{alg = "knn"}, the return value is \code{NULL} because \code{\link[class:knn]{class::knn()}} does
 not output an intermediate model object. The modelling and prediction is
