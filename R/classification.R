@@ -104,7 +104,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, trees, tune) {
         sizes = sizes,
         metric = "Accuracy",
         rfeControl = caret::rfeControl(method = "cv", number = 2),
-        trControl = caret::trainControl(method = "none", classProbs = TRUE),
+        trControl = caret::trainControl(method = "none"),
         method = method,
         tuneGrid = param_grids(data, method, type = "default")
       )
@@ -182,7 +182,7 @@ tune_model <- function(data, class, method, trees, type) {
     method = method,
     metric = "Accuracy",
     trControl = caret::trainControl(method = "cv",
-                                    number = 2,
+                                    number = 5,
                                     classProbs = TRUE),
     tuneGrid = param_grids(data, method, type = type),
     ntree = trees
@@ -249,7 +249,7 @@ boost_model <- function(data, class, algorithms, trees) {
 #' @noRd
 knn_model <- function(class, algorithms, ova) {
   if (ova) {
-    structure(list(unique(class[class != "0"])),
+    structure(list(unique(class[class != "class_0"])),
               class = c(algorithms, "ova"))
   } else {
     structure(list(), class = algorithms)

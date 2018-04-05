@@ -29,11 +29,11 @@ ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
     purrr::map2(.x = ., .y = names(.), ~ {
       colnames(.x) %>%
         purrr::when(
-          is.null(.) ~ magrittr::set_colnames(.x, c("0", .y)),  # for xgboost
+          is.null(.) ~ magrittr::set_colnames(.x, c("class_0", .y)),# for xgboost
           ~ .x
         )
     }) %>%
-    purrr::map(~ .x[, colnames(.x) != "0"]) %>%
+    purrr::map2(.x = ., .y = names(.), ~ .x[, .y]) %>%
     as.data.frame() %>%
     sum_to_one()
   pred <- factor(colnames(prob)[max.col(prob)])
