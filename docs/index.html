@@ -24,7 +24,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -33,8 +33,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">splendid</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="index.html">splendid</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -64,12 +68,11 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     
 
     
     
-<div class="contents">
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <div id="splendid" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
@@ -84,67 +87,78 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install splendid from github with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"AlineTalhouk/splendid"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"AlineTalhouk/splendid"</span>)</a></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>The following example shows how to use the main function of the package, <code><a href="reference/splendid.html">splendid()</a></code>. A data matrix <code>hgsc</code> contains a subset of gene expression measurements of High Grade Serous Carcinoma Ovarian cancer patients from the Cancer Genome Atlas publically available datasets. Samples as rows, features as columns. The function below runs the package through the <code><a href="reference/splendid.html">splendid()</a></code> function. First we extract the reference class labels (by TCGA) from the row names of <code>hgsc</code>. Then we fit the random forest and extreme gradient boosting classifiers to one bootstrapped replicate of the data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(splendid)
-<span class="kw">data</span>(hgsc)
-class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)
-sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">1</span>,
-                      <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"rf"</span>, <span class="st">"xgboost"</span>))
-<span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)
-<span class="co">#&gt; List of 8</span>
-<span class="co">#&gt;  $ models       :List of 2</span>
-<span class="co">#&gt;   ..$ rf     :List of 1</span>
-<span class="co">#&gt;   ..$ xgboost:List of 1</span>
-<span class="co">#&gt;  $ preds        :List of 2</span>
-<span class="co">#&gt;   ..$ rf     :List of 1</span>
-<span class="co">#&gt;   ..$ xgboost:List of 1</span>
-<span class="co">#&gt;  $ evals        :List of 2</span>
-<span class="co">#&gt;   ..$ rf     :'data.frame':  24 obs. of  1 variable:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.447</span>
-<span class="co">#&gt;   ..$ xgboost:'data.frame':  24 obs. of  1 variable:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.885</span>
-<span class="co">#&gt;  $ bests        : Named chr "rf"</span>
-<span class="co">#&gt;   ..- attr(*, "names")= chr "1"</span>
-<span class="co">#&gt;  $ ensemble_algs: chr "rf"</span>
-<span class="co">#&gt;  $ ensemble_mods:List of 1</span>
-<span class="co">#&gt;   ..$ :List of 18</span>
-<span class="co">#&gt;   .. ..- attr(*, "class")= chr "randomForest"</span>
-<span class="co">#&gt;  $ seq_mods     : NULL</span>
-<span class="co">#&gt;  $ seq_preds    : NULL</span></code></pre></div>
-</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(splendid)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">data</span>(hgsc)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                      <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"rf"</span>, <span class="st">"xgboost"</span>))</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; List of 8</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt;  $ models       :List of 2</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt;   ..$ rf     :List of 1</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt;   ..$ xgboost:List of 1</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt;  $ preds        :List of 2</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt;   ..$ rf     :List of 1</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt;   ..$ xgboost:List of 1</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt;  $ evals        :List of 2</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt;   ..$ rf     :'data.frame':  24 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.457</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt;   ..$ xgboost:'data.frame':  24 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.885</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;  $ bests        : Named chr "rf"</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt;   ..- attr(*, "names")= chr "1"</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;  $ ensemble_algs: chr "rf"</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt;  $ ensemble_mods:List of 1</span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt;   ..$ :List of 18</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt;   .. ..- attr(*, "class")= chr "randomForest"</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt;  $ seq_mods     : NULL</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt;  $ seq_preds    : NULL</span></a></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2 class="hasAnchor">
-<a href="#sidebar" class="anchor"></a>Links</h2>
+    <div class="links">
+<h2>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/AlineTalhouk/splendid">https://​github.com/​AlineTalhouk/​splendid</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/AlineTalhouk/splendid/issues">https://​github.com/​AlineTalhouk/​splendid/​issues</a>
 </li>
 </ul>
+</div>
+<div class="license">
 <h2>License</h2>
-<p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE.html">LICENSE</a></p>
+<ul class="list-unstyled">
+<li>
+<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
+</ul>
+</div>
+<div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Derek Chiu <br><small class="roles"> Author, maintainer </small> </li>
-<li>Aline Talhouk <br><small class="roles"> Author </small> </li>
-<li>Dustin Johnson <br><small class="roles"> Author </small> </li>
+<li>Derek Chiu <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Aline Talhouk <br><small class="roles"> Author </small>  </li>
+<li>Dustin Johnson <br><small class="roles"> Author </small>  </li>
 </ul>
+</div>
+
+      <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://travis-ci.org/AlineTalhouk/splendid"><img src="https://travis-ci.org/AlineTalhouk/splendid.svg?branch=master" alt="Travis build status"></a></li>
 <li><a href="https://ci.appveyor.com/project/AlineTalhouk/splendid"><img src="https://ci.appveyor.com/api/projects/status/github/AlineTalhouk/splendid?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
 <li><a href="https://codecov.io/github/AlineTalhouk/splendid?branch=master"><img src="https://codecov.io/gh/AlineTalhouk/splendid/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
 </ul>
+</div>
 </div>
 
 </div>
@@ -160,6 +174,8 @@ sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/sple
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

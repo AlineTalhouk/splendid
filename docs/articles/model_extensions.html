@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">splendid</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">splendid</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -58,34 +62,37 @@
 
       
       </header><script src="model_extensions_files/htmlwidgets-1.0/htmlwidgets.js"></script><script src="model_extensions_files/viz-0.3/viz.js"></script><link href="model_extensions_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
-<script src="model_extensions_files/grViz-binding-0.9.2/grViz.js"></script><div class="row">
-  <div class="col-md-9">
+<script src="model_extensions_files/grViz-binding-1.0.0/grViz.js"></script><div class="row">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Model Extensions</h1>
             
-          </div>
+      
+      <small>Source: <a href="https://github.com/AlineTalhouk/splendid/blob/master/vignettes/model_extensions.Rmd"><code>vignettes/model_extensions.Rmd</code></a></small>
+      <div class="hidden name"><code>model_extensions.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p><code>splendid</code> supports two modelling extensions to how ensemble classification is performed. Both paradigms are constructed from a set of binary classifiers. The first extension is called the <strong>one-vs-all</strong> approach, where each class is compared to its complement. The second extension utilizes a <strong>sequential algorithm</strong> to build the ensemble classifier, assigning class membership sequentially, in the order of highest performance. Our goal is to provide the user additional options and flexibility with modelling, since there is no guarantee that prediction accuracy is improved.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-<span class="co"># devtools::install_github("AlineTalhouk/splendid")</span>
-<span class="kw">library</span>(splendid)
-<span class="kw">library</span>(knitr)
-<span class="kw">data</span>(hgsc)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># devtools::install_github("AlineTalhouk/splendid")</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(splendid)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">library</span>(knitr)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">data</span>(hgsc)</a></code></pre></div>
 </div>
 <div id="one-vs-all" class="section level2">
 <h2 class="hasAnchor">
 <a href="#one-vs-all" class="anchor"></a>One-Vs-All</h2>
 <p>To build a one-vs-all model, or <code>ova</code> model for short, we first need to create a binarized class matrix, where each class is compared to its complement. Take the <code>hgsc</code> data set for example. The first 10 classes as predicted by TCGA are:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)
-<span class="kw">head</span>(class, <span class="dv">10</span>)
-<span class="co">#&gt;  [1] "PRO.C5" "MES.C1" "DIF.C4" "MES.C1" "MES.C1" "PRO.C5" "DIF.C4"</span>
-<span class="co">#&gt;  [8] "MES.C1" "IMM.C2" "PRO.C5"</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">head</span>(class, <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt;  [1] "PRO.C5" "MES.C1" "DIF.C4" "MES.C1" "MES.C1" "PRO.C5" "DIF.C4"</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt;  [8] "MES.C1" "IMM.C2" "PRO.C5"</span></a></code></pre></div>
 <p>The corresponding binarized class matrix is shown in Table 1. We denote a <code>"0"</code> meaning “not equal” to the class as indicated by the column name.</p>
 <table class="table">
 <caption>Table 1: Binarized class matrix for <code>ova</code>
@@ -168,10 +175,10 @@
 <a href="#sequential-algorithm" class="anchor"></a>Sequential Algorithm</h2>
 <p>The sequential algorithm follows a more complicated workflow. This is an ensemble method, meaning that we work with fitted models, predictions, and evaluation metrics, whereas the <code>ova</code> approach is integrated in the initial classification.</p>
 <p>By <em>sequential</em>, the idea is that we want to sequentially assign classes in a binary fashion, until all classes have been assigned. The diagram below is a simple example for a 4-class case.</p>
-<div id="htmlwidget-1a228edb0a3ca3c786c7" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1a228edb0a3ca3c786c7">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
+<div id="htmlwidget-c8d3712faa8fdcce95ad" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c8d3712faa8fdcce95ad">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
 <p>Suppose we fit a set of classifiers with 2 bootstrap replicates on the <code>xgboost</code> and <code>rf</code> algorithms.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid_model.html">splendid_model</a></span>(hgsc, class, <span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"xgboost"</span>, <span class="st">"rf"</span>))</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">sm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid_model.html">splendid_model</a></span>(hgsc, class, <span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"xgboost"</span>, <span class="st">"rf"</span>))</a></code></pre></div>
 <p>Table 2 shows the per-class F1-scores for model fitted and bootstrap replicate. An logical column indicates whether <code>ova</code> was used for the particular algorithm.</p>
 <table class="table">
 <caption>Table 2: Per-class F1-scores by model and bootstrap replicate</caption>
@@ -234,19 +241,19 @@
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.8067227</td>
+<td align="right">0.8135593</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.8101266</td>
+<td align="right">0.8205128</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8988764</td>
+<td align="right">0.9010989</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
@@ -258,13 +265,13 @@
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.7722772</td>
+<td align="right">0.7572816</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.8529412</td>
+<td align="right">0.8181818</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
@@ -297,12 +304,12 @@
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">IMM.C2</td>
+<td align="left">PRO.C5</td>
 <td align="left">rf</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="left">PRO.C5</td>
+<td align="left">IMM.C2</td>
 <td align="left">rf</td>
 </tr>
 <tr class="even">
@@ -316,39 +323,19 @@
 <table class="table">
 <caption>Table 4: Binarized class matrix for sequential algorithm</caption>
 <thead><tr class="header">
-<th align="left">PRO.C5</th>
 <th align="left">IMM.C2</th>
 <th align="left">MES.C1</th>
+<th align="left">PRO.C5</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">0</td>
+<td align="left">0</td>
 <td align="left">PRO.C5</td>
-<td align="left">0</td>
-<td align="left">0</td>
 </tr>
 <tr class="even">
 <td align="left">0</td>
-<td align="left">0</td>
 <td align="left">MES.C1</td>
-</tr>
-<tr class="odd">
-<td align="left">DIF.C4</td>
-<td align="left">0</td>
-<td align="left">0</td>
-</tr>
-<tr class="even">
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">MES.C1</td>
-</tr>
-<tr class="odd">
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">MES.C1</td>
-</tr>
-<tr class="even">
-<td align="left">PRO.C5</td>
-<td align="left">0</td>
 <td align="left">0</td>
 </tr>
 <tr class="odd">
@@ -358,18 +345,38 @@
 </tr>
 <tr class="even">
 <td align="left">0</td>
-<td align="left">0</td>
 <td align="left">MES.C1</td>
+<td align="left">0</td>
 </tr>
 <tr class="odd">
 <td align="left">0</td>
+<td align="left">MES.C1</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">PRO.C5</td>
+</tr>
+<tr class="odd">
+<td align="left">DIF.C4</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">MES.C1</td>
+<td align="left">0</td>
+</tr>
+<tr class="odd">
 <td align="left">IMM.C2</td>
 <td align="left">0</td>
+<td align="left">0</td>
 </tr>
 <tr class="even">
+<td align="left">0</td>
+<td align="left">0</td>
 <td align="left">PRO.C5</td>
-<td align="left">0</td>
-<td align="left">0</td>
 </tr>
 </tbody>
 </table>
@@ -382,7 +389,6 @@
 <p>The <code>ova</code> approach can be used in <code><a href="../reference/splendid.html">splendid()</a></code> by setting <code>ova = TRUE</code>. For every algorithm specified in <code>algorithms</code>, an analogous <code>ova</code> version is implemented. All pertinent results are labelled with the string <code>ova_algorithm_name</code>.</p>
 <p>The <code>sequential</code> algorithm can be used to construct an ensemble classifier by setting <code>sequential = TRUE</code> in <code><a href="../reference/splendid.html">splendid()</a></code>.</p>
 <p>Please read the function documentation for further details.</p>
-</div>
 </div>
   </div>
 
@@ -412,6 +418,8 @@
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>
