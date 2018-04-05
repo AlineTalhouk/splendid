@@ -61,7 +61,6 @@
 #' @param top the number of highest-performing algorithms to retain for ensemble
 #' @param sequential logical; if `TRUE`, a sequential model is fit on the
 #'   algorithms that had the best performance with one-vs-all classification.
-#' @param ... additional arguments to `splendid_model`
 #' @return A nested list with five elements
 #' * `models`: A list with an element for each algorithm, each of which is a
 #' list with length `n`. Shows the model object for each algorithm and bootstrap
@@ -92,17 +91,14 @@
 splendid <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE, plus = TRUE, threshold = 0,
-                     trees = 500, tune = FALSE, top = 3, sequential = FALSE,
-                     ...) {
+                     trees = 500, tune = FALSE, top = 3, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   data <- splendid_convert(data, algorithms, convert)
-
-  sm <- splendid_model(data = data, class = class, algorithms = algorithms,
-                       n = n, convert = convert, rfe = rfe, ova = ova,
-                       standardize = standardize, plus = plus, trees = trees,
-                       tune = tune, ...)
-  se <- splendid_ensemble(sm = sm, data = data, class = class, top = top,
-                          sequential = sequential)
+  sm_args <- tibble::lst(data, class, algorithms, n, seed, convert, rfe, ova,
+                         standardize, plus, threshold, trees, tune)
+  sm <- purrr::invoke(splendid_model, sm_args)
+  se_args <- tibble::lst(sm, data, class, top, seed, rfe, sequential)
+  se <- purrr::invoke(splendid_ensemble, se_args)
   c(sm, se)
 }

@@ -7,7 +7,7 @@
 splendid(data, class, algorithms = NULL, n = 1, seed = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
   plus = TRUE, threshold = 0, trees = 500, tune = FALSE, top = 3,
-  sequential = FALSE, ...)
+  sequential = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -53,8 +53,6 @@ probability below which a sample will be unclassified.}
 
 \item{sequential}{logical; if \code{TRUE}, a sequential model is fit on the
 algorithms that had the best performance with one-vs-all classification.}
-
-\item{...}{additional arguments to \code{splendid_model}}
 }
 \value{
 A nested list with five elements

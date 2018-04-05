@@ -47,8 +47,6 @@ probability below which a sample will be unclassified.}
 "adaboost"}
 
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
-
-\item{...}{additional arguments to \code{splendid_model}}
 }
 \description{
 Train, predict, and evaluate classification models
