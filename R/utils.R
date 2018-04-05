@@ -48,7 +48,7 @@ binarize <- function(x) {
     sort() %>%
     as.character() %>%
     purrr::set_names() %>%
-    purrr::map_df(~ ifelse(x == ., ., 0))
+    purrr::map_df(~ ifelse(x == ., ., "class_0"))
 }
 
 #' Confusion matrix

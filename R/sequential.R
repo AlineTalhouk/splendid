@@ -152,6 +152,6 @@ sequential_binarize <- function(mr, class) {
   class_bin <- class %>%
     binarize() %>%
     tidyr::unite_(col = last_two[1], from = last_two) %>%
-    dplyr::mutate_at(.vars = last_two[1], .funs = funs(gsub("_0|0_", "", .)))
+    dplyr::mutate_at(.vars = last_two[1], .funs = funs(gsub("_class_0|class_0_", "", .)))
   class_bin
 }
