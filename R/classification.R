@@ -11,7 +11,7 @@
 #' 100 thresholds when training, and uses a uniform prior. `"adaboost"` calls
 #' [maboost::maboost()] instead of [adabag::boosting()] for faster performance.
 #' As a result, we use the `"entrop"` option, which uses the KL-divergence
-#' method and mimics adaboost. However, `"adaboost_m1` calls
+#' method and mimics adaboost. However, `"adaboost_m1"` calls
 #' [adabag::boosting()] which supports hyperparameter tuning.
 #'
 #' When `alg = "knn"`, the return value is `NULL` because [class::knn()] does
