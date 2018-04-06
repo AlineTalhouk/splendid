@@ -216,7 +216,7 @@ class_threshold <- function(prob, threshold = 0) {
     dplyr::mutate_(.dots = stats::setNames(
       list(~purrr::pmap_dbl(., max),
            ~purrr::pmap(., list) %>%
-             purrr::map_chr(~ names(which.max(.x))) %>%
+             purrr::map_chr(~ names(which.max(.))) %>%
              ifelse(max_prop >= threshold, ., "unclassified")),
       c("max_prop", "max_class"))) %>%
     magrittr::extract2("max_class") %>%

@@ -18,10 +18,10 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed_rank = 1,
     dplyr::mutate(logloss = -logloss,
                   boot = gsub(".*\\.", "\\1", rownames(.))) %>%
     split(.$boot) %>%
-    purrr::map(~ dplyr::select(.x, -dplyr::matches("\\.|boot"))) %>%
+    purrr::map(~ dplyr::select(., -dplyr::matches("\\.|boot"))) %>%
     purrr::map(~ purrr::map(.x, ~ names(sm$models)[order(
       rank(-.x, ties.method = "random"))])) %>%
-    purrr::map(~ purrr::invoke(rbind, .x)) %>%
+    purrr::map(~ purrr::invoke(rbind, .)) %>%
     purrr::map_chr(~ {
       if (ncol(.x) > 1) {
         RankAggreg::RankAggreg(.x, ncol(.x), method = "GA", seed = seed_rank,

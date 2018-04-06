@@ -71,11 +71,11 @@ reliability_plot <- function(x, pred.probs) {
     levels() %>%
     purrr::set_names() %>%
     purrr::map(~ {
-      prob <- pred.probs[, .x]
-      cl <- ifelse(x == .x, 1, 0)
+      prob <- pred.probs[, .]
+      cl <- ifelse(x == ., 1, 0)
       bin.pred <- cut(prob, 10)
       purrr::map_df(levels(bin.pred), ~ {
-        idx <- .x == bin.pred
+        idx <- . == bin.pred
         data.frame(V1 = mean(prob[idx]),
                    V2 = sum(cl[idx]) / length(cl[idx]))
       }) %>%

@@ -60,8 +60,7 @@ Remove categorical predictors or set `convert = TRUE` to use dummy variables.")
 dummify <- function(data) {
   desmat <- data %>%
     purrr::map(~ stats::model.matrix(~ .x - 1)) %>%
-    purrr::imap(~ magrittr::set_colnames(.x,
-                                         gsub("\\.x", .y, colnames(.x))))
+    purrr::imap(~ magrittr::set_colnames(.x, gsub("\\.x", .y, colnames(.x))))
   dummy_vars <- purrr::map(desmat, colnames) %>%
     purrr::keep(~ length(.) > 1) %>%
     purrr::flatten_chr()

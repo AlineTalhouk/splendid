@@ -61,7 +61,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
                     purrr::flatten() %>%
                     unlist() %>%
                     data.frame())) %>%
-    purrr::map(~ magrittr::set_colnames(data.frame(.x), seq_len(n))) %>%
+    purrr::map(~ magrittr::set_colnames(data.frame(.), seq_len(n))) %>%
     purrr::map2(err_632, ~ `attr<-`(.x, ifelse(plus, "err_632plus", "err_632"),
                                     .y))
 
@@ -75,7 +75,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
 boot_train <- function(data, class, n) {
   boot <- modelr::bootstrap(data, n)
   train.id <- purrr::map(boot$strap, "idx")
-  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
+  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
     c(train.id[all.cl], boot_train(data, class, sum(!all.cl)))
@@ -87,7 +87,7 @@ boot_train <- function(data, class, n) {
 #' @param train.id list of training set indices
 #' @export
 boot_test <- function(train.id) {
-  purrr::map(train.id, ~ which(!seq_along(.x) %in% .x))
+  purrr::map(train.id, ~ which(!seq_along(.) %in% .))
 }
 
 #' Train models based on function f
@@ -106,7 +106,7 @@ sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
 sp_pred <- function(f, model, data, class, test.id, train.id, threshold,
                     standardize, ...) {
   pred <- model %>% purrr::map(
-    ~ purrr::pmap(list(.x, test.id = test.id, train.id = train.id),
+    ~ purrr::pmap(list(., test.id = test.id, train.id = train.id),
                   f, data = data, class = class, threshold = threshold,
                   standardize = standardize, ...))
   pred
