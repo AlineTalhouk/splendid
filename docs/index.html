@@ -99,27 +99,29 @@
 <a class="sourceLine" id="cb2-3" data-line-number="3">class &lt;-<span class="st"> </span><span class="kw">attr</span>(hgsc, <span class="st">"class.true"</span>)</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">sl_result &lt;-<span class="st"> </span><span class="kw"><a href="reference/splendid.html">splendid</a></span>(<span class="dt">data =</span> hgsc, <span class="dt">class =</span> class, <span class="dt">n =</span> <span class="dv">1</span>,</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">                      <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"rf"</span>, <span class="st">"xgboost"</span>))</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; List of 8</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt;  $ models       :List of 2</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt;   ..$ rf     :List of 1</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt;   ..$ xgboost:List of 1</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt;  $ preds        :List of 2</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt;   ..$ rf     :List of 1</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt;   ..$ xgboost:List of 1</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt;  $ evals        :List of 2</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt;   ..$ rf     :'data.frame':  24 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.457</span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt;   ..$ xgboost:'data.frame':  24 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.885</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;  $ bests        : Named chr "rf"</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt;   ..- attr(*, "names")= chr "1"</span></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;  $ ensemble_algs: chr "rf"</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt;  $ ensemble_mods:List of 1</span></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt;   ..$ :List of 18</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt;   .. ..- attr(*, "class")= chr "randomForest"</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt;  $ seq_mods     : NULL</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt;  $ seq_preds    : NULL</span></a></code></pre></div>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; Loading required package: lattice</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; Loading required package: ggplot2</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw">str</span>(sl_result, <span class="dt">max.level =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; List of 8</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt;  $ models       :List of 2</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt;   ..$ rf     :List of 1</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt;   ..$ xgboost:List of 1</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt;  $ preds        :List of 2</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt;   ..$ rf     :List of 1</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt;   ..$ xgboost:List of 1</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt;  $ evals        :List of 2</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt;   ..$ rf     :'data.frame':  24 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num NA</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;   ..$ xgboost:'data.frame':  24 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.885</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;  $ bests        : Named chr "rf"</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt;   ..- attr(*, "names")= chr "1"</span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt;  $ ensemble_algs: chr "rf"</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt;  $ ensemble_mods:List of 1</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt;   ..$ :List of 20</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt;   .. ..- attr(*, "class")= chr "train"</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#&gt;  $ seq_mods     : NULL</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co">#&gt;  $ seq_preds    : NULL</span></a></code></pre></div>
 </div>
 </div>
   </div>
