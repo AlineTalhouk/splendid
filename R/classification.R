@@ -74,22 +74,16 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   )
 }
 
-#' pam model
+#' pam model using uniform prior probabilities for class representation
 #' @noRd
 pam_model <- function(data, class) {
+  nc <- dplyr::n_distinct(class)
   sink_output(pamr::pamr.train(
     list(x = t(data),
          y = class),
     n.threshold = 100,
-    prior = pam_prior(class)
+    prior = rep(1 / nc, nc)
   ))
-}
-
-#' Uniform prior probabilities for class representation
-#' @noRd
-pam_prior <- function(class) {
-  nc <- dplyr::n_distinct(class)
-  rep(1 / nc, nc)
 }
 
 #' RFE model
