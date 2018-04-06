@@ -125,7 +125,7 @@ rfe_sizes <- function(sizes, class) {
       seq_len() %>%
       magrittr::extract(. %% 25 == 0)
   }
-  ifelse(length(sizes) == 0, 1, sizes)
+  if (length(sizes) == 0) 1 else sizes
 }
 
 #' RFE methods
