@@ -42,11 +42,8 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   class <- as.factor(class)  # ensure class is a factor
   if (standardize) {
     if (!is.null(attr(data, "dummy_vars"))) {
-      data <- dplyr::mutate_at(
-        data,
-        dplyr::vars(-dplyr::one_of(attr(data, "dummy_vars"))),
-        scale
-      )
+      data <- data %>%
+        dplyr::mutate_at(dplyr::vars(-c(attr(., "dummy_vars"))), scale)
     } else {
       data <- dplyr::mutate_all(data, scale)
     }
