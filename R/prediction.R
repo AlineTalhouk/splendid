@@ -163,7 +163,6 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
 prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
-  class <- factor(class) # TO REMOVE
   p_args <- tibble::lst(mod, test.id, train.id, standardize)
   prob <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         reshape = TRUE, ...) %>%
