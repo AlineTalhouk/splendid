@@ -106,7 +106,7 @@ prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
 prediction.glmnet <- function(mod, data, class, test.id = NULL, train.id = NULL,
                               threshold = 0, standardize = FALSE, ...) {
   p_args <- tibble::lst(mod, data, class, test.id, train.id, threshold,
-                       standardize)
+                        standardize)
   purrr::invoke(prediction.cv.glmnet, p_args, ...)
 }
 
