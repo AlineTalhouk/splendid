@@ -168,6 +168,7 @@ prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
                         reshape = TRUE, ...) %>%
     magrittr::set_rownames(rownames(data[test.id, ])) %>%
     sum_to_one()
+  class <- factor(class)
   if (ncol(prob) == nlevels(class)) {
     colnames(prob) <- levels(class)
   }
