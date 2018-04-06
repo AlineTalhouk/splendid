@@ -40,7 +40,6 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            tune = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
-  sizes <- rfe_sizes(sizes, class)
   if (standardize) {
     if (!is.null(attr(data, "dummy_vars"))) {
       data <- dplyr::mutate_at(
@@ -90,6 +89,7 @@ pam_model <- function(data, class) {
 #' @noRd
 rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
   method <- rfe_method(algorithms)
+  sizes <- rfe_sizes(sizes, class)
   type <- if (tune) "range" else "default"
   tune_args <- tibble::lst(class, method, trees, type)
   if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
