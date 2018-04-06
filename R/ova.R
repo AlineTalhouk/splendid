@@ -7,10 +7,13 @@
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
                                ova = FALSE, standardize = FALSE, trees = 500,
                                tune = FALSE) {
-  ova_args <- tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune)
   class %>%
     binarize() %>%
-    purrr::map(~ purrr::invoke(classification, ova_args, class = .))
+    purrr::map(~ purrr::invoke(
+      .f = classification,
+      .x = tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune),
+      class = .
+    ))
 }
 
 #' One-Vs-All prediction approach
@@ -29,7 +32,7 @@ ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
     purrr::map2(.x = ., .y = names(.), ~ {
       colnames(.x) %>%
         purrr::when(
-          is.null(.) ~ magrittr::set_colnames(.x, c("class_0", .y)),# for xgboost
+          is.null(.) ~ magrittr::set_colnames(.x, c("class_0", .y)), # xgboost
           ~ .x
         )
     }) %>%

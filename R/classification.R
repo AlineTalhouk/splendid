@@ -52,23 +52,25 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
       data <- dplyr::mutate_all(data, scale)
     }
   }
-  switch(algorithms,
-         pam = pam_model(data, class),
-         svm = rfe_model(data, class, "svm", rfe, sizes, tune),
-         rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees),
-         lda = rfe_model(data, class, "lda", rfe, sizes, tune),
-         adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes, tune, trees),
-         slda = sda_model(data, class, "slda"),
-         sdda = sda_model(data, class, "sdda"),
-         mlr_glm = mlr_model(data, class, "mlr_glm"),
-         mlr_lasso = mlr_model(data, class, "mlr_lasso"),
-         mlr_ridge = mlr_model(data, class, "mlr_ridge"),
-         mlr_nnet = mlr_model(data, class, "mlr_nnet"),
-         nnet = nnet_model(data, class),
-         nbayes = nbayes_model(data, class),
-         adaboost = boost_model(data, class, "adaboost", trees),
-         xgboost = boost_model(data, class, "xgboost"),
-         knn = knn_model(class, "knn", ova)
+  switch(
+    algorithms,
+    pam = pam_model(data, class),
+    svm = rfe_model(data, class, "svm", rfe, sizes, tune),
+    rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees),
+    lda = rfe_model(data, class, "lda", rfe, sizes, tune),
+    adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes,
+                            tune, trees),
+    slda = sda_model(data, class, "slda"),
+    sdda = sda_model(data, class, "sdda"),
+    mlr_glm = mlr_model(data, class, "mlr_glm"),
+    mlr_lasso = mlr_model(data, class, "mlr_lasso"),
+    mlr_ridge = mlr_model(data, class, "mlr_ridge"),
+    mlr_nnet = mlr_model(data, class, "mlr_nnet"),
+    nnet = nnet_model(data, class),
+    nbayes = nbayes_model(data, class),
+    adaboost = boost_model(data, class, "adaboost", trees),
+    xgboost = boost_model(data, class, "xgboost"),
+    knn = knn_model(class, "knn", ova)
   )
 }
 

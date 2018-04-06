@@ -40,7 +40,8 @@ splendid_convert <- function(data, algorithms, convert = FALSE) {
       alg.cont <- intersect(algorithms, ALG.CONT)
       if (length(alg.cont)) {
         stop("Algorithms ", paste(sQuote(alg.cont), collapse = ", "),
-             " need all continuous predictors. Remove categorical predictors in the data or set `convert = TRUE` to use dummy variables.")
+             " need all continuous predictors.
+Remove categorical predictors or set `convert = TRUE` to use dummy variables.")
       }
     }
   }
