@@ -4,9 +4,9 @@
 \alias{splendid_model}
 \title{Train, predict, and evaluate classification models}
 \usage{
-splendid_model(data, class, algorithms = NULL, n = 1, seed = 1,
+splendid_model(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0, trees = 500, ...)
+  plus = TRUE, threshold = 0, trees = 500, tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -19,7 +19,8 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{n}{number of bootstrap replicates to generate}
 
-\item{seed}{random seed used for reproducibility in bootstrapping results}
+\item{seed_boot}{random seed used for reproducibility in bootstrapping
+training sets for model generation}
 
 \item{convert}{logical; if \code{TRUE}, converts all categorical variables in
 \code{data} to dummy variables. Certain algorithms only work with such
@@ -46,7 +47,7 @@ probability below which a sample will be unclassified.}
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}
 
-\item{...}{additional arguments to \code{splendid_model}}
+\item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 }
 \description{
 Train, predict, and evaluate classification models
@@ -70,6 +71,7 @@ Train, predict, and evaluate classification models
 \item Neural Networks ("nnet")
 \item Naive Bayes ("nbayes")
 \item Adaptive Boosting ("adaboost")
+\item AdaBoost.M1 ("adaboost_m1")
 \item Extreme Gradient Boosting ("xgboost")
 \item K-Nearest Neighbours ("knn")
 }

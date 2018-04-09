@@ -40,7 +40,8 @@ splendid_convert <- function(data, algorithms, convert = FALSE) {
       alg.cont <- intersect(algorithms, ALG.CONT)
       if (length(alg.cont)) {
         stop("Algorithms ", paste(sQuote(alg.cont), collapse = ", "),
-             " need all continuous predictors. Remove categorical predictors in the data or set `convert = TRUE` to use dummy variables.")
+             " need all continuous predictors.
+Remove categorical predictors or set `convert = TRUE` to use dummy variables.")
       }
     }
   }
@@ -59,8 +60,7 @@ splendid_convert <- function(data, algorithms, convert = FALSE) {
 dummify <- function(data) {
   desmat <- data %>%
     purrr::map(~ stats::model.matrix(~ .x - 1)) %>%
-    purrr::imap(~ magrittr::set_colnames(.x,
-                                         gsub("\\.x", .y, colnames(.x))))
+    purrr::imap(~ magrittr::set_colnames(.x, gsub("\\.x", .y, colnames(.x))))
   dummy_vars <- purrr::map(desmat, colnames) %>%
     purrr::keep(~ length(.) > 1) %>%
     purrr::flatten_chr()

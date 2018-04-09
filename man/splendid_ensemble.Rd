@@ -4,7 +4,7 @@
 \alias{splendid_ensemble}
 \title{Combine classification models into an ensemble}
 \usage{
-splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE,
+splendid_ensemble(sm, data, class, top = 3, seed_rank = 1, rfe = FALSE,
   sequential = FALSE)
 }
 \arguments{
@@ -16,7 +16,8 @@ splendid_ensemble(sm, data, class, top = 3, seed = 1, rfe = FALSE,
 
 \item{top}{the number of highest-performing algorithms to retain for ensemble}
 
-\item{seed}{random seed used for reproducibility in bootstrapping results}
+\item{seed_rank}{random seed used for reproducibility in rank aggregation of
+ensemble algorithms}
 
 \item{rfe}{logical; if \code{TRUE}, run Recursive Feature Elimination as a feature
 selection method for "lda", "rf", and "svm" algorithms.}
@@ -30,6 +31,6 @@ Combine classification models into an ensemble
 \examples{
 dat <- iris[, 1:4]
 class <- iris$Species
-sm <- splendid_model(dat, class, n = 3, algorithms = c("xgboost", "lda"))
+sm <- splendid_model(dat, class, n = 3, algorithms = c("xgboost", "slda"))
 se <- splendid_ensemble(sm, dat, class)
 }

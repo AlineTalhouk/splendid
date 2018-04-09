@@ -7,10 +7,10 @@
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
-splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
+splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, plus = TRUE, threshold = 0,
-                           trees = 500, ...) {
+                           trees = 500, tune = FALSE) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -19,15 +19,15 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
   data <- splendid_convert(data, algorithms, convert)
 
   # Generate bootstrap resamples; test samples are those not chosen in training
-  set.seed(seed)
+  set.seed(seed_boot)
   class <- as.factor(class)  # ensure class is a factor
   train.id <- boot_train(data = data, class = class, n = n)
   test.id <- boot_test(train.id = train.id)
 
   # Store lists of common arguments in model and pred operations
-  m_args <- dplyr::lst(train.id, data, class, algorithms, rfe, standardize,
-                       trees)
-  p_args <- dplyr::lst(data, class, test.id, train.id, threshold, standardize)
+  m_args <- tibble::lst(train.id, data, class, algorithms, rfe, standardize,
+                        trees, tune)
+  p_args <- tibble::lst(data, class, test.id, train.id, threshold, standardize)
 
   # Apply training sets to models and predict on the test sets
   models <- sp_mod %>%
@@ -61,11 +61,11 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
                     purrr::flatten() %>%
                     unlist() %>%
                     data.frame())) %>%
-    purrr::map(~ data.frame(.x) %>% magrittr::set_colnames(seq_len(n))) %>%
+    purrr::map(~ magrittr::set_colnames(data.frame(.), seq_len(n))) %>%
     purrr::map2(err_632, ~ `attr<-`(.x, ifelse(plus, "err_632plus", "err_632"),
                                     .y))
 
-  dplyr::lst(models, preds, evals)
+  tibble::lst(models, preds, evals)
 }
 
 #' Recursively create training set indices ensuring class representation
@@ -75,7 +75,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed = 1,
 boot_train <- function(data, class, n) {
   boot <- modelr::bootstrap(data, n)
   train.id <- purrr::map(boot$strap, "idx")
-  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.x]))
+  nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
     c(train.id[all.cl], boot_train(data, class, sum(!all.cl)))
@@ -87,16 +87,17 @@ boot_train <- function(data, class, n) {
 #' @param train.id list of training set indices
 #' @export
 boot_test <- function(train.id) {
-  purrr::map(train.id, ~ which(!seq_along(.x) %in% .x))
+  purrr::map(train.id, ~ which(!seq_along(.) %in% .))
 }
 
 #' Train models based on function f
 #' @noRd
 sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
-                   standardize, trees) {
+                   standardize, trees, tune) {
   mod <- algorithms %>% purrr::map(
     ~ purrr::map(train.id, function(id)
-      f(data[id, ], class[id], .x, rfe, ova, standardize, trees)))
+      f(data = data[id, ], class = class[id], algorithms = ., rfe = rfe,
+        ova = ova, standardize = standardize, trees = trees, tune = tune)))
   mod
 }
 
@@ -105,7 +106,7 @@ sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
 sp_pred <- function(f, model, data, class, test.id, train.id, threshold,
                     standardize, ...) {
   pred <- model %>% purrr::map(
-    ~ purrr::pmap(list(.x, test.id = test.id, train.id = train.id),
+    ~ purrr::pmap(list(., test.id = test.id, train.id = train.id),
                   f, data = data, class = class, threshold = threshold,
                   standardize = standardize, ...))
   pred

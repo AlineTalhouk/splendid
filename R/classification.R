@@ -11,7 +11,8 @@
 #' 100 thresholds when training, and uses a uniform prior. `"adaboost"` calls
 #' [maboost::maboost()] instead of [adabag::boosting()] for faster performance.
 #' As a result, we use the `"entrop"` option, which uses the KL-divergence
-#' method and mimics adaboost.
+#' method and mimics adaboost. However, `"adaboost_m1"` calls
+#' [adabag::boosting()] which supports hyperparameter tuning.
 #'
 #' When `alg = "knn"`, the return value is `NULL` because [class::knn()] does
 #' not output an intermediate model object. The modelling and prediction is
@@ -33,107 +34,160 @@
 #' @examples
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
-#' classification(hgsc, class, "rf")
+#' classification(hgsc, class, "xgboost")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, sizes = NULL, trees = 500) {
+                           standardize = FALSE, sizes = NULL, trees = 500,
+                           tune = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
-  sizes <- rfe_sizes(sizes, class)
   if (standardize) {
     if (!is.null(attr(data, "dummy_vars"))) {
-      data <- dplyr::mutate_at(
-        data,
-        dplyr::vars(-dplyr::one_of(attr(data, "dummy_vars"))),
-        scale
-      )
+      data <- data %>%
+        dplyr::mutate_at(dplyr::vars(-dplyr::one_of(attr(., "dummy_vars"))),
+                         scale)
     } else {
       data <- dplyr::mutate_all(data, scale)
     }
   }
-  switch(algorithms,
-         pam = pam_model(data, class),
-         svm = rfe_model(data, class, "svm", rfe, sizes),
-         rf = rfe_model(data, class, "rf", rfe, sizes, trees),
-         lda = rfe_model(data, class, "lda", rfe, sizes),
-         slda = sda_model(data, class, "slda"),
-         sdda = sda_model(data, class, "sdda"),
-         mlr_glm = mlr_model(data, class, "mlr_glm"),
-         mlr_lasso = mlr_model(data, class, "mlr_lasso"),
-         mlr_ridge = mlr_model(data, class, "mlr_ridge"),
-         mlr_nnet = mlr_model(data, class, "mlr_nnet"),
-         nnet = nnet_model(data, class),
-         nbayes = nbayes_model(data, class),
-         adaboost = boost_model(data, class, "adaboost", trees),
-         xgboost = boost_model(data, class, "xgboost"),
-         knn = knn_model(class, "knn", ova)
+  switch(
+    algorithms,
+    pam = pam_model(data, class),
+    svm = rfe_model(data, class, "svm", rfe, sizes, tune),
+    rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees),
+    lda = rfe_model(data, class, "lda", rfe, sizes, tune),
+    slda = sda_model(data, class, "slda"),
+    sdda = sda_model(data, class, "sdda"),
+    mlr_glm = mlr_model(data, class, "mlr_glm"),
+    mlr_lasso = mlr_model(data, class, "mlr_lasso"),
+    mlr_ridge = mlr_model(data, class, "mlr_ridge"),
+    mlr_nnet = mlr_model(data, class, "mlr_nnet"),
+    nnet = nnet_model(data, class),
+    nbayes = nbayes_model(data, class),
+    adaboost = boost_model(data, class, "adaboost", trees),
+    adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes,
+                            tune, trees),
+    xgboost = boost_model(data, class, "xgboost"),
+    knn = knn_model(class, "knn", ova)
   )
 }
 
-#' pam model
+#' pam model using uniform prior probabilities for class representation
 #' @noRd
 pam_model <- function(data, class) {
+  nc <- dplyr::n_distinct(class)
   sink_output(pamr::pamr.train(
     list(x = t(data),
          y = class),
     n.threshold = 100,
-    prior = pam_prior(class)
+    prior = rep(1 / nc, nc)
   ))
-}
-
-#' Uniform prior probabilities for class representation
-#' @noRd
-pam_prior <- function(class) {
-  nc <- dplyr::n_distinct(class)
-  rep(1 / nc, nc)
 }
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes, trees) {
+rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
+  method <- rfe_method(algorithms)
+  sizes <- rfe_sizes(sizes, class)
+  type <- if (tune) "range" else "default"
+  tune_args <- tibble::lst(class, method, trees, type)
+  if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
   if (rfe) {
-    funcs <- switch(algorithms,
-                    lda = caret::ldaFuncs,
-                    rf = caret::rfFuncs,
-                    svm = caret::caretFuncs)
-    method <- if (algorithms == "svm") "svmRadial" else NULL
-    mod <- suppressPackageStartupMessages(suppressWarnings(
-      caret::rfe(data, class, sizes = sizes, method = method,
-                 rfeControl = caret::rfeControl(functions = funcs,
-                                                method = "cv",
-                                                number = 2))))
-    if (algorithms != "svm") {
-      mod
-    } else {
-      svm_model(data, class, mod[["optVariables"]])
-    }
-  } else {
-    switch(algorithms,
-           lda = suppressWarnings(MASS::lda(data, grouping = class)),
-           rf =  randomForest::randomForest(data, y = class, ntree = trees),
-           svm = svm_model(data, class, names(data))
+    mod <- suppressWarnings(
+      caret::rfe(
+        x = data,
+        y = class,
+        sizes = sizes,
+        metric = "Accuracy",
+        rfeControl = caret::rfeControl(method = "cv", number = 2),
+        trControl = caret::trainControl(method = "none"),
+        method = method,
+        tuneGrid = param_grids(data, method, type = "default")
+      )
     )
+    data_ov <- data[mod[["optVariables"]]]
+    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
+  } else {
+    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
   }
 }
 
 #' RFE sizes by default are equal to every 25th integer up to one-half of the
-#' smallest class size
+#' smallest class size. If class sizes are too small, use size = 1
 #' @noRd
 rfe_sizes <- function(sizes, class) {
-  sizes <- sizes %||% class %>%
-    table() %>%
-    min() %>%
-    magrittr::divide_by_int(2) %>%
-    seq_len() %>%
-    magrittr::extract(. %% 25 == 0)
-  sizes
+  sizes <- sizes %||% {
+    class %>%
+      table() %>%
+      min() %>%
+      magrittr::divide_by_int(2) %>%
+      seq_len() %>%
+      magrittr::extract(. %% 25 == 0)
+  }
+  if (length(sizes) == 0) 1 else sizes
 }
 
-#' support vector machine model with tuning
+#' RFE methods
 #' @noRd
-svm_model <- function(data, class, vars) {
-  e1071::best.svm(x = data[, vars], y = class, probability = TRUE,
-                  gamma = 1 / ncol(data) * 2 ^ (0:4), cost = 2 ^ (0:4),
-                  tunecontrol = e1071::tune.control(sampling = "fix"))
+rfe_method <- function(algorithms) {
+  switch(
+    algorithms,
+    lda = "lda",
+    rf = "rf",
+    svm = "svmRadial",
+    adaboost_m1 = "AdaBoost.M1"
+  )
+}
+
+#' Hyperparameter search grids. A single set is used for type "default" whereas
+#' combinations of values are used for type "range"
+#' @noRd
+param_grids <- function(data, method, type = c("default", "range")) {
+  type <- match.arg(type)
+  switch(
+    type,
+    default = switch(
+      method,
+      lda = NULL,
+      rf = data.frame(mtry = floor(sqrt(ncol(data)))),
+      svmRadial = data.frame(sigma = mean(kernlab::sigest(as.matrix(data))[-2]),
+                             C = 1),
+      AdaBoost.M1 = data.frame(mfinal = 3, maxdepth = 5, coeflearn = "Breiman")
+    ),
+    range = switch(
+      method,
+      lda = NULL,
+      rf = data.frame(mtry = (1:5) ^ 2),
+      svmRadial = expand.grid(sigma = 1 / ncol(data) * 2 ^ (0:4),
+                              C = 2 ^ (0:4)),
+      AdaBoost.M1 = expand.grid(
+        mfinal = 1:5,
+        maxdepth = 1:5,
+        coeflearn = c("Breiman", "Freund", "Zhu")
+      )
+    )
+  )
+}
+
+#' Tune models with pre-specified search grids for hyperparameters
+#' @noRd
+tune_model <- function(data, class, method, trees, type) {
+  tune_args <- list(
+    x = data,
+    y = class,
+    method = method,
+    metric = "Accuracy",
+    trControl = caret::trainControl(
+      method = "cv",
+      number = 5,
+      classProbs = TRUE
+    ),
+    tuneGrid = param_grids(data, method, type = type)
+  )
+  if (is.null(trees)) {
+    purrr::invoke(caret::train, tune_args)
+  } else {
+    purrr::invoke(caret::train, tune_args, ntree = trees)
+  }
 }
 
 #' sda model
@@ -196,7 +250,7 @@ boost_model <- function(data, class, algorithms, trees) {
 #' @noRd
 knn_model <- function(class, algorithms, ova) {
   if (ova) {
-    structure(list(unique(class[class != "0"])),
+    structure(list(unique(class[class != "class_0"])),
               class = c(algorithms, "ova"))
   } else {
     structure(list(), class = algorithms)

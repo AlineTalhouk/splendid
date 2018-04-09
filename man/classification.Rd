@@ -5,7 +5,7 @@
 \title{Multiclass classification}
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sizes = NULL, trees = 500)
+  standardize = FALSE, sizes = NULL, trees = 500, tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -30,6 +30,8 @@ corresponding training sets.}
 
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}
+
+\item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 }
 \value{
 The model object from running the classification \code{algorithm}
@@ -47,7 +49,8 @@ also tunes the number of nodes (1-5) in the hidden layer. \code{"pam"} considers
 100 thresholds when training, and uses a uniform prior. \code{"adaboost"} calls
 \code{\link[maboost:maboost]{maboost::maboost()}} instead of \code{\link[adabag:boosting]{adabag::boosting()}} for faster performance.
 As a result, we use the \code{"entrop"} option, which uses the KL-divergence
-method and mimics adaboost.
+method and mimics adaboost. However, \code{"adaboost_m1"} calls
+\code{\link[adabag:boosting]{adabag::boosting()}} which supports hyperparameter tuning.
 
 When \code{alg = "knn"}, the return value is \code{NULL} because \code{\link[class:knn]{class::knn()}} does
 not output an intermediate model object. The modelling and prediction is
@@ -74,6 +77,7 @@ additional class "ova" is added if \code{ova = TRUE}.
 \item Neural Networks ("nnet")
 \item Naive Bayes ("nbayes")
 \item Adaptive Boosting ("adaboost")
+\item AdaBoost.M1 ("adaboost_m1")
 \item Extreme Gradient Boosting ("xgboost")
 \item K-Nearest Neighbours ("knn")
 }
@@ -82,7 +86,7 @@ additional class "ova" is added if \code{ova = TRUE}.
 \examples{
 data(hgsc)
 class <- attr(hgsc, "class.true")
-classification(hgsc, class, "rf")
+classification(hgsc, class, "xgboost")
 }
 \author{
 Derek Chiu

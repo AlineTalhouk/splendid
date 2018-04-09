@@ -30,7 +30,7 @@
 #' set.seed(1)
 #' training.id <- sample(seq_along(class), replace = TRUE)
 #' test.id <- which(!seq_along(class) %in% training.id)
-#' mod <- classification(hgsc[training.id, ], class[training.id], "lda")
+#' mod <- classification(hgsc[training.id, ], class[training.id], "slda")
 #' pred <- prediction(mod, hgsc, class, test.id)
 #' table(true = class[test.id], pred)
 prediction <- function(mod, data, class, test.id = NULL, train.id = NULL,
@@ -59,8 +59,8 @@ prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
   dat <- split_data(data, test.id, train.id, standardize) %>% purrr::map(t)
   cvdat <- list(x = dat$train, y = class[train.id])
   model.cv <- sink_output(pamr::pamr.cv(mod, cvdat, nfold = 5))
-  delta <- with(model.cv, threshold[which.min(error)])
-  p_args <- dplyr::lst(fit = mod, newx = dat$test, threshold = delta)
+  delta <- model.cv$threshold[which.min(model.cv$error)]
+  p_args <- tibble::lst(fit = mod, newx = dat$test, threshold = delta)
   pred <- purrr::invoke(pamr::pamr.predict, p_args, type = "class")
   prob <- purrr::invoke(pamr::pamr.predict, p_args, type = "posterior")
   prediction_output(pred, prob, class, test.id, threshold) %>%
@@ -68,63 +68,33 @@ prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.rfe <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, test.id, train.id, standardize)
-  p <- purrr::invoke(prediction.default, p_args,
-                     data = data[, mod[["optVariables"]]], ...)
-  pred <- p$pred
-  prob <- p[, names(p) != "pred"]
-  prediction_output(pred, prob, class, test.id, threshold)
-}
-
-#' @export
-prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
-  pred <- purrr::invoke(prediction.default, p_args, probability = TRUE, ...) %>%
-    unname()
-  prob <- attr(pred, "probabilities")
-  if (!("0" %in% mod$levels))
-    prob <- prob[, order(colnames(prob), names(table(class)))]
-  prediction_output(pred, prob, class, test.id, threshold) %>%
-    structure(probabilities = NULL)
-}
-
-#' @export
-prediction.randomForest <- function(mod, data, class, test.id = NULL,
-                                    train.id = NULL, threshold = 0,
-                                    standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
-  pred <- purrr::invoke(prediction.default, p_args, type = "response", ...) %>%
-    unname()
-  prob <- purrr::invoke(prediction.default, p_args, type = "prob", ...)
-  prediction_output(pred, prob, class, test.id, threshold)
-}
-
-#' @export
-prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
-  p <- purrr::invoke(prediction.default, p_args, ...)
-  pred <- p$class
-  prob <- p$posterior %>% sum_to_one()
+prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
+                             threshold = 0, standardize = FALSE, ...) {
+  opt_vars <- head(names(mod[["trainingData"]]), -1)
+  if (mod[["method"]] == "AdaBoost.M1") names(data) <- make.names(names(data))
+  p_args <- tibble::lst(mod, test.id, train.id, standardize,
+                       data = data[opt_vars])
+  pred <- purrr::invoke(prediction.default, p_args, type = "raw")
+  prob <- purrr::invoke(prediction.default, p_args, type = "prob")
   prediction_output(pred, prob, class, test.id, threshold)
 }
 
 #' @export
 prediction.sda <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, class, test.id, train.id, threshold, standardize)
-  purrr::invoke(prediction.lda, p_args, data = as.matrix(data), verbose = FALSE,
-                ...)
+  p_args <- tibble::lst(mod, test.id, train.id, standardize)
+  p <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
+                     verbose = FALSE, ...)
+  pred <- p$class
+  prob <- p$posterior %>% sum_to_one()
+  prediction_output(pred, prob, class, test.id, threshold)
 }
 
 #' @export
 prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
                                  train.id = NULL, threshold = 0,
                                  standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         type = "class", ...) %>% factor()
   prob <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
@@ -135,8 +105,8 @@ prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.glmnet <- function(mod, data, class, test.id = NULL, train.id = NULL,
                               threshold = 0, standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, class, test.id, train.id, threshold,
-                       standardize)
+  p_args <- tibble::lst(mod, data, class, test.id, train.id, threshold,
+                        standardize)
   purrr::invoke(prediction.cv.glmnet, p_args, ...)
 }
 
@@ -144,7 +114,7 @@ prediction.glmnet <- function(mod, data, class, test.id = NULL, train.id = NULL,
 prediction.multinom <- function(mod, data, class, test.id = NULL,
                                 train.id = NULL, threshold = 0,
                                 standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, type = "class", ...)
   prob <- purrr::invoke(prediction.default, p_args, type = "probs", ...)
   if (!is.matrix(prob)) {
@@ -157,7 +127,7 @@ prediction.multinom <- function(mod, data, class, test.id = NULL,
 prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
                                     train.id = NULL, threshold = 0,
                                     standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- factor(purrr::invoke(prediction.default, p_args, type = "class", ...))
   prob <- purrr::invoke(prediction.default, p_args, type = "raw", ...)
   if (ncol(prob) == 1) {
@@ -170,7 +140,7 @@ prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
 prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
                                   train.id = NULL, threshold = 0,
                                   standardize = FALSE, ...) {
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, type = "class", ...)
   prob <- purrr::invoke(prediction.default, p_args, type = "raw", ...) %>%
     magrittr::set_rownames(rownames(data[test.id, ]))
@@ -182,7 +152,7 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
                                train.id = NULL, threshold = 0,
                                standardize = FALSE, ...) {
   names(data) <- make.names(names(data))
-  p_args <- dplyr::lst(mod, data, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   both <- purrr::invoke(prediction.default, p_args, type = "both", ...)
   pred <- both$class
   prob <- both$probs %>% magrittr::set_rownames(rownames(data[test.id, ]))
@@ -193,12 +163,12 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
 prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
-  class <- factor(class)
-  p_args <- dplyr::lst(mod, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, test.id, train.id, standardize)
   prob <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         reshape = TRUE, ...) %>%
     magrittr::set_rownames(rownames(data[test.id, ])) %>%
     sum_to_one()
+  class <- factor(class)
   if (ncol(prob) == nlevels(class)) {
     colnames(prob) <- levels(class)
   }
@@ -246,7 +216,7 @@ class_threshold <- function(prob, threshold = 0) {
     dplyr::mutate_(.dots = stats::setNames(
       list(~purrr::pmap_dbl(., max),
            ~purrr::pmap(., list) %>%
-             purrr::map_chr(~ names(which.max(.x))) %>%
+             purrr::map_chr(~ names(which.max(.))) %>%
              ifelse(max_prop >= threshold, ., "unclassified")),
       c("max_prop", "max_class"))) %>%
     magrittr::extract2("max_class") %>%
@@ -282,5 +252,5 @@ split_data <- function(data, test.id = NULL, train.id = NULL,
       test <- as.data.frame(test)
     }
   }
-  dplyr::lst(train, test)
+  tibble::lst(train, test)
 }

@@ -26,7 +26,7 @@
 #' @examples
 #' dat <- iris[, 1:4]
 #' class <- iris$Species
-#' sm <- splendid_model(dat, class, n = 2, algorithms = c("lda", "xgboost"))
+#' sm <- splendid_model(dat, class, n = 2, algorithms = c("slda", "xgboost"))
 #' st <- sequential_train(sm, dat, class)
 #' sp <- sequential_pred(st, sm, dat, class)
 sequential_train <- function(sm, data, class, boxplot = FALSE) {
@@ -92,7 +92,7 @@ sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
     class_bin <- class_bin[cl.keep, ]
     class <- class[cl.keep]
   }
-  dplyr::lst(prob, cm)
+  tibble::lst(prob, cm)
 }
 
 #' Rank top models for each sequentially fitted class based on maximum average
@@ -151,7 +151,7 @@ sequential_binarize <- function(mr, class) {
   last_two <- tail(mr[["class"]], 2)
   class_bin <- class %>%
     binarize() %>%
-    tidyr::unite_(col = last_two[1], from = last_two) %>%
-    dplyr::mutate_at(.vars = last_two[1], .funs = funs(gsub("_0|0_", "", .)))
+    tidyr::unite_(last_two[1], last_two) %>%
+    dplyr::mutate_at(last_two[1], funs(gsub("_class_0|class_0_", "", .)))
   class_bin
 }

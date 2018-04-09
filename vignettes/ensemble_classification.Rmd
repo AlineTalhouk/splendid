@@ -38,14 +38,17 @@ The main function of `splendid` is `splendid()`, and the usage is intuitive:
 - `class`: the true/reference class labels with length equal to the number of samples
 - `algorithms`: character vector of classification algorithms
 - `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OOB).
-- `seed`: constant for reproducibility in the bootstrap resampling
+- `seed_boot`: constant for reproducibility in bootstrapping training sets for model generation
 - `convert`: whether to convert categorical predictors to dummy variables
 - `rfe`: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.
 - `ova`: whether to run one-vs-all versions for each algorithm (e.g. class 1 vs. not class 1, class 2 vs. not class 2, etc.)
 - `standardize`: whether to standardize the training set before classification and the test set (using training set centerings & scalings) during prediction
 - `plus`: whether to calculate the .632+ or .632 estimator for the log loss error rate
 - `threshold`: predicted probabilities below this value are classified as "unclassified" instead of imposing one of the labels from `class`
+- `trees`: number of trees/iterations to use in random forest/boosting models, respectively
+- `tune`: whether to tune hyperparameters in pertinent algorithms
 - `top`: how many of the top performing algorithms are chosen for the final ensemble?
+- `seed_rank`: random seed used for reproducibility in rank aggregation of ensemble algorithms
 - `sequential`: whether to run the sequential ensemble
   
 ```{r splendid}
@@ -90,6 +93,7 @@ There exist a vast number of classification algorithms. Those currently in `sple
 - Neural Networks with One Hidden Layer (`"nnet"`)
 - Naive Bayes (`"nbayes"`)
 - Adaptive Boosting using Decision Trees (`"adaboost"`)
+- AdaBoost.m1 (`"adaboost_m1"`)
 - Extreme Gradient Boosting using Decision Trees (`"xgboost"`)
 - K-Nearest Neighbours (`"knn"`)  
 
@@ -97,17 +101,26 @@ These algorithms are implemented in `classification()`.
 
 ### Hyperparameters and other Details
 
-Certain functions have hyperparameters that need to be tuned in order to select the best model before prediction. We use a grid search on a pre-specified range of the hyperparameters and choose the optimal values using `e1071::tune()`.
+Certain functions have hyperparameters that need to be tuned in order to select the best model before prediction. We use a grid search on a pre-specified range of the hyperparameters and choose the optimal values using `caret::train()`.
 
 The ranges for the tuning parameters are:
+
+- `svm`
+    - `sigma`: `1 / ncol(data) * 2 ^ (0:4)`
+    - `C`: 1, 2, 4, 8, 16
+- `rf`
+    - `mtry`: 1, 4, 9, 16, 25
+- `adaboost_m1`
+    - `mfinal`: 1, 2, 3, 4, 5
+    - `maxdepth`: 1, 2, 3, 4, 5
+    - `coeflearn`: "Breiman", "Freund", "Zhu"
+
+We use `e1071::tune()` for neural network parameters. The ranges are:
 
 - `nnet`
     - `size`: 1, 2, 3, 4, 5
     - `decay`: 0, 0.125, 0.25, 0.375, 0.5
-- `svm`
-    - `gamma`: `1 / ncol(data) * 2 ^ (0:4)`
-    - `cost`: 1, 2, 4, 8, 16
-  
+
 Some algorithms have certain properties that require data manipulations before classification.
 
 - `slda` and `sdda`: These shrinkage discriminant analysis algorithms estimate the regularization parameters analytically without having to solve using resampling methods.
@@ -118,7 +131,7 @@ Some algorithms have certain properties that require data manipulations before c
 
 ### Feature Selection
 
-We use Recursive Feature Elimination (RFE)^3^ on `lda`, `rf`, and `svm` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
+We use Recursive Feature Elimination (RFE)^3^ on `lda`, `rf`, `svm`, and `adaboost_m1` to reduce the dimensionality before classification. In `svm`, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set `rfe = TRUE` in `splendid` to use feature selection.
 
 One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the `sizes` parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:
 

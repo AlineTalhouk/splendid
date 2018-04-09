@@ -5,12 +5,15 @@
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
-                               ova = FALSE, standardize = FALSE, trees = 500) {
-  fits <- class %>%
+                               ova = FALSE, standardize = FALSE, trees = 500,
+                               tune = FALSE) {
+  class %>%
     binarize() %>%
-    purrr::map(classification, data = data, algorithms = algorithms, rfe = rfe,
-               ova = ova, standardize = standardize, trees = trees)
-  fits
+    purrr::map(~ purrr::invoke(
+      .f = classification,
+      .x = tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune),
+      class = .
+    ))
 }
 
 #' One-Vs-All prediction approach
@@ -29,11 +32,11 @@ ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
     purrr::map2(.x = ., .y = names(.), ~ {
       colnames(.x) %>%
         purrr::when(
-          is.null(.) ~ magrittr::set_colnames(.x, c("0", .y)),  # for xgboost
+          is.null(.) ~ magrittr::set_colnames(.x, c("class_0", .y)), # xgboost
           ~ .x
         )
     }) %>%
-    purrr::map(~ .x[, colnames(.x) != "0"]) %>%
+    purrr::map2(.x = ., .y = names(.), ~ .x[, .y]) %>%
     as.data.frame() %>%
     sum_to_one()
   pred <- factor(colnames(prob)[max.col(prob)])

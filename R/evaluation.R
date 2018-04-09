@@ -54,9 +54,9 @@ evaluation <- function(x, y, plot = FALSE) {
   cs <- c(ppv = cs_p, sensitivity = cs_s, f1 = cs_f, mcc = cs_m)
 
   # Discriminatory measures
-  dm_funs <- dplyr::lst(logloss, auc)
+  dm_funs <- tibble::lst(logloss, auc)
   if (plot) {
-    dm_funs <- c(dm_funs, dplyr::lst(discrimination_plot, reliability_plot))
+    dm_funs <- c(dm_funs, tibble::lst(discrimination_plot, reliability_plot))
   }
   dm <- dm_funs %>%
     purrr::invoke_map(list(list(x = x, pred.probs = probs)))
@@ -75,8 +75,8 @@ evaluation <- function(x, y, plot = FALSE) {
 
   if (plot) dm[c("discrimination_plot", "reliability_plot")]
 
-  c(dm[c("logloss", "auc")], dplyr::lst(accuracy, macro_ppv, macro_sensitivity,
-                                        macro_f1, mcc, micro_mcc, cs))
+  c(dm[c("logloss", "auc")], tibble::lst(accuracy, macro_ppv, macro_sensitivity,
+                                         macro_f1, mcc, micro_mcc, cs))
 }
 
 #' PPV (Precision) for 2 by 2 confusion matrix
