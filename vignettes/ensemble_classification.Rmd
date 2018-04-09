@@ -163,7 +163,7 @@ The final attribute of a prediction object is stored `attr(*, "class.prop")`, sh
 
 ### Metrics
 
-Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for `svm`, for two bootstrap replicates. The `logloss` and `auc` measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.
+Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for `svm`, for two bootstrap replicates. The `logloss`, `auc` and `pdi` measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.
 
 ```{r evaluation, echo=FALSE, results='asis'}
 kable(sl_result$evals$svm, caption = "SVM Evaluation Metrics")
@@ -171,6 +171,7 @@ kable(sl_result$evals$svm, caption = "SVM Evaluation Metrics")
 
 - `logloss`: Multiclass log loss should be minimized
 - `auc`: Area Under the Curve compares trade-off between sensitivity and specificity
+- `pdi`: Polytomous Discrimination Index
 - `accuracy`: number of correctly classified samples out of all samples
 - `ppv`: also known as precision
 - `sensitivity`: also known as recall
