@@ -331,7 +331,7 @@
 <div id="metrics" class="section level3">
 <h3 class="hasAnchor">
 <a href="#metrics" class="anchor"></a>Metrics</h3>
-<p>Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for <code>svm</code>, for two bootstrap replicates. The <code>logloss</code> and <code>auc</code> measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.</p>
+<p>Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for <code>svm</code>, for two bootstrap replicates. The <code>logloss</code>, <code>auc</code> and <code>pdi</code> measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.</p>
 <table class="table">
 <caption>SVM Evaluation Metrics</caption>
 <thead><tr class="header">
@@ -467,6 +467,8 @@
 <code>logloss</code>: Multiclass log loss should be minimized</li>
 <li>
 <code>auc</code>: Area Under the Curve compares trade-off between sensitivity and specificity</li>
+<li>
+<code>pdi</code>: Polytomous Discrimination Index</li>
 <li>
 <code>accuracy</code>: number of correctly classified samples out of all samples</li>
 <li>
