@@ -24,7 +24,7 @@ measure for classification problems.
 }
 \details{
 The currently supported evaluation measures include discriminatory measures
-like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
+like log loss, AUC, and PDI, macro-averaged PPV (Precision)/Sensitivity
 (Recall)/F1-score, accuracy (same as micro-averaged PPV
 Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
 micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.

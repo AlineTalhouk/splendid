@@ -158,11 +158,11 @@
 <a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt;   ..$ knn :List of 2</span></a>
 <a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt;   ..$ svm :List of 2</span></a>
 <a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt;  $ evals        :List of 3</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;   ..$ slda:'data.frame': 24 obs. of  2 variables:</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;   ..$ slda:'data.frame': 25 obs. of  2 variables:</span></a>
 <a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.94</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;   ..$ knn :'data.frame': 24 obs. of  2 variables:</span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;   ..$ knn :'data.frame': 25 obs. of  2 variables:</span></a>
 <a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 2.33</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;   ..$ svm :'data.frame': 24 obs. of  2 variables:</span></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;   ..$ svm :'data.frame': 25 obs. of  2 variables:</span></a>
 <a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num NA</span></a>
 <a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt;  $ bests        : Named chr [1:2] "svm" "svm"</span></a>
 <a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "1" "2"</span></a>
@@ -331,7 +331,7 @@
 <div id="metrics" class="section level3">
 <h3 class="hasAnchor">
 <a href="#metrics" class="anchor"></a>Metrics</h3>
-<p>Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for <code>svm</code>, for two bootstrap replicates. The <code>logloss</code> and <code>auc</code> measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.</p>
+<p>Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for <code>svm</code>, for two bootstrap replicates. The <code>logloss</code>, <code>auc</code> and <code>pdi</code> measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.</p>
 <table class="table">
 <caption>SVM Evaluation Metrics</caption>
 <thead><tr class="header">
@@ -351,111 +351,116 @@
 <td align="right">0.9716007</td>
 </tr>
 <tr class="odd">
+<td>pdi</td>
+<td align="right">0.8945650</td>
+<td align="right">0.9260518</td>
+</tr>
+<tr class="even">
 <td>accuracy</td>
 <td align="right">0.7566138</td>
 <td align="right">0.8058824</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>macro_ppv</td>
 <td align="right">0.7901648</td>
 <td align="right">0.8223209</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>macro_sensitivity</td>
 <td align="right">0.7589818</td>
 <td align="right">0.8193226</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>macro_f1</td>
 <td align="right">0.7557140</td>
 <td align="right">0.8092322</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mcc</td>
 <td align="right">0.6836104</td>
 <td align="right">0.7471148</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>micro_mcc</td>
 <td align="right">0.6754850</td>
 <td align="right">0.7411765</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ppv.DIF.C4</td>
 <td align="right">0.6623377</td>
 <td align="right">0.7368421</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ppv.IMM.C2</td>
 <td align="right">0.7391304</td>
 <td align="right">0.7272727</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ppv.MES.C1</td>
 <td align="right">0.9062500</td>
 <td align="right">0.9062500</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ppv.PRO.C5</td>
 <td align="right">0.8529412</td>
 <td align="right">0.9189189</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sensitivity.DIF.C4</td>
 <td align="right">0.8947368</td>
 <td align="right">0.8571429</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sensitivity.IMM.C2</td>
 <td align="right">0.9189189</td>
 <td align="right">0.9696970</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sensitivity.MES.C1</td>
 <td align="right">0.6304348</td>
 <td align="right">0.7837838</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sensitivity.PRO.C5</td>
 <td align="right">0.5918367</td>
 <td align="right">0.6666667</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>f1.DIF.C4</td>
 <td align="right">0.7611940</td>
 <td align="right">0.7924528</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>f1.IMM.C2</td>
 <td align="right">0.8192771</td>
 <td align="right">0.8311688</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>f1.MES.C1</td>
 <td align="right">0.7435897</td>
 <td align="right">0.8405797</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>f1.PRO.C5</td>
 <td align="right">0.6987952</td>
 <td align="right">0.7727273</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mcc.DIF.C4</td>
 <td align="right">0.6517492</td>
 <td align="right">0.7034322</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>mcc.IMM.C2</td>
 <td align="right">0.7766767</td>
 <td align="right">0.7965743</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mcc.MES.C1</td>
 <td align="right">0.6973717</td>
 <td align="right">0.8035753</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>mcc.PRO.C5</td>
 <td align="right">0.6344935</td>
 <td align="right">0.7123594</td>
@@ -467,6 +472,8 @@
 <code>logloss</code>: Multiclass log loss should be minimized</li>
 <li>
 <code>auc</code>: Area Under the Curve compares trade-off between sensitivity and specificity</li>
+<li>
+<code>pdi</code>: Polytomous Discrimination Index</li>
 <li>
 <code>accuracy</code>: number of correctly classified samples out of all samples</li>
 <li>
