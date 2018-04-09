@@ -4,7 +4,7 @@
 #' measure for classification problems.
 #'
 #' The currently supported evaluation measures include discriminatory measures
-#' like log loss and AUC, macro-averaged PPV (Precision)/Sensitivity
+#' like log loss, AUC, and PDI, macro-averaged PPV (Precision)/Sensitivity
 #' (Recall)/F1-score, accuracy (same as micro-averaged PPV
 #' Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
 #' micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
@@ -54,7 +54,7 @@ evaluation <- function(x, y, plot = FALSE) {
   cs <- c(ppv = cs_p, sensitivity = cs_s, f1 = cs_f, mcc = cs_m)
 
   # Discriminatory measures
-  dm_funs <- tibble::lst(logloss, auc)
+  dm_funs <- tibble::lst(logloss, auc, pdi)
   if (plot) {
     dm_funs <- c(dm_funs, tibble::lst(discrimination_plot, reliability_plot))
   }
@@ -75,8 +75,9 @@ evaluation <- function(x, y, plot = FALSE) {
 
   if (plot) dm[c("discrimination_plot", "reliability_plot")]
 
-  c(dm[c("logloss", "auc")], tibble::lst(accuracy, macro_ppv, macro_sensitivity,
-                                         macro_f1, mcc, micro_mcc, cs))
+  c(dm[c("logloss", "auc", "pdi")],
+    tibble::lst(accuracy, macro_ppv, macro_sensitivity, macro_f1, mcc,
+                micro_mcc, cs))
 }
 
 #' PPV (Precision) for 2 by 2 confusion matrix
@@ -149,4 +150,25 @@ auc <- function(x, pred.probs) {
     predicted = as.matrix(pred.probs)
   )
   HandTill2001::auc(mcap.construct)  # multi-class auc metric
+}
+
+#' Polytomous Discrimination Index (PDI)
+#'
+#' Based on `mcca::pdi`
+#'
+#' @param x actual class labels
+#' @param pred.probs predicted probabilities for each class
+#' @references http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract
+#' @noRd
+pdi <- function(x, pred.probs) {
+  x <- as.integer(x)
+  cl <- seq_len(dplyr::n_distinct(x))
+  n <- purrr::map(cl, ~ which(x == .))
+  pdi_all <- purrr::map_dbl(cl, function(j) {
+    sum(purrr::map_dbl(seq_along(n[[j]]), function(i) {
+      prod(purrr::map_int(purrr::map(n[-j], ~ pred.probs[., j]),
+                          ~ sum(pred.probs[n[[j]][i], j] > .)))
+    }))
+  })
+  sum(pdi_all) / (length(pdi_all) * prod(purrr::map_int(n, length)))
 }
