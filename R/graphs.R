@@ -39,10 +39,12 @@ discrimination_plot <- function(x, pred.probs) {
 
   # create prevalance (base-line) class proportion table
   df.prevalence <- df.long %>%
-    dplyr::group_by_("true_class") %>%
-    dplyr::summarise_("class_count" = ~ length(true_class)) %>%
-    dplyr::mutate_("total_count" = ~ sum(class_count),
-                   "prevalence" = ~ class_count / total_count)
+    dplyr::group_by(.data$true_class) %>%
+    dplyr::summarise(!!"class_count" := length(.data$true_class)) %>%
+    dplyr::mutate(
+      !!"total_count" := sum(.data$class_count),
+      !!"prevalence" := .data$class_count / .data$total_count
+    )
 
   # discrimination plot
   cols <- grDevices::rainbow(dplyr::n_distinct(x))
