@@ -106,11 +106,11 @@ mcc <- function(C) {
   N <- sum(C)
   rc <- purrr::cross2(seq_len(nrow(C)), seq_len(nrow(C)))
   num <- N * sum(diag(C)) - sum(purrr::map_dbl(rc,
-                                               ~ C[.x[[1]], ] %*% C[, .x[[2]]]))
+                                               ~ C[.[[1]], ] %*% C[, .[[2]]]))
   den <- sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
-                                         ~ C[.x[[1]], ] %*% t(C)[, .x[[2]]]))) *
+                                         ~ C[.[[1]], ] %*% t(C)[, .[[2]]]))) *
     sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
-                                    ~ t(C)[.x[[1]], ] %*% C[, .x[[2]]])))
+                                    ~ t(C)[.[[1]], ] %*% C[, .[[2]]])))
   num / den
 }
 
@@ -122,12 +122,15 @@ ova <- function(C) {
     nm <- seq_len(nrow(C))
   else
     nm <- dimnames(C)[[1]]
-  purrr::map(purrr::set_names(seq_len(nrow(C)), nm), ~ {
-    m <- C[.x, .x]
-    cs <- sum(C[, .x])
-    rs <- sum(C[.x, ])
-    matrix(c(m, cs - m, rs - m, sum(C) - cs - rs + m), nrow = 2)
-  })
+
+  seq_len(nrow(C)) %>%
+    purrr::set_names(nm) %>%
+    purrr::map(~ {
+      m <- C[., .]
+      cs <- sum(C[, .])
+      rs <- sum(C[., ])
+      matrix(c(m, cs - m, rs - m, sum(C) - cs - rs + m), nrow = 2)
+    })
 }
 
 #' Multi-class Log/cross-entropy Loss

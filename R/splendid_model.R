@@ -57,7 +57,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   )
   # Evaluation object
   evals <- preds %>% purrr::map(
-    ~ purrr::map2(test.id, .x, ~ evaluation(class[.x], .y) %>%
+    ~ purrr::map2(test.id, ., ~ evaluation(class[.x], .y) %>%
                     purrr::flatten() %>%
                     unlist() %>%
                     data.frame())) %>%
