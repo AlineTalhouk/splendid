@@ -100,7 +100,6 @@ sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
 #' @inheritParams sequential_ensemble
 #' @noRd
 sequential_rank <- function(sm, boxplot) {
-  model <- value <- metric <- NULL
   tidy_evals <- sequential_eval(sm)
   if (boxplot) {
     p <- tidy_evals %>%
@@ -113,12 +112,13 @@ sequential_rank <- function(sm, boxplot) {
   }
   model_ranks <- tidy_evals %>%
     dplyr::group_by(class, model) %>%
-    dplyr::summarise(metric = mean(value)) %>%
+    dplyr::summarise(!!"metric" := mean(.data$value)) %>%
     dplyr::group_by(class) %>%
-    dplyr::summarize(model = model[which.max(metric)], metric = max(metric)) %>%
-    dplyr::arrange(desc(metric)) %>%
+    dplyr::summarize(!!"model" := .data$model[which.max(.data$metric)],
+                     !!"metric" := max(.data$metric)) %>%
+    dplyr::arrange(desc(.data$metric)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-metric)
+    dplyr::select(-"metric")
   model_ranks
 }
 
@@ -127,19 +127,14 @@ sequential_rank <- function(sm, boxplot) {
 #' @inheritParams splendid_ensemble
 #' @noRd
 sequential_eval <- function(sm) {
-  measure <- score <- value <- model <- boot <- NULL
   evals <- sm %>%
-    purrr::imap(~ magrittr::set_colnames(
-      .x, paste(.y, colnames(.x), sep = "."))) %>%
-    unname() %>%
     purrr::invoke(cbind, .) %>%
-    dplyr::mutate(measure = rownames(.)) %>%
-    dplyr::filter(grepl("f1\\.", measure)) %>%
-    dplyr::mutate(measure = gsub("f1\\.", "", measure)) %>%
-    dplyr::rename(class = measure) %>%
-    tidyr::gather(score, value, -class) %>%
-    tidyr::separate(score, c("model", "boot"), sep = "\\.") %>%
-    dplyr::select(model, boot, class, value)
+    tibble::rownames_to_column("class") %>%
+    dplyr::filter(grepl("f1\\.", .data$class)) %>%
+    dplyr::mutate(!!"class" := gsub("f1\\.", "", .data$class)) %>%
+    tidyr::gather(!!"score", !!"value", -!!"class") %>%
+    tidyr::separate(!!"score", c("model", "boot"), sep = "\\.") %>%
+    dplyr::select("model", "boot", "class", "value")
   evals
 }
 
