@@ -34,9 +34,9 @@ ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
         purrr::when(
           is.null(.) ~ magrittr::set_colnames(.x, c("class_0", .y)), # xgboost
           ~ .x
-        )
+        ) %>%
+        `[`(, .y)
     }) %>%
-    purrr::imap(~ .x[, .y]) %>%
     as.data.frame() %>%
     sum_to_one()
   pred <- factor(colnames(prob)[max.col(prob)])
