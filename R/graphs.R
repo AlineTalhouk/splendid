@@ -78,15 +78,12 @@ reliability_plot <- function(x, pred.probs) {
       bin.pred <- cut(prob, 10)
       purrr::map_df(levels(bin.pred), ~ {
         idx <- . == bin.pred
-        data.frame(V1 = mean(prob[idx]),
-                   V2 = sum(cl[idx]) / length(cl[idx]))
+        data.frame(MP = mean(prob[idx]), OF = mean(cl[idx]))
       }) %>%
-        dplyr::filter(!is.nan(V1)) %>%
-        with(., stats::lowess(V1, V2))
+        dplyr::filter(!is.nan(MP)) %>%
+        with(., stats::lowess(MP, OF))
     }) %>%
-    purrr::imap(~ c(.x, class = .y)) %>%
-    purrr::map(tibble::as.tibble) %>%
-    dplyr::bind_rows() %>%
+    purrr::imap_dfr(~ purrr::splice(.x, class = rep(.y, 10))) %>%
     dplyr::mutate(class = factor(class))
 
   # reliability plot
