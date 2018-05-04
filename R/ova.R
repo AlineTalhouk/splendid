@@ -26,8 +26,11 @@ ova_classification <- function(data, class, algorithms, rfe = FALSE,
 ova_prediction <- function(fits, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
   prob <- fits %>%
-    purrr::map(prediction, data = data, test.id = test.id, class = class,
-               train.id = train.id, standardize = standardize) %>%
+    purrr::map(~ purrr::invoke(
+      .f = prediction,
+      .x = tibble::lst(data, class, test.id, train.id, threshold, standardize),
+      mod = .
+    )) %>%
     purrr::map(`%@%`, "prob") %>%
     purrr::imap(~ {
       colnames(.x) %>%
