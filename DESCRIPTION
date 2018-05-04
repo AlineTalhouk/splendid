@@ -41,6 +41,7 @@ Imports:
     purrr,
     randomForest,
     RankAggreg,
+    rlang,
     sda,
     tibble,
     tidyr,
