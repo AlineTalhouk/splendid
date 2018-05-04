@@ -5,6 +5,7 @@
 #' @import ggplot2
 #' @importFrom magrittr "%>%"
 #' @importFrom purrr "%||%" "%@%"
+#' @importFrom rlang "!!" ":=" .data
 #' @importFrom dplyr funs desc
 #' @importFrom utils head tail
 "_PACKAGE"
