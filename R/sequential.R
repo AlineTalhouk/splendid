@@ -129,8 +129,8 @@ sequential_rank <- function(sm, boxplot) {
 sequential_eval <- function(sm) {
   measure <- score <- value <- model <- boot <- NULL
   evals <- sm %>%
-    purrr::map2(names(.), ~ .x %>% magrittr::set_colnames(
-      paste(.y, colnames(.x), sep = "."))) %>%
+    purrr::imap(~ magrittr::set_colnames(
+      .x, paste(.y, colnames(.x), sep = "."))) %>%
     unname() %>%
     purrr::invoke(cbind, .) %>%
     dplyr::mutate(measure = rownames(.)) %>%

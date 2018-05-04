@@ -82,7 +82,7 @@ reliability_plot <- function(x, pred.probs) {
         dplyr::filter(!is.nan(V1)) %>%
         with(., stats::lowess(V1, V2))
     }) %>%
-    purrr::map2(names(.), ~ c(.x, class = .y)) %>%
+    purrr::imap(~ c(.x, class = .y)) %>%
     purrr::map(tibble::as.tibble) %>%
     dplyr::bind_rows() %>%
     dplyr::mutate(class = factor(class))
