@@ -4,18 +4,18 @@
 \alias{ova_prediction}
 \title{One-Vs-All prediction approach}
 \usage{
-ova_prediction(fits, data, test.id = NULL, class, train.id, threshold = 0,
-  standardize = FALSE, ...)
+ova_prediction(fits, data, class, test.id = NULL, train.id = NULL,
+  threshold = 0, standardize = FALSE, ...)
 }
 \arguments{
 \item{fits}{list of ova fits from \code{ova_classification}}
 
 \item{data}{data frame with rows as samples, columns as features}
 
+\item{class}{true/reference class vector used for supervised learning}
+
 \item{test.id}{integer vector of indices for test set. If \code{NULL} (default),
 all samples are used.}
-
-\item{class}{true/reference class vector used for supervised learning}
 
 \item{train.id}{integer vector of indices for training set. If \code{NULL}
 (default), all samples are used.}

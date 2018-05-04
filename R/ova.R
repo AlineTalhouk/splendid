@@ -23,7 +23,7 @@ ova_classification <- function(data, class, algorithms, rfe = FALSE,
 #' @return (tibble) predicted probabilities for each class
 #' @author Dustin Johnson, Derek Chiu
 #' @export
-ova_prediction <- function(fits, data, test.id = NULL, class, train.id,
+ova_prediction <- function(fits, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
   prob <- fits %>%
     purrr::map(prediction, data = data, test.id = test.id, class = class,
