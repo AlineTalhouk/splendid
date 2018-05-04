@@ -111,9 +111,10 @@ sequential_rank <- function(sm, boxplot) {
     print(p)
   }
   model_ranks <- tidy_evals %>%
-    dplyr::group_by(class, model) %>%
+    dplyr::group_by(.data$class, .data$model) %>%
     dplyr::summarise(!!"metric" := mean(.data$value)) %>%
-    dplyr::group_by(class) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$class) %>%
     dplyr::summarize(!!"model" := .data$model[which.max(.data$metric)],
                      !!"metric" := max(.data$metric)) %>%
     dplyr::arrange(desc(.data$metric)) %>%
