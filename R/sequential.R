@@ -119,7 +119,7 @@ sequential_rank <- function(sm, boxplot) {
                      !!"metric" := max(.data$metric)) %>%
     dplyr::arrange(desc(.data$metric)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
-    dplyr::select(-!!"metric")
+    `[`(, setdiff(names(.), "metric"))
   model_ranks
 }
 
