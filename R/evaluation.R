@@ -104,13 +104,10 @@ f1 <- function(C) {
 #' @noRd
 mcc <- function(C) {
   N <- sum(C)
-  rc <- purrr::cross2(seq_len(nrow(C)), seq_len(nrow(C)))
-  num <- N * sum(diag(C)) - sum(purrr::map_dbl(rc,
-                                               ~ C[.[[1]], ] %*% C[, .[[2]]]))
-  den <- sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
-                                         ~ C[.[[1]], ] %*% t(C)[, .[[2]]]))) *
-    sqrt(N ^ 2 - sum(purrr::map_dbl(rc,
-                                    ~ t(C)[.[[1]], ] %*% C[, .[[2]]])))
+  rc <- as.data.frame(which(is.finite(C), arr.ind = TRUE))
+  num <- N * sum(diag(C)) - sum(purrr::pmap_dbl(rc, ~ C[.x, ] %*% C[, .y]))
+  den <- sqrt(N ^ 2 - sum(purrr::pmap_dbl(rc, ~ C[.x, ] %*% C[.y, ]))) *
+    sqrt(N ^ 2 - sum(purrr::pmap_dbl(rc, ~ C[, .x] %*% C[, .y])))
   num / den
 }
 
