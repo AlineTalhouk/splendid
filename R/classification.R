@@ -120,7 +120,7 @@ rfe_sizes <- function(sizes, class) {
       table() %>%
       min() %>%
       magrittr::divide_by_int(2) %>%
-      seq_len() %>%
+      seq_len(.) %>%
       magrittr::extract(. %% 25 == 0)
   }
   if (length(sizes) == 0) 1 else sizes
