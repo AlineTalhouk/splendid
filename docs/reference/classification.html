@@ -25,11 +25,15 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Multiclass classification — classification" />
 
 <meta property="og:description" content="Run a multiclass classification algorithm on a given dataset and reference
 class." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -39,8 +43,6 @@ class." />
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
-
-
 
 
   </head>
@@ -95,14 +97,16 @@ class." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Multiclass classification</h1>
-    <small>Source: <a href='https://github.com/AlineTalhouk/splendid/blob/master/R/classification.R'><code>R/classification.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/AlineTalhouk/splendid/blob/master/R/classification.R'><code>R/classification.R</code></a></small>
     <div class="hidden name"><code>classification.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Run a multiclass classification algorithm on a given dataset and reference
 class.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algorithms</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sizes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -205,6 +209,7 @@ additional class "ova" is added if <code>ova = TRUE</code>.</p>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>hgsc</span>)
 <span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'>attr</span>(<span class='no'>hgsc</span>, <span class='st'>"class.true"</span>)
 <span class='fu'>classification</span>(<span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='st'>"xgboost"</span>)</div><div class='output co'>#&gt; ##### xgb.Booster
+#&gt; Handle is invalid! Suggest using xgb.Booster.complete
 #&gt; raw: 11.5 Kb 
 #&gt; call:
 #&gt;   xgboost::xgb.train(params = list(objective = "multi:softprob", 
@@ -213,11 +218,11 @@ additional class "ova" is added if <code>ova = TRUE</code>.</p>
 #&gt;         1), nrounds = 2)
 #&gt; params (as set within xgb.train):
 #&gt;   objective = "multi:softprob", eval_metric = "mlogloss", num_class = "4", silent = "1"
-#&gt; xgb.attributes:
-#&gt;   niter
 #&gt; callbacks:
 #&gt;   cb.print.evaluation(period = print_every_n)
-#&gt; niter: 2</div></pre>
+#&gt; # of features: 321 
+#&gt; niter: 2
+#&gt; nfeatures : 321 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
