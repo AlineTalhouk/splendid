@@ -36,7 +36,7 @@
 #' class <- attr(hgsc, "class.true")
 #' classification(hgsc, class, "xgboost")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, sizes = NULL, trees = 500,
+                           standardize = FALSE, sizes = NULL, trees = 100,
                            tune = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor

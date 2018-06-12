@@ -5,7 +5,7 @@
 \title{Multiclass classification}
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sizes = NULL, trees = 500, tune = FALSE)
+  standardize = FALSE, sizes = NULL, trees = 100, tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

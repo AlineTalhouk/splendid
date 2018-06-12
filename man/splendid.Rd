@@ -6,7 +6,7 @@
 \usage{
 splendid(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0, trees = 500, tune = FALSE, top = 3,
+  plus = TRUE, threshold = 0, trees = 100, tune = FALSE, top = 3,
   seed_rank = 1, sequential = FALSE)
 }
 \arguments{

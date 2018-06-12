@@ -5,7 +5,7 @@
 \title{One-Vs-All training approach}
 \usage{
 ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, trees = 500, tune = FALSE)
+  standardize = FALSE, trees = 100, tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
