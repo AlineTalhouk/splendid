@@ -105,9 +105,23 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
       )
     )
     data_ov <- data[mod[["optVariables"]]]
-    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
+    if (tune) {
+      suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
+    } else {
+      switch(
+        algorithms,
+        rf = randomForest::randomForest(x = data, y = class)
+      )
+    }
   } else {
-    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
+    if (tune) {
+      suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
+    } else {
+      switch(
+        algorithms,
+        rf = randomForest::randomForest(x = data, y = class)
+      )
+    }
   }
 }
 
