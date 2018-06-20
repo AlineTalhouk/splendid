@@ -85,7 +85,7 @@ pam_model <- function(data, class) {
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, seed_alg) {
+rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, seed_alg = 1) {
   method <- rfe_method(algorithms)
   sizes <- rfe_sizes(sizes, class)
   type <- if (tune) "range" else "default"
