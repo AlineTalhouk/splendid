@@ -40,6 +40,8 @@
 #' @param n number of bootstrap replicates to generate
 #' @param seed_boot random seed used for reproducibility in bootstrapping
 #'   training sets for model generation
+#' @param seed_alg random seed used for reproducibility when running algorithms
+#'   with an intrinsic random element (random forests)
 #' @param convert logical; if `TRUE`, converts all categorical variables in
 #'   `data` to dummy variables. Certain algorithms only work with such
 #'   limitations (e.g. LDA).

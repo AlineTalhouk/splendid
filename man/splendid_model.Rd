@@ -5,8 +5,9 @@
 \title{Train, predict, and evaluate classification models}
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed_boot = 1,
-  convert = FALSE, rfe = FALSE, ova = FALSE, standardize = FALSE,
-  plus = TRUE, threshold = 0, trees = 100, tune = FALSE)
+  seed_alg = 1, convert = FALSE, rfe = FALSE, ova = FALSE,
+  standardize = FALSE, plus = TRUE, threshold = 0, trees = 100,
+  tune = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -21,6 +22,9 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 
 \item{seed_boot}{random seed used for reproducibility in bootstrapping
 training sets for model generation}
+
+\item{seed_alg}{random seed used for reproducibility when running algorithms
+with an intrinsic random element (random forests)}
 
 \item{convert}{logical; if \code{TRUE}, converts all categorical variables in
 \code{data} to dummy variables. Certain algorithms only work with such

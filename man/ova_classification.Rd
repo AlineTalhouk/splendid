@@ -5,7 +5,7 @@
 \title{One-Vs-All training approach}
 \usage{
 ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, trees = 100, tune = FALSE)
+  standardize = FALSE, trees = 100, tune = FALSE, seed_alg = 1)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -30,6 +30,9 @@ corresponding training sets.}
 "adaboost"}
 
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
+
+\item{seed_alg}{random seed used for reproducibility when running algorithms
+with an intrinsic random element (random forests)}
 }
 \value{
 list of binary classifier fits on each class
