@@ -37,7 +37,7 @@
 #' classification(hgsc, class, "xgboost")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, sizes = NULL, trees = 100,
-                           tune = FALSE) {
+                           tune = FALSE, seed_alg = 1) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   if (standardize) {
@@ -53,7 +53,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
     algorithms,
     pam = pam_model(data, class),
     svm = rfe_model(data, class, "svm", rfe, sizes, tune),
-    rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees),
+    rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees, seed_alg),
     lda = rfe_model(data, class, "lda", rfe, sizes, tune),
     slda = sda_model(data, class, "slda"),
     sdda = sda_model(data, class, "sdda"),
@@ -85,7 +85,7 @@ pam_model <- function(data, class) {
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
+rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, seed_alg) {
   method <- rfe_method(algorithms)
   sizes <- rfe_sizes(sizes, class)
   type <- if (tune) "range" else "default"
@@ -108,6 +108,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
     if (tune) {
       suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
     } else {
+      set.seed(seed_alg)
       switch(
         algorithms,
         rf = randomForest::randomForest(x = data, y = class)
@@ -117,6 +118,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL) {
     if (tune) {
       suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
     } else {
+      set.seed(seed_alg)
       switch(
         algorithms,
         rf = randomForest::randomForest(x = data, y = class)

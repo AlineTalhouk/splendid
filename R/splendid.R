@@ -92,6 +92,7 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 #' }
 splendid <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
+                     seed_alg = 1,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE, plus = TRUE, threshold = 0,
                      trees = 100, tune = FALSE, top = 3, seed_rank = 1,
@@ -100,7 +101,7 @@ splendid <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   data <- splendid_convert(data, algorithms, convert)
 
-  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, convert, rfe,
+  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_alg, convert, rfe,
                          ova, standardize, plus, threshold, trees, tune)
   sm <- purrr::invoke(splendid_model, sm_args)
 

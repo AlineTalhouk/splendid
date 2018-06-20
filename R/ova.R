@@ -6,12 +6,12 @@
 #' @export
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
                                ova = FALSE, standardize = FALSE, trees = 100,
-                               tune = FALSE) {
+                               tune = FALSE, seed_alg = 1) {
   class %>%
     binarize() %>%
     purrr::map(~ purrr::invoke(
       .f = classification,
-      .x = tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune),
+      .x = tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune, seed_alg),
       class = .
     ))
 }
