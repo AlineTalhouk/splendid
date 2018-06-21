@@ -111,7 +111,8 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
       set.seed(seed_alg)
       switch(
         algorithms,
-        rf = randomForest::randomForest(x = data, y = class)
+        rf = randomForest::randomForest(x = data_ov, y = class),
+        lda = suppressWarnings(MASS::lda(x = data_ov, grouping = class))
       )
     }
   } else {
@@ -121,7 +122,8 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
       set.seed(seed_alg)
       switch(
         algorithms,
-        rf = randomForest::randomForest(x = data, y = class)
+        rf = randomForest::randomForest(x = data, y = class),
+        lda = suppressWarnings(MASS::lda(x = data, grouping = class))
       )
     }
   }
