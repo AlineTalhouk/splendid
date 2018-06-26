@@ -37,9 +37,10 @@
 #' classification(hgsc, class, "xgboost")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, sizes = NULL, trees = 100,
-                           tune = FALSE, seed_alg = 1) {
+                           tune = FALSE, seed_alg = 1, convert = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
+  data <- splendid_convert(data, algorithms, convert)
   if (standardize) {
     if (!is.null(attr(data, "dummy_vars"))) {
       data <- data %>%

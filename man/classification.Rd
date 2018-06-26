@@ -6,7 +6,7 @@
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
   standardize = FALSE, sizes = NULL, trees = 100, tune = FALSE,
-  seed_alg = 1)
+  seed_alg = 1, convert = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -36,6 +36,10 @@ corresponding training sets.}
 
 \item{seed_alg}{random seed used for reproducibility when running algorithms
 with an intrinsic random element (random forests)}
+
+\item{convert}{logical; if \code{TRUE}, converts all categorical variables in
+\code{data} to dummy variables. Certain algorithms only work with such
+limitations (e.g. LDA).}
 }
 \value{
 The model object from running the classification \code{algorithm}
