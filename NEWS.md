@@ -1,5 +1,7 @@
 # splendid 0.1.0
 
+* Extended categorical variable conversion to `classification()`
+
 * Reinstate tidy evaluation semantics after package dependencies updated
 
 * Improved RFE interface
