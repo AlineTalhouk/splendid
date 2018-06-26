@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -107,8 +109,9 @@
     </div>
 
     <pre class="usage"><span class='fu'>splendid_model</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed_boot</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>plus</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>seed_alg</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>plus</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,6 +138,11 @@ this argument is <code>NULL</code>, in which case all algorithms are used.</p></
       <th>seed_boot</th>
       <td><p>random seed used for reproducibility in bootstrapping
 training sets for model generation</p></td>
+    </tr>
+    <tr>
+      <th>seed_alg</th>
+      <td><p>random seed used for reproducibility when running algorithms
+with an intrinsic random element (random forests)</p></td>
     </tr>
     <tr>
       <th>convert</th>

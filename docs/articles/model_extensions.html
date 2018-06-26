@@ -8,8 +8,8 @@
 <title>Model Extensions • splendid</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Model Extensions">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Model Extensions">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -175,8 +175,8 @@
 <a href="#sequential-algorithm" class="anchor"></a>Sequential Algorithm</h2>
 <p>The sequential algorithm follows a more complicated workflow. This is an ensemble method, meaning that we work with fitted models, predictions, and evaluation metrics, whereas the <code>ova</code> approach is integrated in the initial classification.</p>
 <p>By <em>sequential</em>, the idea is that we want to sequentially assign classes in a binary fashion, until all classes have been assigned. The diagram below is a simple example for a 4-class case.</p>
-<div id="htmlwidget-03c8512bdf171e4cba38" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-03c8512bdf171e4cba38">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
+<div id="htmlwidget-88cef213d716385c224f" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-88cef213d716385c224f">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
 <p>Suppose we fit a set of classifiers with 2 bootstrap replicates on the <code>xgboost</code> and <code>rf</code> algorithms.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">sm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid_model.html">splendid_model</a></span>(hgsc, class, <span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">algorithms =</span> <span class="kw">c</span>(<span class="st">"xgboost"</span>, <span class="st">"rf"</span>))</a></code></pre></div>
 <p>Table 2 shows the per-class F1-scores for model fitted and bootstrap replicate. An logical column indicates whether <code>ova</code> was used for the particular algorithm.</p>
@@ -241,7 +241,7 @@
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.8103448</td>
+<td align="right">0.8135593</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
@@ -253,19 +253,19 @@
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">MES.C1</td>
-<td align="right">0.9347826</td>
+<td align="right">0.9230769</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.8260870</td>
+<td align="right">0.8571429</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.7722772</td>
+<td align="right">0.7647059</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
@@ -277,7 +277,7 @@
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">MES.C1</td>
-<td align="right">0.9113924</td>
+<td align="right">0.9230769</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
@@ -304,12 +304,12 @@
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">IMM.C2</td>
+<td align="left">PRO.C5</td>
 <td align="left">rf</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="left">PRO.C5</td>
+<td align="left">IMM.C2</td>
 <td align="left">rf</td>
 </tr>
 <tr class="even">
@@ -323,39 +323,19 @@
 <table class="table">
 <caption>Table 4: Binarized class matrix for sequential algorithm</caption>
 <thead><tr class="header">
-<th align="left">PRO.C5</th>
 <th align="left">IMM.C2</th>
 <th align="left">MES.C1</th>
+<th align="left">PRO.C5</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">class_0</td>
+<td align="left">class_0</td>
 <td align="left">PRO.C5</td>
-<td align="left">class_0</td>
-<td align="left">class_0</td>
 </tr>
 <tr class="even">
 <td align="left">class_0</td>
-<td align="left">class_0</td>
 <td align="left">MES.C1</td>
-</tr>
-<tr class="odd">
-<td align="left">DIF.C4</td>
-<td align="left">class_0</td>
-<td align="left">class_0</td>
-</tr>
-<tr class="even">
-<td align="left">class_0</td>
-<td align="left">class_0</td>
-<td align="left">MES.C1</td>
-</tr>
-<tr class="odd">
-<td align="left">class_0</td>
-<td align="left">class_0</td>
-<td align="left">MES.C1</td>
-</tr>
-<tr class="even">
-<td align="left">PRO.C5</td>
-<td align="left">class_0</td>
 <td align="left">class_0</td>
 </tr>
 <tr class="odd">
@@ -365,18 +345,38 @@
 </tr>
 <tr class="even">
 <td align="left">class_0</td>
-<td align="left">class_0</td>
 <td align="left">MES.C1</td>
+<td align="left">class_0</td>
 </tr>
 <tr class="odd">
 <td align="left">class_0</td>
+<td align="left">MES.C1</td>
+<td align="left">class_0</td>
+</tr>
+<tr class="even">
+<td align="left">class_0</td>
+<td align="left">class_0</td>
+<td align="left">PRO.C5</td>
+</tr>
+<tr class="odd">
+<td align="left">DIF.C4</td>
+<td align="left">class_0</td>
+<td align="left">class_0</td>
+</tr>
+<tr class="even">
+<td align="left">class_0</td>
+<td align="left">MES.C1</td>
+<td align="left">class_0</td>
+</tr>
+<tr class="odd">
 <td align="left">IMM.C2</td>
 <td align="left">class_0</td>
+<td align="left">class_0</td>
 </tr>
 <tr class="even">
+<td align="left">class_0</td>
+<td align="left">class_0</td>
 <td align="left">PRO.C5</td>
-<td align="left">class_0</td>
-<td align="left">class_0</td>
 </tr>
 </tbody>
 </table>
