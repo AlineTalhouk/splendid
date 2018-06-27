@@ -86,7 +86,8 @@ pam_model <- function(data, class) {
 
 #' RFE model
 #' @noRd
-rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, seed_alg = 1) {
+rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
+                      seed_alg = 1) {
   method <- rfe_method(algorithms)
   sizes <- rfe_sizes(sizes, class)
   type <- if (tune) "range" else "default"
@@ -123,6 +124,18 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
   }
 }
 
+#' RFE methods
+#' @noRd
+rfe_method <- function(algorithms) {
+  switch(
+    algorithms,
+    lda = "lda",
+    rf = "rf",
+    svm = "svmRadial",
+    adaboost_m1 = "AdaBoost.M1"
+  )
+}
+
 #' RFE sizes by default are equal to every 25th integer up to one-half of the
 #' smallest class size. If class sizes are too small, use size = 1
 #' @noRd
@@ -136,18 +149,6 @@ rfe_sizes <- function(sizes, class) {
       magrittr::extract(. %% 25 == 0)
   }
   if (length(sizes) == 0) 1 else sizes
-}
-
-#' RFE methods
-#' @noRd
-rfe_method <- function(algorithms) {
-  switch(
-    algorithms,
-    lda = "lda",
-    rf = "rf",
-    svm = "svmRadial",
-    adaboost_m1 = "AdaBoost.M1"
-  )
 }
 
 #' Hyperparameter search grids. A single set is used for type "default" whereas
