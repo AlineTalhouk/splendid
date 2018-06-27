@@ -73,7 +73,7 @@ prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
   opt_vars <- head(names(mod[["trainingData"]]), -1)
   if (mod[["method"]] == "AdaBoost.M1") names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
-                       data = data[opt_vars])
+                        data = data[opt_vars])
   pred <- purrr::invoke(prediction.default, p_args, type = "raw")
   prob <- purrr::invoke(prediction.default, p_args, type = "prob")
   prediction_output(pred, prob, class, test.id, threshold)
@@ -93,7 +93,8 @@ prediction.randomForest <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
-  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
+  p_args <- tibble::lst(mod, test.id, train.id, standardize,
+                        data = data[colnames(mod$means)])
   p <- purrr::invoke(prediction.default, p_args, ...)
   pred <- p$class
   prob <- p$posterior %>% sum_to_one()
