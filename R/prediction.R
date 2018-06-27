@@ -82,7 +82,9 @@ prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
 #' @export
 prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
-  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
+  names(data) <- make.names(names(data))
+  p_args <- tibble::lst(mod, test.id, train.id, standardize,
+                        data = data[colnames(mod$SV)])
   pred <- purrr::invoke(prediction.default, p_args, probability = TRUE, ...) %>%
     unname()
   prob <- attr(pred, "probabilities")
