@@ -58,10 +58,10 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
     lda = rfe_model(data, class, "lda", rfe, sizes, tune),
     slda = sda_model(data, class, "slda"),
     sdda = sda_model(data, class, "sdda"),
-    mlr_glm = mlr_model(data, class, "mlr_glm"),
-    mlr_lasso = mlr_model(data, class, "mlr_lasso"),
-    mlr_ridge = mlr_model(data, class, "mlr_ridge"),
-    mlr_nnet = mlr_model(data, class, "mlr_nnet"),
+    mlr_glm = mlr_model(data, class, "mlr_glm", seed_alg),
+    mlr_lasso = mlr_model(data, class, "mlr_lasso", seed_alg),
+    mlr_ridge = mlr_model(data, class, "mlr_ridge", seed_alg),
+    mlr_nnet = mlr_model(data, class, "mlr_nnet", seed_alg),
     nnet = nnet_model(data, class),
     nbayes = nbayes_model(data, class),
     adaboost = boost_model(data, class, "adaboost", trees),
@@ -222,12 +222,13 @@ sda_model <- function(data, class, algorithms) {
 
 #' mlr model
 #' @noRd
-mlr_model <- function(data, class, algorithms) {
+mlr_model <- function(data, class, algorithms, seed_alg) {
   if (algorithms == "mlr_nnet") {
     nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE)
   } else if (algorithms == "mlr_glm") {
     glmnet::glmnet(as.matrix(data), class, lambda = 0, family = "multinomial")
   } else {
+    set.seed(seed_alg)
     alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
     glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha,
                       family = "multinomial")
