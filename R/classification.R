@@ -114,7 +114,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
         algorithms,
         rf = randomForest::randomForest(x = data_ov, y = class),
         lda = suppressWarnings(MASS::lda(x = data_ov, grouping = class)),
-        svm = suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov)),
+        svm = e1071::svm(x = data_ov, y = class, probability = TRUE),
         adaboost_m1 = suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
       )
     }
@@ -127,7 +127,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
         algorithms,
         rf = randomForest::randomForest(x = data, y = class),
         lda = suppressWarnings(MASS::lda(x = data, grouping = class)),
-        svm = suppressWarnings(purrr::invoke(tune_model, tune_args, data = data)),
+        svm = e1071::svm(x = data, y = class, probability = TRUE),
         adaboost_m1 = suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
       )
     }

@@ -80,6 +80,19 @@ prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
 }
 
 #' @export
+prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
+                           threshold = 0, standardize = FALSE, ...) {
+  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
+  pred <- purrr::invoke(prediction.default, p_args, probability = TRUE, ...) %>%
+    unname()
+  prob <- attr(pred, "probabilities")
+  if (!("0" %in% mod$levels))
+    prob <- prob[, order(colnames(prob), names(table(class)))]
+  prediction_output(pred, prob, class, test.id, threshold) %>%
+    structure(probabilities = NULL)
+}
+
+#' @export
 prediction.randomForest <- function(mod, data, class, test.id = NULL,
                                     train.id = NULL, threshold = 0,
                                     standardize = FALSE, ...) {
