@@ -107,10 +107,10 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
     )
     data <- data[mod[["optVariables"]]]
   }
+  set.seed(seed_alg)
   if (tune) {
     suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
   } else {
-    set.seed(seed_alg)
     switch(
       algorithms,
       rf = randomForest::randomForest(x = data, y = class),
