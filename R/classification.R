@@ -105,36 +105,21 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
         tuneGrid = param_grids(data, method, type = "default")
       )
     )
-    data_ov <- data[mod[["optVariables"]]]
-    if (tune) {
-      suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
-    } else {
-      set.seed(seed_alg)
-      switch(
-        algorithms,
-        rf = randomForest::randomForest(x = data_ov, y = class),
-        lda = suppressWarnings(MASS::lda(x = data_ov, grouping = class)),
-        svm = e1071::svm(x = data_ov, y = class, probability = TRUE),
-        adaboost_m1 = adabag::boosting(formula = class ~ .,
-                                       data = cbind(data_ov, class),
-                                       mfinal = 3)
-      )
-    }
+    data <- data[mod[["optVariables"]]]
+  }
+  if (tune) {
+    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
   } else {
-    if (tune) {
-      suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
-    } else {
-      set.seed(seed_alg)
-      switch(
-        algorithms,
-        rf = randomForest::randomForest(x = data, y = class),
-        lda = suppressWarnings(MASS::lda(x = data, grouping = class)),
-        svm = e1071::svm(x = data, y = class, probability = TRUE),
-        adaboost_m1 = adabag::boosting(formula = class ~ .,
-                                       data = cbind(data, class),
-                                       mfinal = 3)
-      )
-    }
+    set.seed(seed_alg)
+    switch(
+      algorithms,
+      rf = randomForest::randomForest(x = data, y = class),
+      lda = suppressWarnings(MASS::lda(x = data, grouping = class)),
+      svm = e1071::svm(x = data, y = class, probability = TRUE),
+      adaboost_m1 = adabag::boosting(formula = class ~ .,
+                                     data = cbind(data, class),
+                                     mfinal = 3)
+    )
   }
 }
 
