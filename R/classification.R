@@ -58,10 +58,10 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
     lda = rfe_model(data, class, "lda", rfe, sizes, tune),
     slda = sda_model(data, class, "slda"),
     sdda = sda_model(data, class, "sdda"),
-    mlr_glm = mlr_model(data, class, "mlr_glm", seed_alg),
-    mlr_lasso = mlr_model(data, class, "mlr_lasso", seed_alg),
-    mlr_ridge = mlr_model(data, class, "mlr_ridge", seed_alg),
-    mlr_nnet = mlr_model(data, class, "mlr_nnet", seed_alg),
+    mlr_glm = mlr_model(data, class, "mlr_glm"),
+    mlr_lasso = cv_mlr_model(data, class, "mlr_lasso", seed_alg),
+    mlr_ridge = cv_mlr_model(data, class, "mlr_ridge", seed_alg),
+    mlr_nnet = mlr_model(data, class, "mlr_nnet"),
     nnet = nnet_model(data, class),
     nbayes = nbayes_model(data, class),
     adaboost = boost_model(data, class, "adaboost", trees),
@@ -220,19 +220,24 @@ sda_model <- function(data, class, algorithms) {
   sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
 }
 
-#' mlr model
+#' Multinomial Logistic Regression
 #' @noRd
-mlr_model <- function(data, class, algorithms, seed_alg) {
-  if (algorithms == "mlr_nnet") {
-    nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE)
-  } else if (algorithms == "mlr_glm") {
-    glmnet::glmnet(as.matrix(data), class, lambda = 0, family = "multinomial")
-  } else {
-    set.seed(seed_alg)
-    alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
-    glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha,
-                      family = "multinomial")
-  }
+mlr_model <- function(data, class, algorithms) {
+  switch(
+    algorithms,
+    mlr_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE),
+    mlr_glm = glmnet::glmnet(as.matrix(data), class, lambda = 0,
+                             family = "multinomial")
+  )
+}
+
+#' Cross-validated regularized MLR
+#' @noRd
+cv_mlr_model <- function(data, class, algorithms, seed_alg) {
+  set.seed(seed_alg)
+  alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
+  glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha,
+                    family = "multinomial")
 }
 
 #' neural network model
