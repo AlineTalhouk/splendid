@@ -115,7 +115,9 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
         rf = randomForest::randomForest(x = data_ov, y = class),
         lda = suppressWarnings(MASS::lda(x = data_ov, grouping = class)),
         svm = e1071::svm(x = data_ov, y = class, probability = TRUE),
-        adaboost_m1 = suppressWarnings(purrr::invoke(tune_model, tune_args, data = data_ov))
+        adaboost_m1 = adabag::boosting(formula = class ~ .,
+                                       data = cbind(data_ov, class),
+                                       mfinal = 3)
       )
     }
   } else {
@@ -128,7 +130,9 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL, s
         rf = randomForest::randomForest(x = data, y = class),
         lda = suppressWarnings(MASS::lda(x = data, grouping = class)),
         svm = e1071::svm(x = data, y = class, probability = TRUE),
-        adaboost_m1 = suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
+        adaboost_m1 = adabag::boosting(formula = class ~ .,
+                                       data = cbind(data, class),
+                                       mfinal = 3)
       )
     }
   }
