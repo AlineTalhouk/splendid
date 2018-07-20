@@ -88,7 +88,7 @@ prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
   pred <- purrr::invoke(prediction.default, p_args, probability = TRUE, ...) %>%
     unname()
   prob <- attr(pred, "probabilities")
-  if (!("0" %in% mod$levels))
+  if (!("class_0" %in% mod$levels))
     prob <- prob[, order(colnames(prob), names(table(class)))]
   prediction_output(pred, prob, class, test.id, threshold) %>%
     structure(probabilities = NULL)
