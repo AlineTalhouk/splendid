@@ -64,10 +64,10 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
     mlr_nnet = mlr_model(data, class, "mlr_nnet"),
     nnet = nnet_model(data, class),
     nbayes = nbayes_model(data, class),
-    adaboost = boost_model(data, class, "adaboost", trees),
+    adaboost = boost_model(data, class, "adaboost", trees, seed_alg),
     adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes,
                             tune, trees),
-    xgboost = boost_model(data, class, "xgboost"),
+    xgboost = boost_model(data, class, "xgboost", seed_alg = seed_alg),
     knn = knn_model(class, "knn", ova)
   )
 }
@@ -251,7 +251,8 @@ nbayes_model <- function(data, class) {
 
 #' boosting models
 #' @noRd
-boost_model <- function(data, class, algorithms, trees) {
+boost_model <- function(data, class, algorithms, trees, seed_alg) {
+  set.seed(seed_alg)
   switch(algorithms,
          adaboost = sink_output(maboost::maboost(
            x = data, y = class, breg = "entrop", iter = trees)),
