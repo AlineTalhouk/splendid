@@ -1,5 +1,7 @@
 # splendid 0.1.0
 
+* Default seed parameter value `NULL` does not invoke `set.seed()`
+
 * Extend random seed parameter to more algorithms
 
 * Extended categorical variable conversion to `classification()`
