@@ -7,8 +7,8 @@
 #' data(hgsc)
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
-splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
-                           seed_alg = NULL,
+splendid_model <- function(data, class, algorithms = NULL, n = 1,
+                           seed_boot = NULL, seed_alg = NULL,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, plus = TRUE, threshold = 0,
                            trees = 100, tune = FALSE) {
@@ -18,10 +18,10 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
 
   # Determine whether to convert data in the presence of categorical predictors
   data <- splendid_convert(data, algorithms, convert)
+  class <- as.factor(class)  # ensure class is a factor
 
   # Generate bootstrap resamples; test samples are those not chosen in training
-  set.seed(seed_boot)
-  class <- as.factor(class)  # ensure class is a factor
+  if (!is.null(seed_boot)) set.seed(seed_boot)
   train.id <- boot_train(data = data, class = class, n = n)
   test.id <- boot_test(train.id = train.id)
 
