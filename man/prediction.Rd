@@ -16,8 +16,8 @@ prediction(mod, data, class, test.id = NULL, train.id = NULL,
 \method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
   train.id = NULL, threshold = 0, standardize = FALSE, ...)
 
-\method{prediction}{knn}(mod, data, class, test.id = NULL, train.id = NULL,
-  threshold = 0, standardize = FALSE, ...)
+\method{prediction}{knn}(mod, data, class, test.id = NULL,
+  train.id = NULL, threshold = 0, standardize = FALSE, ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link[=classification]{classification()}}}

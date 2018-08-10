@@ -3,7 +3,6 @@
 \name{splendid_graphs}
 \alias{splendid_graphs}
 \alias{discrimination_plot}
-\alias{splendid_graphs}
 \alias{reliability_plot}
 \title{Discriminating graphs}
 \usage{

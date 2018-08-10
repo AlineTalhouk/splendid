@@ -8,7 +8,7 @@
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
-                           seed_alg = 1,
+                           seed_alg = NULL,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, plus = TRUE, threshold = 0,
                            trees = 100, tune = FALSE) {

@@ -5,7 +5,7 @@
 \title{Train, predict, and evaluate classification models}
 \usage{
 splendid_model(data, class, algorithms = NULL, n = 1, seed_boot = 1,
-  seed_alg = 1, convert = FALSE, rfe = FALSE, ova = FALSE,
+  seed_alg = NULL, convert = FALSE, rfe = FALSE, ova = FALSE,
   standardize = FALSE, plus = TRUE, threshold = 0, trees = 100,
   tune = FALSE)
 }

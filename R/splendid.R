@@ -94,7 +94,7 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 #' }
 splendid <- function(data, class, algorithms = NULL, n = 1, seed_boot = 1,
-                     seed_alg = 1,
+                     seed_alg = NULL,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE, plus = TRUE, threshold = 0,
                      trees = 100, tune = FALSE, top = 3, seed_rank = 1,

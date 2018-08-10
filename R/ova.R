@@ -6,7 +6,7 @@
 #' @export
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
                                ova = FALSE, standardize = FALSE, trees = 100,
-                               tune = FALSE, seed_alg = 1) {
+                               tune = FALSE, seed_alg = NULL) {
   class %>%
     binarize() %>%
     purrr::map(~ purrr::invoke(

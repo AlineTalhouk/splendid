@@ -6,7 +6,7 @@
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
   standardize = FALSE, sizes = NULL, trees = 100, tune = FALSE,
-  seed_alg = 1, convert = FALSE)
+  seed_alg = NULL, convert = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

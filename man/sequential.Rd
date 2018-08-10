@@ -3,7 +3,6 @@
 \name{sequential}
 \alias{sequential}
 \alias{sequential_train}
-\alias{sequential}
 \alias{sequential_pred}
 \title{Sequential Algorithm}
 \usage{

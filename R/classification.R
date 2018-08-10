@@ -37,7 +37,7 @@
 #' classification(hgsc, class, "xgboost")
 classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            standardize = FALSE, sizes = NULL, trees = 100,
-                           tune = FALSE, seed_alg = 1, convert = FALSE) {
+                           tune = FALSE, seed_alg = NULL, convert = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   class <- as.factor(class)  # ensure class is a factor
   data <- splendid_convert(data, algorithms, convert)
@@ -87,7 +87,7 @@ pam_model <- function(data, class) {
 #' RFE model
 #' @noRd
 rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
-                      seed_alg = 1) {
+                      seed_alg = NULL) {
   method <- rfe_method(algorithms)
   sizes <- rfe_sizes(sizes, class)
   tune_args <- tibble::lst(class, method, trees)
@@ -107,7 +107,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
     )
     data <- data[mod[["optVariables"]]]
   }
-  set.seed(seed_alg)
+  if (!is.null(seed_alg)) set.seed(seed_alg)
   if (tune) {
     suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
   } else {
@@ -222,8 +222,8 @@ mlr_model <- function(data, class, algorithms) {
 
 #' Cross-validated regularized MLR
 #' @noRd
-cv_mlr_model <- function(data, class, algorithms, seed_alg) {
-  set.seed(seed_alg)
+cv_mlr_model <- function(data, class, algorithms, seed_alg = NULL) {
+  if (!is.null(seed_alg)) set.seed(seed_alg)
   alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
   glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha,
                     family = "multinomial")
@@ -251,8 +251,8 @@ nbayes_model <- function(data, class) {
 
 #' boosting models
 #' @noRd
-boost_model <- function(data, class, algorithms, trees, seed_alg) {
-  set.seed(seed_alg)
+boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
+  if (!is.null(seed_alg)) set.seed(seed_alg)
   switch(algorithms,
          adaboost = sink_output(maboost::maboost(
            x = data, y = class, breg = "entrop", iter = trees)),
