@@ -265,7 +265,7 @@ prediction_output <- function(pred, prob, class, test.id, threshold) {
     ctr <- class[test.id]
   }
   cth <- class_threshold(prob, threshold = threshold)
-  cp <- class_proportion(ct)
+  cp <- class_proportion(cth)
 
   structure(
     pred,
