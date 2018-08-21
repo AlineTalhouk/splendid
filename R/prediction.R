@@ -259,10 +259,21 @@ prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
 #' Prediction output with attributes
 #' @noRd
 prediction_output <- function(pred, prob, class, test.id, threshold) {
-  ct <- class_threshold(prob, threshold = threshold)
+  if (is.null(test.id)) {
+    ctr <- class
+  } else {
+    ctr <- class[test.id]
+  }
+  cth <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(ct)
-  structure(pred, prob = prob, class.true = class[test.id], class.thres = ct,
-            class.prop = cp)
+
+  structure(
+    pred,
+    prob = prob,
+    class.true = ctr,
+    class.thres = cth,
+    class.prop = cp
+  )
 }
 
 #' Predicted class labels above a max class probability threshold
