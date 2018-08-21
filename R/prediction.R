@@ -207,7 +207,12 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   both <- purrr::invoke(prediction.default, p_args, type = "both", ...)
   pred <- both$class
-  prob <- both$probs %>% magrittr::set_rownames(rownames(data[test.id, ]))
+  if (is.null(test.id)) {
+    rn <- rownames(data)
+  } else {
+    rn <- rownames(data[test.id, ])
+  }
+  prob <- both$probs %>% magrittr::set_rownames(rn)
   prediction_output(pred, prob, class, test.id, threshold)
 }
 
