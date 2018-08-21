@@ -259,10 +259,14 @@ prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
 #' Prediction output with attributes
 #' @noRd
 prediction_output <- function(pred, prob, class, test.id, threshold) {
-  if (is.null(test.id)) {
-    ctr <- class
+  if (is.null(class)) {
+    ctr <- NULL
   } else {
-    ctr <- class[test.id]
+    if (is.null(test.id)) {
+      ctr <- class
+    } else {
+      ctr <- class[test.id]
+    }
   }
   cth <- class_threshold(prob, threshold = threshold)
   cp <- class_proportion(cth)
