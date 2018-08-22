@@ -33,7 +33,7 @@
 #' mod <- classification(hgsc[training.id, ], class[training.id], "slda")
 #' pred <- prediction(mod, hgsc, class, test.id)
 #' table(true = class[test.id], pred)
-prediction <- function(mod, data, class, test.id = NULL, train.id = NULL,
+prediction <- function(mod, data, class = NULL, test.id = NULL, train.id = NULL,
                        threshold = 0, standardize = FALSE, ...) {
   if (!inherits(mod, ALG.CLASS)) {
     match.arg(class(mod), ALG.CLASS)
@@ -44,7 +44,7 @@ prediction <- function(mod, data, class, test.id = NULL, train.id = NULL,
 
 #' @rdname prediction
 #' @export
-prediction.default <- function(mod, data, class, test.id = NULL,
+prediction.default <- function(mod, data, class = NULL, test.id = NULL,
                                train.id = NULL, threshold = 0,
                                standardize = FALSE, ...) {
   dat <- split_data(data, test.id, train.id, standardize)
@@ -53,7 +53,7 @@ prediction.default <- function(mod, data, class, test.id = NULL,
 
 #' @rdname prediction
 #' @export
-prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
+prediction.pamrtrained <- function(mod, data, class = NULL, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
   loadNamespace("pamr")
@@ -69,8 +69,9 @@ prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                             threshold = 0, standardize = FALSE, ...) {
+prediction.train <- function(mod, data, class = NULL, test.id = NULL,
+                             train.id = NULL, threshold = 0,
+                             standardize = FALSE, ...) {
   loadNamespace("caret")
   opt_vars <- head(names(mod[["trainingData"]]), -1)
   if (mod[["method"]] == "AdaBoost.M1") names(data) <- make.names(names(data))
@@ -82,8 +83,9 @@ prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
 }
 
 #' @export
-prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
+prediction.svm <- function(mod, data, class = NULL, test.id = NULL,
+                           train.id = NULL, threshold = 0, standardize = FALSE,
+                           ...) {
   loadNamespace("e1071")
   names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
@@ -98,7 +100,7 @@ prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
 }
 
 #' @export
-prediction.randomForest <- function(mod, data, class, test.id = NULL,
+prediction.randomForest <- function(mod, data, class = NULL, test.id = NULL,
                                     train.id = NULL, threshold = 0,
                                     standardize = FALSE, ...) {
   loadNamespace("randomForest")
@@ -110,8 +112,9 @@ prediction.randomForest <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
+prediction.lda <- function(mod, data, class = NULL, test.id = NULL,
+                           train.id = NULL, threshold = 0, standardize = FALSE,
+                           ...) {
   loadNamespace("MASS")
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
                         data = data[colnames(mod$means)])
@@ -122,8 +125,9 @@ prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
 }
 
 #' @export
-prediction.sda <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
+prediction.sda <- function(mod, data, class = NULL, test.id = NULL,
+                           train.id = NULL, threshold = 0, standardize = FALSE,
+                           ...) {
   loadNamespace("sda")
   p_args <- tibble::lst(mod, test.id, train.id, standardize)
   p <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
@@ -134,7 +138,7 @@ prediction.sda <- function(mod, data, class, test.id = NULL, train.id = NULL,
 }
 
 #' @export
-prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
+prediction.cv.glmnet <- function(mod, data, class = NULL, test.id = NULL,
                                  train.id = NULL, threshold = 0,
                                  standardize = FALSE, ...) {
   loadNamespace("glmnet")
@@ -147,15 +151,16 @@ prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.glmnet <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                              threshold = 0, standardize = FALSE, ...) {
+prediction.glmnet <- function(mod, data, class = NULL, test.id = NULL,
+                              train.id = NULL, threshold = 0,
+                              standardize = FALSE, ...) {
   p_args <- tibble::lst(mod, data, class, test.id, train.id, threshold,
                         standardize)
   purrr::invoke(prediction.cv.glmnet, p_args, ...)
 }
 
 #' @export
-prediction.multinom <- function(mod, data, class, test.id = NULL,
+prediction.multinom <- function(mod, data, class = NULL, test.id = NULL,
                                 train.id = NULL, threshold = 0,
                                 standardize = FALSE, ...) {
   loadNamespace("nnet")
@@ -169,7 +174,7 @@ prediction.multinom <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
+prediction.nnet.formula <- function(mod, data, class = NULL, test.id = NULL,
                                     train.id = NULL, threshold = 0,
                                     standardize = FALSE, ...) {
   loadNamespace("e1071")
@@ -183,7 +188,7 @@ prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
+prediction.naiveBayes <- function(mod, data, class = NULL, test.id = NULL,
                                   train.id = NULL, threshold = 0,
                                   standardize = FALSE, ...) {
   loadNamespace("e1071")
@@ -195,7 +200,7 @@ prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.boosting <- function(mod, data, class, test.id = NULL,
+prediction.boosting <- function(mod, data, class = NULL, test.id = NULL,
                                 train.id = NULL, threshold = 0,
                                 standardize = FALSE, ...) {
   loadNamespace("adabag")
@@ -211,7 +216,7 @@ prediction.boosting <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.maboost <- function(mod, data, class, test.id = NULL,
+prediction.maboost <- function(mod, data, class = NULL, test.id = NULL,
                                train.id = NULL, threshold = 0,
                                standardize = FALSE, ...) {
   loadNamespace("maboost")
@@ -229,7 +234,7 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
 }
 
 #' @export
-prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
+prediction.xgb.Booster <- function(mod, data, class = NULL, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
   loadNamespace("xgboost")
@@ -248,8 +253,9 @@ prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
 
 #' @rdname prediction
 #' @export
-prediction.knn <- function(mod, data, class, test.id = NULL, train.id = NULL,
-                           threshold = 0, standardize = FALSE, ...) {
+prediction.knn <- function(mod, data, class = NULL, test.id = NULL,
+                           train.id = NULL, threshold = 0, standardize = FALSE,
+                           ...) {
   train.id <- train.id %||% seq_len(nrow(data))
   test.id <- test.id %||% seq_len(nrow(data))
   dat <- split_data(data, test.id, train.id, standardize) %>% {
