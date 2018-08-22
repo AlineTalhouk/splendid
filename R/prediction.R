@@ -56,6 +56,7 @@ prediction.default <- function(mod, data, class, test.id = NULL,
 prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
+  loadNamespace("pamr")
   dat <- split_data(data, test.id, train.id, standardize) %>% purrr::map(t)
   cvdat <- list(x = dat$train, y = class[train.id])
   model.cv <- sink_output(pamr::pamr.cv(mod, cvdat, nfold = 5))
@@ -70,6 +71,7 @@ prediction.pamrtrained <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
                              threshold = 0, standardize = FALSE, ...) {
+  loadNamespace("caret")
   opt_vars <- head(names(mod[["trainingData"]]), -1)
   if (mod[["method"]] == "AdaBoost.M1") names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
@@ -82,6 +84,7 @@ prediction.train <- function(mod, data, class, test.id = NULL, train.id = NULL,
 #' @export
 prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
+  loadNamespace("e1071")
   names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
                         data = data[colnames(mod$SV)])
@@ -98,6 +101,7 @@ prediction.svm <- function(mod, data, class, test.id = NULL, train.id = NULL,
 prediction.randomForest <- function(mod, data, class, test.id = NULL,
                                     train.id = NULL, threshold = 0,
                                     standardize = FALSE, ...) {
+  loadNamespace("randomForest")
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, type = "response") %>%
     unname()
@@ -108,6 +112,7 @@ prediction.randomForest <- function(mod, data, class, test.id = NULL,
 #' @export
 prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
+  loadNamespace("MASS")
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
                         data = data[colnames(mod$means)])
   p <- purrr::invoke(prediction.default, p_args, ...)
@@ -119,6 +124,7 @@ prediction.lda <- function(mod, data, class, test.id = NULL, train.id = NULL,
 #' @export
 prediction.sda <- function(mod, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
+  loadNamespace("sda")
   p_args <- tibble::lst(mod, test.id, train.id, standardize)
   p <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                      verbose = FALSE, ...)
@@ -131,6 +137,7 @@ prediction.sda <- function(mod, data, class, test.id = NULL, train.id = NULL,
 prediction.cv.glmnet <- function(mod, data, class, test.id = NULL,
                                  train.id = NULL, threshold = 0,
                                  standardize = FALSE, ...) {
+  loadNamespace("glmnet")
   p_args <- tibble::lst(mod, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         type = "class", ...) %>% factor()
@@ -151,6 +158,7 @@ prediction.glmnet <- function(mod, data, class, test.id = NULL, train.id = NULL,
 prediction.multinom <- function(mod, data, class, test.id = NULL,
                                 train.id = NULL, threshold = 0,
                                 standardize = FALSE, ...) {
+  loadNamespace("nnet")
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, type = "class", ...)
   prob <- purrr::invoke(prediction.default, p_args, type = "probs", ...)
@@ -164,6 +172,7 @@ prediction.multinom <- function(mod, data, class, test.id = NULL,
 prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
                                     train.id = NULL, threshold = 0,
                                     standardize = FALSE, ...) {
+  loadNamespace("e1071")
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- factor(purrr::invoke(prediction.default, p_args, type = "class", ...))
   prob <- purrr::invoke(prediction.default, p_args, type = "raw", ...)
@@ -177,6 +186,7 @@ prediction.nnet.formula <- function(mod, data, class, test.id = NULL,
 prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
                                   train.id = NULL, threshold = 0,
                                   standardize = FALSE, ...) {
+  loadNamespace("e1071")
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   pred <- purrr::invoke(prediction.default, p_args, type = "class", ...)
   prob <- purrr::invoke(prediction.default, p_args, type = "raw", ...) %>%
@@ -188,6 +198,7 @@ prediction.naiveBayes <- function(mod, data, class, test.id = NULL,
 prediction.boosting <- function(mod, data, class, test.id = NULL,
                                 train.id = NULL, threshold = 0,
                                 standardize = FALSE, ...) {
+  loadNamespace("adabag")
   names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   p <- purrr::invoke(prediction.default, p_args, ...)
@@ -203,6 +214,7 @@ prediction.boosting <- function(mod, data, class, test.id = NULL,
 prediction.maboost <- function(mod, data, class, test.id = NULL,
                                train.id = NULL, threshold = 0,
                                standardize = FALSE, ...) {
+  loadNamespace("maboost")
   names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
   both <- purrr::invoke(prediction.default, p_args, type = "both", ...)
@@ -220,6 +232,7 @@ prediction.maboost <- function(mod, data, class, test.id = NULL,
 prediction.xgb.Booster <- function(mod, data, class, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {
+  loadNamespace("xgboost")
   p_args <- tibble::lst(mod, test.id, train.id, standardize)
   prob <- purrr::invoke(prediction.default, p_args, data = as.matrix(data),
                         reshape = TRUE, ...) %>%
