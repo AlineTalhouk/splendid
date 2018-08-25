@@ -52,7 +52,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   }
   switch(
     algorithms,
-    pam = pam_model(data, class),
+    pam = pam_model(data, class, seed_alg),
     svm = rfe_model(data, class, "svm", rfe, sizes, tune),
     rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees, seed_alg),
     lda = rfe_model(data, class, "lda", rfe, sizes, tune),
@@ -76,7 +76,8 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
 #' optimal threshold delta is selected as largest threshold among those with the
 #' smallest cross-validated error
 #' @noRd
-pam_model <- function(data, class) {
+pam_model <- function(data, class, seed_alg = NULL) {
+  if (!is.null(seed_alg)) set.seed(seed_alg)
   nc <- dplyr::n_distinct(class)
   pamr_data <- list(x = t(data), y = class)
 
