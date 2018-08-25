@@ -264,7 +264,7 @@ prediction.knn <- function(mod, data, class = NULL, test.id = NULL,
     lev <- as.character(unlist(mod))
     if (length(lev) == 1) class <- ifelse(class == lev, lev, 0)
   }
-
+  class <- class %||% mod
   kdist <- knn.dist(dat)
   kparams <- list(train = seq_along(train.id),
                   test = length(train.id) + seq_along(test.id),

@@ -278,13 +278,13 @@ boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
            nrounds = 2))
 }
 
-#' knn dummy model
+#' knn "dummy model" returns training class
 #' @noRd
 knn_model <- function(class, algorithms, ova) {
   if (ova) {
     structure(list(unique(class[class != "class_0"])),
               class = c(algorithms, "ova"))
   } else {
-    structure(list(), class = algorithms)
+    structure(class, class = c(algorithms, "factor"))
   }
 }
