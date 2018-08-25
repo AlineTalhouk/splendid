@@ -73,15 +73,28 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
 }
 
 #' pam model using uniform prior probabilities for class representation
+#' optimal threshold delta is selected as largest threshold among those with the
+#' smallest cross-validated error
 #' @noRd
 pam_model <- function(data, class) {
   nc <- dplyr::n_distinct(class)
-  sink_output(pamr::pamr.train(
-    list(x = t(data),
-         y = class),
+  pamr_data <- list(x = t(data), y = class)
+
+  mod <- sink_output(pamr::pamr.train(
+    data = pamr_data,
     n.threshold = 100,
     prior = rep(1 / nc, nc)
   ))
+  mod_cv <- sink_output(pamr::pamr.cv(
+    fit = mod,
+    data = pamr_data,
+    nfold = 5
+  ))
+  delta <-
+    mod_cv$threshold[max(which(mod_cv$error == min(mod_cv$error)))]
+  mod <- c(mod, delta = delta)
+  class(mod) <- "pamrtrained"
+  mod
 }
 
 #' RFE model

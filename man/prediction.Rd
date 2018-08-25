@@ -7,16 +7,17 @@
 \alias{prediction.knn}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, class, test.id = NULL, train.id = NULL,
+prediction(mod, data, class = NULL, test.id = NULL, train.id = NULL,
   threshold = 0, standardize = FALSE, ...)
 
-\method{prediction}{default}(mod, data, class, test.id = NULL,
+\method{prediction}{default}(mod, data, class = NULL, test.id = NULL,
   train.id = NULL, threshold = 0, standardize = FALSE, ...)
 
-\method{prediction}{pamrtrained}(mod, data, class, test.id = NULL,
-  train.id = NULL, threshold = 0, standardize = FALSE, ...)
+\method{prediction}{pamrtrained}(mod, data, class = NULL,
+  test.id = NULL, train.id = NULL, threshold = 0,
+  standardize = FALSE, ...)
 
-\method{prediction}{knn}(mod, data, class, test.id = NULL,
+\method{prediction}{knn}(mod, data, class = NULL, test.id = NULL,
   train.id = NULL, threshold = 0, standardize = FALSE, ...)
 }
 \arguments{
