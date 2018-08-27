@@ -53,7 +53,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
   switch(
     algorithms,
     pam = pam_model(data, class, seed_alg),
-    svm = rfe_model(data, class, "svm", rfe, sizes, tune),
+    svm = rfe_model(data, class, "svm", rfe, sizes, tune, seed_alg = seed_alg),
     rf = rfe_model(data, class, "rf", rfe, sizes, tune, trees, seed_alg),
     lda = rfe_model(data, class, "lda", rfe, sizes, tune),
     slda = sda_model(data, class, "slda"),
