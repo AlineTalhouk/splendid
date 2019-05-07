@@ -72,7 +72,7 @@ prediction.train <- function(mod, data, class = NULL, test.id = NULL,
                              train.id = NULL, threshold = 0,
                              standardize = FALSE, ...) {
   loadNamespace("caret")
-  opt_vars <- head(names(mod[["trainingData"]]), -1)
+  opt_vars <- utils::head(names(mod[["trainingData"]]), -1)
   if (mod[["method"]] == "AdaBoost.M1") names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
                         data = data[opt_vars])

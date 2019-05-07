@@ -5,6 +5,4 @@
 #' @import ggplot2
 #' @importFrom magrittr "%>%"
 #' @importFrom rlang "%||%" "%@%" "!!" ":=" .data sym
-#' @importFrom dplyr desc
-#' @importFrom utils head tail
 "_PACKAGE"
