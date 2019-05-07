@@ -83,13 +83,13 @@ evaluation <- function(x, y, plot = FALSE) {
 #' PPV (Precision) for 2 by 2 confusion matrix
 #' @noRd
 ppv <- function(C) {
-  C[1, 1] / (C[1, 1] + C[2, 1])
+  C[1, 1] / (C[1, 1] + C[1, 2])
 }
 
 #' Sensitivity (Recall) for 2 by 2 confusion matrix
 #' @noRd
 sensitivity <- function(C) {
-  C[1, 1] / (C[1, 1] + C[1, 2])
+  C[1, 1] / (C[1, 1] + C[2, 1])
 }
 
 #' F1-score for 2 by 2 confusion matrix
