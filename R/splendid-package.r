@@ -6,6 +6,6 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom purrr "%||%"
 #' @importFrom rlang "%@%" "!!" ":=" .data sym
-#' @importFrom dplyr funs desc
+#' @importFrom dplyr desc
 #' @importFrom utils head tail
 "_PACKAGE"
