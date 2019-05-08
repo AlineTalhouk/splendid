@@ -1,3 +1,5 @@
+# splendid (development version)
+
 # splendid 0.1.0
 
 * Default seed parameter value `NULL` does not invoke `set.seed()`
