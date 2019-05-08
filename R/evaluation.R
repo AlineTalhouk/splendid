@@ -135,7 +135,7 @@ ova <- function(C) {
 #' @param pred.probs predicted probabilities for each class
 #' @noRd
 logloss <- function(x, pred.probs) {
-  MLmetrics::MultiLogLoss(as.matrix(pred.probs), x)
+  ModelMetrics::mlogLoss(x, pred.probs)
 }
 
 #' AUC/M-index: Multiple Class Area under ROC Curve

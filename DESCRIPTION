@@ -43,7 +43,7 @@ Imports:
     maboost,
     magrittr,
     MASS,
-    MLmetrics,
+    ModelMetrics,
     modelr,
     nnet,
     pamr,
