@@ -46,12 +46,15 @@ evaluation <- function(x, y, plot = FALSE) {
   ocm <- ova(cm)  # One Vs. All confusion matrices
   socm <- purrr::reduce(ocm, `+`)  # Element-wise sum of ocm
 
-  # Class-specific ppv/sensitivity/F1-score/MCC
-  cs_p <- purrr::map_dbl(ocm, ppv)
-  cs_s <- purrr::map_dbl(ocm, sensitivity)
-  cs_f <- purrr::map_dbl(ocm, f1)
-  cs_m <- purrr::map_dbl(ocm, mcc)
-  cs <- c(ppv = cs_p, sensitivity = cs_s, f1 = cs_f, mcc = cs_m)
+  # Class-specific ppv/npv/sensitivity/specificity/F1-score/MCC
+  cs_ppv <- purrr::map_dbl(ocm, ppv)
+  cs_npv <- purrr::map_dbl(ocm, npv)
+  cs_sens <- purrr::map_dbl(ocm, sensitivity)
+  cs_spec <- purrr::map_dbl(ocm, specificity)
+  cs_f1 <- purrr::map_dbl(ocm, f1)
+  cs_mcc <- purrr::map_dbl(ocm, mcc)
+  cs <- c(ppv = cs_ppv, npv = cs_npv, sensitivity = cs_sens,
+          specificity = cs_spec, f1 = cs_f1, mcc = cs_mcc)
 
   # Discriminatory measures
   dm_funs <- tibble::lst(logloss, auc, pdi)
@@ -64,10 +67,12 @@ evaluation <- function(x, y, plot = FALSE) {
   # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
   accuracy <- sum(diag(cm)) / sum(cm)
 
-  # Macro-averaged ppv/sensitivity/F1-score
-  macro_ppv <- mean(cs_p)
-  macro_sensitivity <- mean(cs_s)
-  macro_f1 <- mean(cs_f)
+  # Macro-averaged ppv/npv/sensitivity/sensitivity/F1-score
+  macro_ppv <- mean(cs_ppv)
+  macro_npv <- mean(cs_npv)
+  macro_sensitivity <- mean(cs_sens)
+  macro_specificity <- mean(cs_spec)
+  macro_f1 <- mean(cs_f1)
 
   # MCC and micro-averaged MCC
   mcc <- mcc(cm)
@@ -76,8 +81,8 @@ evaluation <- function(x, y, plot = FALSE) {
   if (plot) dm[c("discrimination_plot", "reliability_plot")]
 
   c(dm[c("logloss", "auc", "pdi")],
-    tibble::lst(accuracy, macro_ppv, macro_sensitivity, macro_f1, mcc,
-                micro_mcc, cs))
+    tibble::lst(accuracy, macro_ppv, macro_npv, macro_sensitivity,
+                macro_specificity, macro_f1, mcc, micro_mcc, cs))
 }
 
 #' PPV (Precision) for 2 by 2 confusion matrix
@@ -86,10 +91,23 @@ ppv <- function(C) {
   C[1, 1] / (C[1, 1] + C[1, 2])
 }
 
+#' NPV for 2 by 2 confusion matrix
+#' @noRd
+npv <- function(C) {
+  C[2, 2] / (C[2, 2] + C[2, 1])
+}
+
 #' Sensitivity (Recall) for 2 by 2 confusion matrix
 #' @noRd
 sensitivity <- function(C) {
   C[1, 1] / (C[1, 1] + C[2, 1])
+}
+
+
+#' Specificity for 2 by 2 confusion matrix
+#' @noRd
+specificity <- function(C) {
+  C[2, 2] / (C[2, 2] + C[1, 2])
 }
 
 #' F1-score for 2 by 2 confusion matrix
