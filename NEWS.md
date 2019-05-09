@@ -1,5 +1,7 @@
 # splendid (development version)
 
+* fix factor order in `class_threshold()` to take from column order of associated probability matrix
+
 * use standard convention for confusion matrices: predicted in rows, reference in columns
 
 * internal functions deprecated and imported from new packages as needed
