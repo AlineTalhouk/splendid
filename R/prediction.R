@@ -308,8 +308,8 @@ class_threshold <- function(prob, threshold = 0) {
       !!"max_class" := purrr::pmap(., list) %>%
         purrr::map_chr(~ names(which.max(.))) %>%
         ifelse(.data$max_prop >= threshold, ., "unclassified") %>%
-        factor() %>%
-        forcats::fct_expand(colnames(prob))
+        factor(levels = colnames(prob)) %>%
+        forcats::fct_explicit_na(na_level = "unclassified")
     ) %>%
     dplyr::pull()
 }
