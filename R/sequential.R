@@ -35,7 +35,7 @@ sequential_train <- function(sm, data, class, boxplot = FALSE) {
   class_bin <- sequential_binarize(model_rank, class)
   fits <- class_bin %>%
     purrr::list_along() %>%
-    purrr::set_names(head(model_rank[["class"]], -1))
+    purrr::set_names(utils::head(model_rank[["class"]], -1))
 
   # sequentially train
   for (rank_i in seq_along(class_bin)) {
@@ -117,7 +117,7 @@ sequential_rank <- function(sm, boxplot) {
     dplyr::group_by(.data$class) %>%
     dplyr::summarize(!!"model" := .data$model[which.max(.data$metric)],
                      !!"metric" := max(.data$metric)) %>%
-    dplyr::arrange(desc(.data$metric)) %>%
+    dplyr::arrange(dplyr::desc(.data$metric)) %>%
     cbind(rank = seq_len(nrow(.)), .) %>%
     `[`(, setdiff(names(.), "metric"))
   model_ranks
@@ -144,10 +144,10 @@ sequential_eval <- function(sm) {
 #' @noRd
 sequential_binarize <- function(mr, class) {
   # Binarize classes and combine the last two ranked classes
-  last_two <- tail(mr[["class"]], 2)
+  last_two <- utils::tail(mr[["class"]], 2)
   class_bin <- class %>%
     binarize() %>%
     tidyr::unite(!!sym(last_two[1]), last_two) %>%
-    dplyr::mutate_at(last_two[1], funs(gsub("_class_0|class_0_", "", .)))
+    dplyr::mutate_at(last_two[1], list(~ gsub("_class_0|class_0_", "", .)))
   class_bin
 }

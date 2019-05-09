@@ -1,20 +1,29 @@
 Type: Package
 Package: splendid
-Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.1.0
-Date: 2018-08-10
-Authors@R: c(
-    person("Derek", "Chiu", , "dchiu@bccrc.ca", c("aut", "cre")),
-    person("Aline", "Talhouk", , "atalhouk@bccrc.ca", "aut"),
-    person("Dustin", "Johnson", , "djohnson@bccrc.ca", "aut")
-    )
-Description: Provides a bootstrapping and ensemble framework for supervised
-    learning analyses using multiclass classification algorithms for modelling,
-    prediction, and evaluation. Predicted classes are evaluated under metrics
-    such as log loss, AUC, F1-score, Matthew's correlation coefficient, and
-    accuracy. Discrimination and reliability plots visualize the classifier
-    performances. The .632+ estimator is implemented for the log loss error
-    rate.
+Title: SuPervised Learning ENsemble for Diagnostic
+    IDentification
+Version: 0.1.0.9000
+Date: 2019-05-08
+Authors@R: 
+    c(person(given = "Derek",
+             family = "Chiu",
+             role = c("aut", "cre"),
+             email = "dchiu@bccrc.ca"),
+      person(given = "Aline",
+             family = "Talhouk",
+             role = "aut",
+             email = "atalhouk@bccrc.ca"),
+      person(given = "Dustin",
+             family = "Johnson",
+             role = "aut",
+             email = "djohnson@bccrc.ca"))
+Description: Provides a bootstrapping and ensemble framework for
+    supervised learning analyses using multiclass classification
+    algorithms for modelling, prediction, and evaluation. Predicted
+    classes are evaluated under metrics such as log loss, AUC, F1-score,
+    Matthew's correlation coefficient, and accuracy. Discrimination and
+    reliability plots visualize the classifier performances. The .632+
+    estimator is implemented for the log loss error rate.
 License: MIT + file LICENSE
 URL: https://github.com/AlineTalhouk/splendid,
     https://alinetalhouk.github.io/splendid/
@@ -34,7 +43,7 @@ Imports:
     maboost,
     magrittr,
     MASS,
-    MLmetrics,
+    ModelMetrics,
     modelr,
     nnet,
     pamr,
@@ -53,8 +62,9 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

@@ -53,8 +53,9 @@ binarize <- function(x) {
 
 #' Confusion matrix
 #' @noRd
-conf_mat <- function(reference, prediction)
-  as.matrix(table(reference = reference, prediction = prediction))
+conf_mat <- function(reference, prediction) {
+  as.matrix(table(Prediction = prediction, Reference = reference))
+}
 
 #' Class error
 #' @noRd

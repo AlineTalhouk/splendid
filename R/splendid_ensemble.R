@@ -36,7 +36,7 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed_rank = 1,
     table() %>%
     sort() %>%
     rev() %>%
-    head(top) %>%
+    utils::head(top) %>%
     names()
   ensemble_mods <- ensemble_algs %>%
     purrr::map(classification, data = data, class = class, rfe = rfe)
