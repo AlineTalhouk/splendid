@@ -54,6 +54,9 @@
 #'   features to have mean zero and unit variance. The test sets are
 #'   standardized using the vectors of centers and standard deviations used in
 #'   corresponding training sets.
+#' @param stratify logical; if `TRUE`, the bootstrap resampling is performed
+#'   within each strata of `class` to ensure the bootstrap sample contains the
+#'   same proportions of each strata as the original data.
 #' @param plus logical; if `TRUE` (default), the .632+ estimator is calculated.
 #'   Otherwise, the .632 estimator is calculated.
 #' @param threshold a number between 0 and 1 indicating the lowest maximum class
@@ -96,15 +99,15 @@
 splendid <- function(data, class, algorithms = NULL, n = 1,
                      seed_boot = NULL, seed_alg = NULL,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
-                     standardize = FALSE, plus = TRUE, threshold = 0,
-                     trees = 100, tune = FALSE, top = 3, seed_rank = 1,
-                     sequential = FALSE) {
+                     standardize = FALSE, stratify = FALSE, plus = TRUE,
+                     threshold = 0, trees = 100, tune = FALSE, top = 3,
+                     seed_rank = 1, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   data <- splendid_convert(data, algorithms, convert)
 
   sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_alg, convert, rfe,
-                         ova, standardize, plus, threshold, trees, tune)
+                         ova, standardize, stratify, plus, threshold, trees, tune)
   sm <- purrr::invoke(splendid_model, sm_args)
 
   se_args <- tibble::lst(sm, data, class, top, seed_rank, rfe, sequential)

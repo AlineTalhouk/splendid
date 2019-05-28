@@ -10,8 +10,9 @@
 splendid_model <- function(data, class, algorithms = NULL, n = 1,
                            seed_boot = NULL, seed_alg = NULL,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, plus = TRUE, threshold = 0,
-                           trees = 100, tune = FALSE) {
+                           standardize = FALSE, stratify = FALSE,
+                           plus = TRUE, threshold = 0, trees = 100,
+                           tune = FALSE) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -22,7 +23,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 
   # Generate bootstrap resamples; test samples are those not chosen in training
   if (!is.null(seed_boot)) set.seed(seed_boot)
-  train.id <- boot_train(data = data, class = class, n = n)
+  train.id <- boot_train(data = data, class = class, n = n, stratify = stratify)
   test.id <- boot_test(train.id = train.id)
 
   # Store lists of common arguments in model and pred operations
@@ -73,13 +74,18 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 #' in every bootstrap resample
 #' @inheritParams splendid
 #' @export
-boot_train <- function(data, class, n) {
-  boot <- rsample::bootstraps(data, n)
+boot_train <- function(data, class, n, stratify) {
+  if (stratify) {
+    data <- data.frame(data, class)
+    boot <- rsample::bootstraps(data, n, "class")
+  } else {
+    boot <- rsample::bootstraps(data, n)
+  }
   train.id <- purrr::map(boot$splits, "in_id")
   nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
-    c(train.id[all.cl], boot_train(data, class, sum(!all.cl)))
+    c(train.id[all.cl], boot_train(data, class, sum(!all.cl), stratify))
   else
     train.id[all.cl]
 }
