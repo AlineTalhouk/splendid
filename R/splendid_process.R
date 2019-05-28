@@ -19,7 +19,7 @@
 #' @inheritParams splendid
 #' @return A pre-processed data frame for model training
 #' @author Derek Chiu
-#' @seealso dummify subsample
+#' @seealso [dummify()], [subsample()]
 #' @export
 #' @examples
 #' data(hgsc)

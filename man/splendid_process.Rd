@@ -88,7 +88,7 @@ FALSE)
 }
 }
 \seealso{
-dummify subsample
+\code{\link[=dummify]{dummify()}}, \code{\link[=subsample]{subsample()}}
 }
 \author{
 Derek Chiu
