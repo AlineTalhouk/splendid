@@ -70,3 +70,18 @@ dummify <- function(data) {
     magrittr::set_rownames(NULL) %>%
     `attr<-`("dummy_vars", dummy_vars)
 }
+
+subsample <- function(data, class, method = c("none", "up", "down", "smote")) {
+  method <- match.arg(method)
+  if (method == "none") {
+    return(data)
+  } else {
+    switch(
+      method,
+      up = caret::upSample(data, class, yname = "class"),
+      down = caret::downSample(data, class, yname = "class"),
+      smote = DMwR::SMOTE(class ~ ., cbind(data, class))
+    ) %>%
+      dplyr::select(-.data[["class"]])
+  }
+}
