@@ -4,7 +4,8 @@
 \alias{subsample}
 \title{Subsampling Imbalanced Data}
 \usage{
-subsample(data, class, sampling = c("none", "up", "down", "smote"))
+subsample(data, class, sampling = c("none", "up", "down", "smote"),
+  seed_samp = NULL)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -16,6 +17,9 @@ Other options include "up" (Up-sampling the minority class), "down"
 (Down-sampling the majority class), and "smote" (synthetic points for the
 minority class and down-sampling the majority class). Subsampling is only
 applicable to the training set.}
+
+\item{seed_samp}{random seed used for reproducibility in subsampling
+training sets for model generation}
 }
 \value{
 A subsampled dataset where corresponding strata of \code{class} are more

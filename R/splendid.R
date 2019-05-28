@@ -40,6 +40,8 @@
 #' @param n number of bootstrap replicates to generate
 #' @param seed_boot random seed used for reproducibility in bootstrapping
 #'   training sets for model generation
+#' @param seed_samp random seed used for reproducibility in subsampling
+#'   training sets for model generation
 #' @param seed_alg random seed used for reproducibility when running algorithms
 #'   with an intrinsic random element (random forests)
 #' @param convert logical; if `TRUE`, converts all categorical variables in
@@ -102,7 +104,7 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 #' }
 splendid <- function(data, class, algorithms = NULL, n = 1,
-                     seed_boot = NULL, seed_alg = NULL,
+                     seed_boot = NULL, seed_samp = NULL, seed_alg = NULL,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
                      standardize = FALSE,
                      sampling = c("none", "up", "down", "smote"),
@@ -111,10 +113,12 @@ splendid <- function(data, class, algorithms = NULL, n = 1,
                      seed_rank = 1, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
-  data <- splendid_process(data, class, algorithms, convert, standardize, "none")
+  data <- splendid_process(data, class, algorithms, convert, standardize,
+                           "none")
 
-  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_alg, convert, rfe,
-                         ova, standardize, sampling, stratify, plus, threshold, trees, tune)
+  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_samp,
+                         seed_alg, convert, rfe, ova, standardize, sampling,
+                         stratify, plus, threshold, trees, tune)
   sm <- purrr::invoke(splendid_model, sm_args)
 
   se_args <- tibble::lst(sm, data, class, top, seed_rank, rfe, sequential)

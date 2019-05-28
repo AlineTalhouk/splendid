@@ -8,7 +8,7 @@
 #' class <- attr(hgsc, "class.true")
 #' sl_result <- splendid_model(hgsc, class, n = 1, algorithms = "xgboost")
 splendid_model <- function(data, class, algorithms = NULL, n = 1,
-                           seed_boot = NULL, seed_alg = NULL,
+                           seed_boot = NULL, seed_samp = NULL, seed_alg = NULL,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
                            standardize = FALSE,
                            sampling = c("none", "up", "down", "smote"),
@@ -29,7 +29,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 
   # Store lists of common arguments in model and pred operations
   m_args <- tibble::lst(train.id, data, class, algorithms, rfe, standardize,
-                        sampling, trees, tune, seed_alg)
+                        sampling, trees, tune, seed_samp, seed_alg)
   p_args <- tibble::lst(data, class, test.id, train.id, threshold, standardize)
 
   # Apply training sets to models and predict on the test sets
@@ -101,12 +101,13 @@ boot_test <- function(train.id) {
 #' Train models based on function f
 #' @noRd
 sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
-                   standardize, sampling, trees, tune, seed_alg) {
+                   standardize, sampling, trees, tune, seed_samp, seed_alg) {
   mod <- algorithms %>% purrr::map(
     ~ purrr::map(train.id, function(id)
       f(data = data[id, ], class = class[id], algorithms = ., rfe = rfe,
         ova = ova, standardize = standardize, sampling = sampling,
-        trees = trees, tune = tune, seed_alg = seed_alg)))
+        trees = trees, tune = tune, seed_samp = seed_samp,
+        seed_alg = seed_alg)))
   mod
 }
 

@@ -6,7 +6,7 @@
 \usage{
 ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
   standardize = FALSE, sampling = c("none", "up", "down", "smote"),
-  trees = 100, tune = FALSE, seed_alg = NULL)
+  seed_samp = NULL, trees = 100, tune = FALSE, seed_alg = NULL)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -32,6 +32,9 @@ Other options include "up" (Up-sampling the minority class), "down"
 (Down-sampling the majority class), and "smote" (synthetic points for the
 minority class and down-sampling the majority class). Subsampling is only
 applicable to the training set.}
+
+\item{seed_samp}{random seed used for reproducibility in subsampling
+training sets for model generation}
 
 \item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
 "adaboost"}

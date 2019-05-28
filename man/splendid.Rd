@@ -5,10 +5,11 @@
 \title{Ensemble framework for Supervised Learning classification problems}
 \usage{
 splendid(data, class, algorithms = NULL, n = 1, seed_boot = NULL,
-  seed_alg = NULL, convert = FALSE, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
-  stratify = FALSE, plus = TRUE, threshold = 0, trees = 100,
-  tune = FALSE, top = 3, seed_rank = 1, sequential = FALSE)
+  seed_samp = NULL, seed_alg = NULL, convert = FALSE, rfe = FALSE,
+  ova = FALSE, standardize = FALSE, sampling = c("none", "up",
+  "down", "smote"), stratify = FALSE, plus = TRUE, threshold = 0,
+  trees = 100, tune = FALSE, top = 3, seed_rank = 1,
+  sequential = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -22,6 +23,9 @@ this argument is \code{NULL}, in which case all algorithms are used.}
 \item{n}{number of bootstrap replicates to generate}
 
 \item{seed_boot}{random seed used for reproducibility in bootstrapping
+training sets for model generation}
+
+\item{seed_samp}{random seed used for reproducibility in subsampling
 training sets for model generation}
 
 \item{seed_alg}{random seed used for reproducibility when running algorithms

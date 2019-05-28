@@ -5,7 +5,8 @@
 \title{Process data}
 \usage{
 splendid_process(data, class, algorithms, convert = FALSE,
-  standardize = FALSE, sampling = c("none", "up", "down", "smote"))
+  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
+  seed_samp = NULL)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -30,6 +31,9 @@ Other options include "up" (Up-sampling the minority class), "down"
 (Down-sampling the majority class), and "smote" (synthetic points for the
 minority class and down-sampling the majority class). Subsampling is only
 applicable to the training set.}
+
+\item{seed_samp}{random seed used for reproducibility in subsampling
+training sets for model generation}
 }
 \value{
 A pre-processed data frame for model training

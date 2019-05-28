@@ -53,7 +53,8 @@
 #' }
 splendid_process <- function(data, class, algorithms, convert = FALSE,
                              standardize = FALSE,
-                             sampling = c("none", "up", "down", "smote")) {
+                             sampling = c("none", "up", "down", "smote"),
+                             seed_samp = NULL) {
   if (!all(purrr::map_lgl(data, is.numeric))) {
     if (convert) {
       data <- dummify(data)
@@ -75,7 +76,7 @@ splendid_process <- function(data, class, algorithms, convert = FALSE,
       data <- dplyr::mutate_all(data, scale)
     }
   }
-  data_processed <- subsample(data, class, sampling)
+  data_processed <- subsample(data, class, sampling, seed_samp)
   data_processed
 }
 
@@ -134,12 +135,14 @@ dummify <- function(data) {
 #' iris_smote <- subsample(iris_imbal, iris_imbal$Species, sampling = "smote")
 #' nrow(iris_smote)
 subsample <- function(data, class,
-                      sampling = c("none", "up", "down", "smote")) {
+                      sampling = c("none", "up", "down", "smote"),
+                      seed_samp = NULL) {
   sampling <- match.arg(sampling)
   class <- as.factor(class)
   if (sampling == "none") {
     return(data)
   } else {
+    if (!is.null(seed_samp)) set.seed(seed_samp)
     switch(
       sampling,
       up = caret::upSample(data, class, yname = "class"),
