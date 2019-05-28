@@ -74,7 +74,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 #' in every bootstrap resample
 #' @inheritParams splendid
 #' @export
-boot_train <- function(data, class, n, stratify) {
+boot_train <- function(data, class, n, stratify = FALSE) {
   if (stratify) {
     data <- data.frame(data, class)
     boot <- rsample::bootstraps(data, n, "class")
