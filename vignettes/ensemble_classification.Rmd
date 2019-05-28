@@ -38,11 +38,15 @@ The main function of `splendid` is `splendid()`, and the usage is intuitive:
 - `class`: the true/reference class labels with length equal to the number of samples
 - `algorithms`: character vector of classification algorithms
 - `n`: number of bootstrap replicates to generate as training sets. Test sets are taken from the out-of-bag samples (OOB).
-- `seed_boot`: constant for reproducibility in bootstrapping training sets for model generation
+- `seed_boot`: seed for reproducibility in bootstrapping training sets for model generation
+- `seed_samp`: seed for reproducibility in subsampling training sets for model generation
+- `seed_alg`: seed for reproducibility for algorithms with a random training aspect (e.g. random forests)
 - `convert`: whether to convert categorical predictors to dummy variables
 - `rfe`: whether to use Recursive Feature Elimination (RFE) for feature selection. Only implemented for certain algorithms.
 - `ova`: whether to run one-vs-all versions for each algorithm (e.g. class 1 vs. not class 1, class 2 vs. not class 2, etc.)
 - `standardize`: whether to standardize the training set before classification and the test set (using training set centerings & scalings) during prediction
+- `sampling`: the subsampling method is either up-sampling, down-sampling, or SMOTE (hybrid method)
+- `stratify`: whether to use stratified bootstrap sampling to ensure that the proportion of classes in the bootstrap sample is the same as the original data
 - `plus`: whether to calculate the .632+ or .632 estimator for the log loss error rate
 - `threshold`: predicted probabilities below this value are classified as "unclassified" instead of imposing one of the labels from `class`
 - `trees`: number of trees/iterations to use in random forest/boosting models, respectively
