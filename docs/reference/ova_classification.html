@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9001</span>
       </span>
     </div>
 
@@ -112,7 +112,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>ova_classification</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>algorithms</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>seed_alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sampling</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"up"</span>, <span class='st'>"down"</span>, <span class='st'>"smote"</span>),
+  <span class='kw'>seed_samp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>seed_alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,6 +147,19 @@ algorithm.</p></td>
 features to have mean zero and unit variance. The test sets are
 standardized using the vectors of centers and standard deviations used in
 corresponding training sets.</p></td>
+    </tr>
+    <tr>
+      <th>sampling</th>
+      <td><p>the default is "none", in which no subsampling is performed.
+Other options include "up" (Up-sampling the minority class), "down"
+(Down-sampling the majority class), and "smote" (synthetic points for the
+minority class and down-sampling the majority class). Subsampling is only
+applicable to the training set.</p></td>
+    </tr>
+    <tr>
+      <th>seed_samp</th>
+      <td><p>random seed used for reproducibility in subsampling
+training sets for model generation</p></td>
     </tr>
     <tr>
       <th>trees</th>

@@ -67,7 +67,7 @@ in every bootstrap resample" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9001</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ in every bootstrap resample</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>boot_train</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>)</pre>
+    <pre class="usage"><span class='fu'>boot_train</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='no'>n</span>, <span class='kw'>stratify</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,6 +132,12 @@ in every bootstrap resample</p>
     <tr>
       <th>n</th>
       <td><p>number of bootstrap replicates to generate</p></td>
+    </tr>
+    <tr>
+      <th>stratify</th>
+      <td><p>logical; if <code>TRUE</code>, the bootstrap resampling is performed
+within each strata of <code>class</code> to ensure the bootstrap sample contains the
+same proportions of each strata as the original data.</p></td>
     </tr>
     </table>
     

@@ -66,7 +66,7 @@ variants." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9001</span>
       </span>
     </div>
 
@@ -116,9 +116,11 @@ variants.</p>
     </div>
 
     <pre class="usage"><span class='fu'>splendid</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>algorithms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed_boot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seed_alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>plus</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>seed_rank</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>seed_samp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>seed_alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>convert</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rfe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>ova</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sampling</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"up"</span>,
+  <span class='st'>"down"</span>, <span class='st'>"smote"</span>), <span class='kw'>stratify</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>plus</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>trees</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>tune</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>top</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>seed_rank</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -144,6 +146,11 @@ this argument is <code>NULL</code>, in which case all algorithms are used.</p></
     <tr>
       <th>seed_boot</th>
       <td><p>random seed used for reproducibility in bootstrapping
+training sets for model generation</p></td>
+    </tr>
+    <tr>
+      <th>seed_samp</th>
+      <td><p>random seed used for reproducibility in subsampling
 training sets for model generation</p></td>
     </tr>
     <tr>
@@ -174,6 +181,20 @@ prefixed with the string <code>ova_</code>.</p></td>
 features to have mean zero and unit variance. The test sets are
 standardized using the vectors of centers and standard deviations used in
 corresponding training sets.</p></td>
+    </tr>
+    <tr>
+      <th>sampling</th>
+      <td><p>the default is "none", in which no subsampling is performed.
+Other options include "up" (Up-sampling the minority class), "down"
+(Down-sampling the majority class), and "smote" (synthetic points for the
+minority class and down-sampling the majority class). Subsampling is only
+applicable to the training set.</p></td>
+    </tr>
+    <tr>
+      <th>stratify</th>
+      <td><p>logical; if <code>TRUE</code>, the bootstrap resampling is performed
+within each strata of <code>class</code> to ensure the bootstrap sample contains the
+same proportions of each strata as the original data.</p></td>
     </tr>
     <tr>
       <th>plus</th>

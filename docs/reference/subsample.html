@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluation of prediction performance — evaluation • splendid</title>
+<title>Subsampling Imbalanced Data — subsample • splendid</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,10 +31,9 @@
 
 
 
-<meta property="og:title" content="Evaluation of prediction performance — evaluation" />
+<meta property="og:title" content="Subsampling Imbalanced Data — subsample" />
 
-<meta property="og:description" content="Evaluation of prediction performance on the OOB set is done using various
-measure for classification problems." />
+<meta property="og:description" content="Subsampling imbalanced data using up-sampling, down-sampling, or SMOTE." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -101,107 +100,71 @@ measure for classification problems." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluation of prediction performance</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AlineTalhouk/splendid/blob/master/R/evaluation.R'><code>R/evaluation.R</code></a></small>
-    <div class="hidden name"><code>evaluation.Rd</code></div>
+    <h1>Subsampling Imbalanced Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/AlineTalhouk/splendid/blob/master/R/splendid_process.R'><code>R/splendid_process.R</code></a></small>
+    <div class="hidden name"><code>subsample.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Evaluation of prediction performance on the OOB set is done using various
-measure for classification problems.</p>
+    <p>Subsampling imbalanced data using up-sampling, down-sampling, or SMOTE.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>evaluation</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>subsample</span>(<span class='no'>data</span>, <span class='no'>class</span>, <span class='kw'>sampling</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"up"</span>, <span class='st'>"down"</span>, <span class='st'>"smote"</span>),
+  <span class='kw'>seed_samp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>actual class labels</p></td>
+      <th>data</th>
+      <td><p>data frame with rows as samples, columns as features</p></td>
     </tr>
     <tr>
-      <th>y</th>
-      <td><p>predicted class labels</p></td>
+      <th>class</th>
+      <td><p>true/reference class vector used for supervised learning</p></td>
     </tr>
     <tr>
-      <th>plot</th>
-      <td><p>logical; if <code>TRUE</code> a discrimination plot and reliability plot are
-shown for each class</p></td>
+      <th>sampling</th>
+      <td><p>the default is "none", in which no subsampling is performed.
+Other options include "up" (Up-sampling the minority class), "down"
+(Down-sampling the majority class), and "smote" (synthetic points for the
+minority class and down-sampling the majority class). Subsampling is only
+applicable to the training set.</p></td>
+    </tr>
+    <tr>
+      <th>seed_samp</th>
+      <td><p>random seed used for reproducibility in subsampling
+training sets for model generation</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with one element per evaluation measure except for the <code>cs</code>
-element, which returns a list of class-specific evaluation measures.</p>
+    <p>A subsampled dataset where corresponding strata of <code>class</code> are more
+balanced. The resulting <code>class</code> variable is not included in the data
+output.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The currently supported evaluation measures include discriminatory measures
-like log loss, AUC, and PDI, macro-averaged PPV (Precision)/Sensitivity
-(Recall)/F1-score, accuracy (same as micro-averaged PPV
-Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
-micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
+    <p>To deal with class imbalances, we can subsample the data so that the class
+proportions are more uniform.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>hgsc</span>)
-<span class='no'>class</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>hgsc</span>, <span class='st'>"class.true"</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='no'>training.id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span>(<span class='no'>class</span>), <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>test.id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(!<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span>(<span class='no'>class</span>) <span class='kw'>%in%</span> <span class='no'>training.id</span>)
-<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span>(<span class='no'>hgsc</span>[<span class='no'>training.id</span>, ], <span class='no'>class</span>[<span class='no'>training.id</span>], <span class='st'>"xgboost"</span>)
-<span class='no'>pred</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span>(<span class='no'>mod</span>, <span class='no'>hgsc</span>, <span class='no'>class</span>, <span class='no'>test.id</span>)
-<span class='fu'>evaluation</span>(<span class='no'>class</span>[<span class='no'>test.id</span>], <span class='no'>pred</span>)</div><div class='output co'>#&gt; $logloss
-#&gt; [1] 0.9650857
-#&gt; 
-#&gt; $auc
-#&gt; [1] 0.912119
-#&gt; 
-#&gt; $pdi
-#&gt; [1] 0.8001893
-#&gt; 
-#&gt; $accuracy
-#&gt; [1] 0.7089947
-#&gt; 
-#&gt; $macro_ppv
-#&gt; [1] 0.7067206
-#&gt; 
-#&gt; $macro_npv
-#&gt; [1] 0.9031493
-#&gt; 
-#&gt; $macro_sensitivity
-#&gt; [1] 0.7132884
-#&gt; 
-#&gt; $macro_specificity
-#&gt; [1] 0.9035022
-#&gt; 
-#&gt; $macro_f1
-#&gt; [1] 0.7065146
-#&gt; 
-#&gt; $mcc
-#&gt; [1] 0.6136055
-#&gt; 
-#&gt; $micro_mcc
-#&gt; [1] 0.6119929
-#&gt; 
-#&gt; $cs
-#&gt;         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 
-#&gt;          0.7142857          0.5555556          0.7843137          0.7727273 
-#&gt;         npv.DIF.C4         npv.IMM.C2         npv.MES.C1         npv.PRO.C5 
-#&gt;          0.8428571          0.9166667          0.9565217          0.8965517 
-#&gt; sensitivity.DIF.C4 sensitivity.IMM.C2 sensitivity.MES.C1 sensitivity.PRO.C5 
-#&gt;          0.6140351          0.6756757          0.8695652          0.6938776 
-#&gt; specificity.DIF.C4 specificity.IMM.C2 specificity.MES.C1 specificity.PRO.C5 
-#&gt;          0.8939394          0.8684211          0.9230769          0.9285714 
-#&gt;          f1.DIF.C4          f1.IMM.C2          f1.MES.C1          f1.PRO.C5 
-#&gt;          0.6603774          0.6097561          0.8247423          0.7311828 
-#&gt;         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 
-#&gt;          0.5319909          0.5068871          0.7663011          0.6454394 
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='co'># Create imbalanced version of iris dataset</span>
+<span class='no'>iris_imbal</span> <span class='kw'>&lt;-</span> <span class='no'>iris</span>[<span class='fl'>1</span>:<span class='fl'>130</span>, ]
+
+<span class='co'># Up-sampling</span>
+<span class='no'>iris_up</span> <span class='kw'>&lt;-</span> <span class='fu'>subsample</span>(<span class='no'>iris_imbal</span>, <span class='no'>iris_imbal</span>$<span class='no'>Species</span>, <span class='kw'>sampling</span> <span class='kw'>=</span> <span class='st'>"up"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>iris_up</span>)</div><div class='output co'>#&gt; [1] 150</div><div class='input'>
+<span class='co'># Down-sampling</span>
+<span class='no'>iris_down</span> <span class='kw'>&lt;-</span> <span class='fu'>subsample</span>(<span class='no'>iris_imbal</span>, <span class='no'>iris_imbal</span>$<span class='no'>Species</span>, <span class='kw'>sampling</span> <span class='kw'>=</span> <span class='st'>"down"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>iris_down</span>)</div><div class='output co'>#&gt; [1] 90</div><div class='input'>
+<span class='co'># SMOTE</span>
+<span class='no'>iris_smote</span> <span class='kw'>&lt;-</span> <span class='fu'>subsample</span>(<span class='no'>iris_imbal</span>, <span class='no'>iris_imbal</span>$<span class='no'>Species</span>, <span class='kw'>sampling</span> <span class='kw'>=</span> <span class='st'>"smote"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>iris_smote</span>)</div><div class='output co'>#&gt; [1] 210</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
