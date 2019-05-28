@@ -10,15 +10,15 @@
 splendid_model <- function(data, class, algorithms = NULL, n = 1,
                            seed_boot = NULL, seed_alg = NULL,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, stratify = FALSE,
-                           plus = TRUE, threshold = 0, trees = 100,
-                           tune = FALSE) {
+                           standardize = FALSE, sampling = c("none", "up", "down", "smote"),
+                           stratify = FALSE, plus = TRUE, threshold = 0,
+                           trees = 100, tune = FALSE) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
 
-  # Determine whether to convert data in the presence of categorical predictors
-  data <- splendid_convert(data, algorithms, convert)
+  # Process the data, but don't allow subsampling yet
+  data <- splendid_process(data, class, algorithms, convert, standardize, "none")
   class <- as.factor(class)  # ensure class is a factor
 
   # Generate bootstrap resamples; test samples are those not chosen in training
@@ -28,7 +28,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 
   # Store lists of common arguments in model and pred operations
   m_args <- tibble::lst(train.id, data, class, algorithms, rfe, standardize,
-                        trees, tune, seed_alg)
+                        sampling, trees, tune, seed_alg)
   p_args <- tibble::lst(data, class, test.id, train.id, threshold, standardize)
 
   # Apply training sets to models and predict on the test sets

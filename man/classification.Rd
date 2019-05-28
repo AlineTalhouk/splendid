@@ -5,8 +5,9 @@
 \title{Multiclass classification}
 \usage{
 classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sizes = NULL, trees = 100, tune = FALSE,
-  seed_alg = NULL, convert = FALSE)
+  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
+  sizes = NULL, trees = 100, tune = FALSE, seed_alg = NULL,
+  convert = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -26,6 +27,12 @@ algorithm.}
 features to have mean zero and unit variance. The test sets are
 standardized using the vectors of centers and standard deviations used in
 corresponding training sets.}
+
+\item{sampling}{the default is "none", in which no subsampling is performed.
+Other options include "up" (Up-sampling the minority class), "down"
+(Down-sampling the majority class), and "smote" (synthetic points for the
+minority class and down-sampling the majority class). Subsampling is only
+applicable to the training set.}
 
 \item{sizes}{the range of sizes of features to test RFE algorithm}
 

@@ -6,9 +6,9 @@
 \usage{
 splendid(data, class, algorithms = NULL, n = 1, seed_boot = NULL,
   seed_alg = NULL, convert = FALSE, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, stratify = FALSE, plus = TRUE,
-  threshold = 0, trees = 100, tune = FALSE, top = 3,
-  seed_rank = 1, sequential = FALSE)
+  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
+  stratify = FALSE, plus = TRUE, threshold = 0, trees = 100,
+  tune = FALSE, top = 3, seed_rank = 1, sequential = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -42,6 +42,12 @@ prefixed with the string \code{ova_}.}
 features to have mean zero and unit variance. The test sets are
 standardized using the vectors of centers and standard deviations used in
 corresponding training sets.}
+
+\item{sampling}{the default is "none", in which no subsampling is performed.
+Other options include "up" (Up-sampling the minority class), "down"
+(Down-sampling the majority class), and "smote" (synthetic points for the
+minority class and down-sampling the majority class). Subsampling is only
+applicable to the training set.}
 
 \item{stratify}{logical; if \code{TRUE}, the bootstrap resampling is performed
 within each strata of \code{class} to ensure the bootstrap sample contains the

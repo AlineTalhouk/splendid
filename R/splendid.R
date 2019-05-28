@@ -54,6 +54,11 @@
 #'   features to have mean zero and unit variance. The test sets are
 #'   standardized using the vectors of centers and standard deviations used in
 #'   corresponding training sets.
+#' @param sampling the default is "none", in which no subsampling is performed.
+#'   Other options include "up" (Up-sampling the minority class), "down"
+#'   (Down-sampling the majority class), and "smote" (synthetic points for the
+#'   minority class and down-sampling the majority class). Subsampling is only
+#'   applicable to the training set.
 #' @param stratify logical; if `TRUE`, the bootstrap resampling is performed
 #'   within each strata of `class` to ensure the bootstrap sample contains the
 #'   same proportions of each strata as the original data.
@@ -99,15 +104,17 @@
 splendid <- function(data, class, algorithms = NULL, n = 1,
                      seed_boot = NULL, seed_alg = NULL,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
-                     standardize = FALSE, stratify = FALSE, plus = TRUE,
+                     standardize = FALSE,
+                     sampling = c("none", "up", "down", "smote"),
+                     stratify = FALSE, plus = TRUE,
                      threshold = 0, trees = 100, tune = FALSE, top = 3,
                      seed_rank = 1, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
-  data <- splendid_convert(data, algorithms, convert)
+  data <- splendid_process(data, class, algorithms, convert, standardize, "none")
 
   sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_alg, convert, rfe,
-                         ova, standardize, stratify, plus, threshold, trees, tune)
+                         ova, standardize, sampling, stratify, plus, threshold, trees, tune)
   sm <- purrr::invoke(splendid_model, sm_args)
 
   se_args <- tibble::lst(sm, data, class, top, seed_rank, rfe, sequential)
