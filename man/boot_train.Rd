@@ -5,7 +5,7 @@
 \title{Recursively create training set indices ensuring class representation
 in every bootstrap resample}
 \usage{
-boot_train(data, class, n, stratify)
+boot_train(data, class, n, stratify = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

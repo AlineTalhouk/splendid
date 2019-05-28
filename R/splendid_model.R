@@ -10,7 +10,8 @@
 splendid_model <- function(data, class, algorithms = NULL, n = 1,
                            seed_boot = NULL, seed_alg = NULL,
                            convert = FALSE, rfe = FALSE, ova = FALSE,
-                           standardize = FALSE, sampling = c("none", "up", "down", "smote"),
+                           standardize = FALSE,
+                           sampling = c("none", "up", "down", "smote"),
                            stratify = FALSE, plus = TRUE, threshold = 0,
                            trees = 100, tune = FALSE) {
 
@@ -100,12 +101,12 @@ boot_test <- function(train.id) {
 #' Train models based on function f
 #' @noRd
 sp_mod <- function(f, train.id, data, class, algorithms, rfe, ova,
-                   standardize, trees, tune, seed_alg) {
+                   standardize, sampling, trees, tune, seed_alg) {
   mod <- algorithms %>% purrr::map(
     ~ purrr::map(train.id, function(id)
       f(data = data[id, ], class = class[id], algorithms = ., rfe = rfe,
-        ova = ova, standardize = standardize, trees = trees, tune = tune,
-        seed_alg = seed_alg)))
+        ova = ova, standardize = standardize, sampling = sampling,
+        trees = trees, tune = tune, seed_alg = seed_alg)))
   mod
 }
 
