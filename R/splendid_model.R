@@ -74,8 +74,8 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 #' @inheritParams splendid
 #' @export
 boot_train <- function(data, class, n) {
-  boot <- modelr::bootstrap(data, n)
-  train.id <- purrr::map(boot$strap, "idx")
+  boot <- rsample::bootstraps(data, n)
+  train.id <- purrr::map(boot$splits, "in_id")
   nc <- purrr::map_int(train.id, ~ dplyr::n_distinct(class[.]))
   all.cl <- nc == nlevels(class)
   if (any(!all.cl))
