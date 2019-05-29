@@ -5,7 +5,7 @@
 \title{Recursively create training set indices ensuring class representation
 in every bootstrap resample}
 \usage{
-boot_train(data, class, n)
+boot_train(data, class, n, stratify = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}
@@ -13,6 +13,10 @@ boot_train(data, class, n)
 \item{class}{true/reference class vector used for supervised learning}
 
 \item{n}{number of bootstrap replicates to generate}
+
+\item{stratify}{logical; if \code{TRUE}, the bootstrap resampling is performed
+within each strata of \code{class} to ensure the bootstrap sample contains the
+same proportions of each strata as the original data.}
 }
 \description{
 Recursively create training set indices ensuring class representation

@@ -5,13 +5,16 @@
 #' @author Dustin Johnson, Derek Chiu
 #' @export
 ova_classification <- function(data, class, algorithms, rfe = FALSE,
-                               ova = FALSE, standardize = FALSE, trees = 100,
-                               tune = FALSE, seed_alg = NULL) {
+                               ova = FALSE, standardize = FALSE,
+                               sampling = c("none", "up", "down", "smote"),
+                               seed_samp = NULL, trees = 100, tune = FALSE,
+                               seed_alg = NULL) {
   class %>%
     binarize() %>%
     purrr::map(~ purrr::invoke(
       .f = classification,
-      .x = tibble::lst(data, algorithms, rfe, ova, standardize, trees, tune, seed_alg),
+      .x = tibble::lst(data, algorithms, rfe, ova, standardize, sampling,
+                       seed_samp, trees, tune, seed_alg),
       class = .
     ))
 }

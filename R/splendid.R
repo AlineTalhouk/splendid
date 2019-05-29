@@ -40,6 +40,8 @@
 #' @param n number of bootstrap replicates to generate
 #' @param seed_boot random seed used for reproducibility in bootstrapping
 #'   training sets for model generation
+#' @param seed_samp random seed used for reproducibility in subsampling
+#'   training sets for model generation
 #' @param seed_alg random seed used for reproducibility when running algorithms
 #'   with an intrinsic random element (random forests)
 #' @param convert logical; if `TRUE`, converts all categorical variables in
@@ -54,6 +56,14 @@
 #'   features to have mean zero and unit variance. The test sets are
 #'   standardized using the vectors of centers and standard deviations used in
 #'   corresponding training sets.
+#' @param sampling the default is "none", in which no subsampling is performed.
+#'   Other options include "up" (Up-sampling the minority class), "down"
+#'   (Down-sampling the majority class), and "smote" (synthetic points for the
+#'   minority class and down-sampling the majority class). Subsampling is only
+#'   applicable to the training set.
+#' @param stratify logical; if `TRUE`, the bootstrap resampling is performed
+#'   within each strata of `class` to ensure the bootstrap sample contains the
+#'   same proportions of each strata as the original data.
 #' @param plus logical; if `TRUE` (default), the .632+ estimator is calculated.
 #'   Otherwise, the .632 estimator is calculated.
 #' @param threshold a number between 0 and 1 indicating the lowest maximum class
@@ -94,17 +104,21 @@
 #' sl_result <- splendid(hgsc, class, n = 2, algorithms = c("lda", "xgboost"))
 #' }
 splendid <- function(data, class, algorithms = NULL, n = 1,
-                     seed_boot = NULL, seed_alg = NULL,
+                     seed_boot = NULL, seed_samp = NULL, seed_alg = NULL,
                      convert = FALSE, rfe = FALSE, ova = FALSE,
-                     standardize = FALSE, plus = TRUE, threshold = 0,
-                     trees = 100, tune = FALSE, top = 3, seed_rank = 1,
-                     sequential = FALSE) {
+                     standardize = FALSE,
+                     sampling = c("none", "up", "down", "smote"),
+                     stratify = FALSE, plus = TRUE,
+                     threshold = 0, trees = 100, tune = FALSE, top = 3,
+                     seed_rank = 1, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
-  data <- splendid_convert(data, algorithms, convert)
+  data <- splendid_process(data, class, algorithms, convert, standardize,
+                           "none")
 
-  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_alg, convert, rfe,
-                         ova, standardize, plus, threshold, trees, tune)
+  sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_samp,
+                         seed_alg, convert, rfe, ova, standardize, sampling,
+                         stratify, plus, threshold, trees, tune)
   sm <- purrr::invoke(splendid_model, sm_args)
 
   se_args <- tibble::lst(sm, data, class, top, seed_rank, rfe, sequential)

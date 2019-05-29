@@ -31,8 +31,9 @@ reference:
   - starts_with("boot_")
   - splendid_ensemble
   - error_632
-  - splendid_convert
+  - splendid_process
   - dummify
+  - subsample
 - title: Data
   contents:
   - hgsc

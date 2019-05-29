@@ -2,8 +2,8 @@ Type: Package
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic
     IDentification
-Version: 0.1.0.9000
-Date: 2019-05-08
+Version: 0.1.0.9001
+Date: 2019-05-28
 Authors@R: 
     c(person(given = "Derek",
              family = "Chiu",
@@ -32,6 +32,7 @@ Depends:
     R (>= 3.1)
 Imports: 
     caret,
+    DMwR,
     dplyr,
     e1071,
     forcats,
@@ -44,13 +45,13 @@ Imports:
     magrittr,
     MASS,
     ModelMetrics,
-    modelr,
     nnet,
     pamr,
     purrr,
     randomForest,
     RankAggreg,
     rlang,
+    rsample,
     sda,
     tibble,
     tidyr,
@@ -61,7 +62,7 @@ Suggests:
     DiagrammeR,
     knitr,
     rmarkdown,
-    testthat
+    testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

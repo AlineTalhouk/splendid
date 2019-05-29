@@ -1,14 +1,28 @@
 # splendid (development version)
 
-* fix factor order in `class_threshold()` to take from column order of associated probability matrix
+## New Features
+
+* add parameter `seed_samp` to `splendid()` to allow setting random seed before subsampling
+
+* `splendid_convert()` is now defunct. Use `splendid_process()` for a more comprehensive data pre-processing step. The new function can `convert` categorical variables to dummy variables as before. Added the ability to `standardize` continuous variables and apply `sampling` techniques to deal with class imbalance. Subsampling can only occur on the training set.
+
+* add parameter `stratify` to allow stratified bootstrap sampling on training set
 
 * use standard convention for confusion matrices: predicted in rows, reference in columns
-
-* internal functions deprecated and imported from new packages as needed
 
 * replace `MLmetrics::MultiLogLoss()` with `ModelMetrics::mlogLoss()` in `logloss()` since it handles the case when the truth has a category with 0 counts but is represented in the probability matrix
 
 * add NPV and specificity to `evaluation()`
+
+## Minor Changes
+
+* internal functions deprecated and imported from new packages as needed
+
+* update vignette parameter descriptions
+
+## Bug Fixes
+
+* fix factor order in `class_threshold()` to take from column order of associated probability matrix
 
 # splendid 0.1.0
 
