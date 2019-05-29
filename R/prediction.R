@@ -294,7 +294,8 @@ prediction_output <- function(pred, prob, class, test.id, threshold) {
     prob = prob,
     class.true = ctr,
     class.thres = cth,
-    class.prop = cp
+    class.prop = cp,
+    class = c("prediction", "factor")
   )
 }
 
@@ -343,4 +344,14 @@ split_data <- function(data, test.id = NULL, train.id = NULL,
     }
   }
   tibble::lst(train, test)
+}
+
+#' Custom printing method for prediction output
+#' @noRd
+print.prediction <- function(x, ...) {
+  cli::cat_line(cli::col_blue("# Prediction Summary\n"))
+  cli::cat_line("Confusion Matrix")
+  print(conf_mat(attr(x, "class.true"), attr(x, "class.thres")))
+  cli::cat_line("\nTotal Cases: ",length(x))
+  cli::cat_line("Proportion of Classified Predictions: ", attr(x, "class.prop"))
 }

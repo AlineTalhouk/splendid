@@ -2,6 +2,8 @@
 
 ## New Features
 
+* add custom print method for objects returned from `prediction()`. The output was previously not informative and too long
+
 * add parameter `seed_samp` to `splendid()` to allow setting random seed before subsampling
 
 * `splendid_convert()` is now defunct. Use `splendid_process()` for a more comprehensive data pre-processing step. The new function can `convert` categorical variables to dummy variables as before. Added the ability to `standardize` continuous variables and apply `sampling` techniques to deal with class imbalance. Subsampling can only occur on the training set.
