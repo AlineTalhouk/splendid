@@ -32,6 +32,7 @@ Depends:
     R (>= 3.1)
 Imports: 
     caret,
+    cli,
     DMwR,
     dplyr,
     e1071,
