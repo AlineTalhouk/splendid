@@ -19,8 +19,9 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
 
   # Process the data, but don't allow subsampling yet
-  data <- splendid_process(data, class, algorithms, convert, standardize, "none")
-  class <- as.factor(class)  # ensure class is a factor
+  sp <- splendid_process(data, class, algorithms, convert, standardize, "none")
+  data <- sp[["data"]]
+  class <- sp[["class"]]
 
   # Generate bootstrap resamples; test samples are those not chosen in training
   if (!is.null(seed_boot)) set.seed(seed_boot)

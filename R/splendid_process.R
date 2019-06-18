@@ -76,8 +76,9 @@ splendid_process <- function(data, class, algorithms, convert = FALSE,
       data <- dplyr::mutate_all(data, scale)
     }
   }
-  data_processed <- subsample(data, class, sampling, seed_samp)
-  data_processed
+  processed <- subsample(data, class, sampling, seed_samp)
+  list(data = dplyr::select(processed, -.data[["class"]]),
+       class = processed[["class"]])
 }
 
 #' Create dummy variables
@@ -138,9 +139,9 @@ subsample <- function(data, class,
                       sampling = c("none", "up", "down", "smote"),
                       seed_samp = NULL) {
   sampling <- match.arg(sampling)
-  class <- as.factor(class)
+  class <- as.factor(class)  # ensure class is a factor
   if (sampling == "none") {
-    return(data)
+    return(cbind(data, class))
   } else {
     if (!is.null(seed_samp)) set.seed(seed_samp)
     switch(
@@ -148,7 +149,6 @@ subsample <- function(data, class,
       up = caret::upSample(data, class, yname = "class"),
       down = caret::downSample(data, class, yname = "class"),
       smote = DMwR::SMOTE(class ~ ., cbind(data, class))
-    ) %>%
-      dplyr::select(-.data[["class"]])
+    )
   }
 }

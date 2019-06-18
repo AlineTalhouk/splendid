@@ -113,8 +113,9 @@ splendid <- function(data, class, algorithms = NULL, n = 1,
                      seed_rank = 1, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
-  data <- splendid_process(data, class, algorithms, convert, standardize,
-                           "none")
+  sp <- splendid_process(data, class, algorithms, convert, standardize, "none")
+  data <- sp[["data"]]
+  class <- sp[["class"]]
 
   sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_samp,
                          seed_alg, convert, rfe, ova, standardize, sampling,

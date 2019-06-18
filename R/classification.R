@@ -41,9 +41,10 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            seed_samp = NULL, sizes = NULL, trees = 100,
                            tune = FALSE, seed_alg = NULL, convert = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
-  class <- as.factor(class)  # ensure class is a factor
   # Process the data, allow subsampling on the training data
-  data <- splendid_process(data, class, algorithms, convert, standardize, sampling, seed_samp)
+  sp <- splendid_process(data, class, algorithms, convert, standardize, sampling, seed_samp)
+  data <- sp[["data"]]
+  class <- sp[["class"]]
   switch(
     algorithms,
     pam = pam_model(data, class, seed_alg),
