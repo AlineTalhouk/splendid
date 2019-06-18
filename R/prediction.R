@@ -348,6 +348,7 @@ split_data <- function(data, test.id = NULL, train.id = NULL,
 
 #' Custom printing method for prediction output
 #' @noRd
+#' @export
 print.prediction <- function(x, ...) {
   cli::cat_line(cli::col_blue("# Prediction Summary\n"))
   cli::cat_line("Confusion Matrix")
