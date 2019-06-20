@@ -268,7 +268,7 @@ boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
          xgboost = xgboost::xgb.train(
            params = list("objective" = "multi:softprob",
                          "eval_metric" = "mlogloss",
-                         "num_class" = dplyr::n_distinct(class)),
+                         "num_class" = nlevels(class)),
            data = xgboost::xgb.DMatrix(data = as.matrix(data),
                                        label = as.integer(class) - 1),
            nrounds = 2))
