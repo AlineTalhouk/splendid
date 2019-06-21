@@ -148,7 +148,10 @@ subsample <- function(data, class,
       sampling,
       up = caret::upSample(data, class, yname = "class"),
       down = caret::downSample(data, class, yname = "class"),
-      smote = DMwR::SMOTE(class ~ ., cbind(data, class))
+      smote = DMwR::SMOTE(class ~ .,
+                          cbind(data, class),
+                          perc.over = 400,
+                          perc.under = 400)
     )
   }
 }
