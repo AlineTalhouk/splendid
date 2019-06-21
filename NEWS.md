@@ -24,6 +24,10 @@
 
 ## Bug Fixes
 
+* increase `perc.over` and `perc.under` in SMOTE subsampling to ensure the second to smallest class has > 0 cases
+
+* decrease `minsplit` in `adaboost` so fewer observations are needed to split a node in the rpart classifier
+
 * fix `num_class` in `xgboost`: number of classes should be taken from factor levels (some might be dropped from training set)
 
 * fix factor order in `class_threshold()` to take from column order of associated probability matrix
