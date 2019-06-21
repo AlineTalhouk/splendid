@@ -264,7 +264,7 @@ boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
   if (!is.null(seed_alg)) set.seed(seed_alg)
   switch(algorithms,
          adaboost = sink_output(maboost::maboost(
-           x = data, y = class, breg = "entrop", iter = trees)),
+           x = data, y = class, breg = "entrop", iter = trees, minsplit = 2)),
          xgboost = xgboost::xgb.train(
            params = list("objective" = "multi:softprob",
                          "eval_metric" = "mlogloss",
