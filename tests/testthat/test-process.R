@@ -30,5 +30,5 @@ test_that("subsampling methods create different number of cases", {
   expect_equal(nrow(iris_orig), 130)
   expect_equal(nrow(iris_up), 150)
   expect_equal(nrow(iris_down), 90)
-  expect_equal(nrow(iris_smote), 210)
+  expect_equal(nrow(iris_smote), 630)
 })
