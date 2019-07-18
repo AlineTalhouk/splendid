@@ -151,7 +151,8 @@ subsample <- function(data, class,
       smote = DMwR::SMOTE(class ~ .,
                           cbind(data, class),
                           perc.over = 400,
-                          perc.under = 400)
+                          perc.under = 400) %>%
+        tidyr::drop_na()
     )
   }
 }
