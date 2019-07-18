@@ -3,7 +3,6 @@ Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic
     IDentification
 Version: 0.1.0.9005
-Date: 2019-06-21
 Authors@R: 
     c(person(given = "Derek",
              family = "Chiu",
