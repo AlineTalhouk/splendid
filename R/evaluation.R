@@ -163,10 +163,10 @@ logloss <- function(x, pred.probs) {
 #' @noRd
 auc <- function(x, pred.probs) {
   # ui-constructor for multicap class
-  mcap.construct <- HandTill2001::multcap(
+  mcap.construct <- suppressWarnings(HandTill2001::multcap(
     response = x,
     predicted = as.matrix(pred.probs)
-  )
+  ))
   HandTill2001::auc(mcap.construct)  # multi-class auc metric
 }
 
