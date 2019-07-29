@@ -4,10 +4,10 @@ data(hgsc)
 dat <- hgsc[1:50, 1:25]
 class <- attr(hgsc, "class.true")[1:50]
 
-test_that("knn ova is same as original because it's nonparametric", {
+test_that("knn ova works", {
   sl_result <- splendid_model(dat, class, n = 1, algorithms = "knn",
                               ova = TRUE)
-  expect_identical(unlist(sl_result$evals$knn), unlist(sl_result$evals$ova_knn))
+  expect_is(sl_result$preds$ova_knn[[1]] %@% "prob", "matrix")
 })
 
 test_that("mlr_nnet and nnet ova outputs need matrix coercion", {
