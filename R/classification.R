@@ -242,14 +242,14 @@ cv_mlr_model <- function(data, class, algorithms, seed_alg = NULL) {
 #' @noRd
 nnet_model <- function(data, class) {
   if (!"package:nnet" %in% search()) attachNamespace("nnet")
-  e1071::best.nnet(
+  suppressWarnings(e1071::best.nnet(
     class ~ .,
     data = cbind(data, class),
     size = seq_len(5),
     decay = seq(0, 0.5, length.out = 5),
     MaxNWts = 2000,
     tunecontrol = e1071::tune.control(sampling = "fix")
-  )
+  ))
 }
 
 #' naive bayes model
