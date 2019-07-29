@@ -115,7 +115,7 @@ reliability_plot <- function(x, pred.probs) {
 roc_plot <- function(x, pred.probs) {
 
   # rename probability matrix
-  roc_df <- model.matrix(~ x - 1) %>%
+  roc_df <- stats::model.matrix(~ x - 1) %>%
     as.data.frame() %>%
     dplyr::mutate_all(as.integer) %>%
     dplyr::rename_all(~ gsub("x(.*)$", "\\1_true", .)) %>%
