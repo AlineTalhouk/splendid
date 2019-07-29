@@ -4,11 +4,14 @@
 \alias{splendid_graphs}
 \alias{discrimination_plot}
 \alias{reliability_plot}
+\alias{roc_plot}
 \title{Discriminating graphs}
 \usage{
 discrimination_plot(x, pred.probs)
 
 reliability_plot(x, pred.probs)
+
+roc_plot(x, pred.probs)
 }
 \arguments{
 \item{x}{true class labels}
@@ -20,8 +23,8 @@ must equal length of \code{x}}
 \code{ggplot} objects for the desired plot
 }
 \description{
-Graphs a \code{discrimination_plot} and \code{reliability_plot} based on true classes
-and predicted class probabilities.
+Graphs a \code{discrimination_plot}, \code{reliability_plot}, and \code{roc_plot} based on
+true classes and predicted class probabilities.
 }
 \details{
 A \code{discrimination_plot} shows boxplots of the predicted probabilities for
@@ -32,7 +35,10 @@ A \code{reliability_plot} shows mean prediction vs. observed fraction on lowess
 smoother for each class. A line going thru the origin with slope of 1 serves
 as a reference for perfect reliability.
 
-Both plots can be called from within \code{\link[=evaluation]{evaluation()}}.
+A \code{roc_plot} shows the multi-class ROC curves for each class using
+1-Specificity vs. Sensitivity.
+
+All plots can be called from within \code{\link[=evaluation]{evaluation()}}.
 }
 \examples{
 data(hgsc)
@@ -44,6 +50,7 @@ mod <- classification(hgsc[training.id, ], class[training.id], "xgboost")
 pred <- prediction(mod, hgsc, test.id, class = class)
 discrimination_plot(class[test.id], attr(pred, "prob"))
 reliability_plot(class[test.id], attr(pred, "prob"))
+roc_plot(class[test.id], attr(pred, "prob"))
 }
 \references{
 http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract

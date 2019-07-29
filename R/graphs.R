@@ -1,7 +1,7 @@
 #' Discriminating graphs
 #'
-#' Graphs a `discrimination_plot` and `reliability_plot` based on true classes
-#' and predicted class probabilities.
+#' Graphs a `discrimination_plot`, `reliability_plot`, and `roc_plot` based on
+#' true classes and predicted class probabilities.
 #'
 #' A `discrimination_plot` shows boxplots of the predicted probabilities for
 #' each class, separated by panels of the true class labels. The class
@@ -11,7 +11,10 @@
 #' smoother for each class. A line going thru the origin with slope of 1 serves
 #' as a reference for perfect reliability.
 #'
-#' Both plots can be called from within [evaluation()].
+#' A `roc_plot` shows the multi-class ROC curves for each class using
+#' 1-Specificity vs. Sensitivity.
+#'
+#' All plots can be called from within [evaluation()].
 #'
 #' @param x true class labels
 #' @param pred.probs matrix of predicted class probabilities. Number of rows
@@ -31,6 +34,7 @@
 #' pred <- prediction(mod, hgsc, test.id, class = class)
 #' discrimination_plot(class[test.id], attr(pred, "prob"))
 #' reliability_plot(class[test.id], attr(pred, "prob"))
+#' roc_plot(class[test.id], attr(pred, "prob"))
 discrimination_plot <- function(x, pred.probs) {
 
   # turn into long-form for plotting
@@ -103,5 +107,45 @@ reliability_plot <- function(x, pred.probs) {
           legend.position = c(0, 1),
           legend.justification = c(0, 1),
           legend.box.margin = margin(5, 0, 0, 5))
+  print(p)
+}
+
+#' @name splendid_graphs
+#' @export
+roc_plot <- function(x, pred.probs) {
+
+  # rename probability matrix
+  roc_df <- model.matrix(~ x - 1) %>%
+    as.data.frame() %>%
+    dplyr::rename_all(~ gsub("x(.*)$", "\\1_true", .)) %>%
+    cbind(pred.probs) %>%
+    dplyr::rename_at(unique(x), ~ paste0(., "_pred_model"))
+
+  # plotting format
+  plot_roc_df <- roc_df %>%
+    multiROC::multi_roc(force_diag = TRUE) %>%
+    multiROC::plot_roc_data()
+
+  # multi-class ROC curves
+  cols <- c(grDevices::rainbow(dplyr::n_distinct(x)), c("grey60", "grey80"))
+  p <- ggplot(plot_roc_df,  aes_string("1-Specificity", "Sensitivity")) +
+    geom_path(aes_(color = ~Group), size = 1) +
+    geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1),
+                 colour = "grey",
+                 linetype = "dotdash") +
+    scale_color_manual(values = cols) +
+    labs(title = "Multi-Class ROC Curves") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(face = "bold"),
+      legend.justification = c(1, 0),
+      legend.position = c(0.95, 0.05),
+      legend.title = element_blank(),
+      legend.background = element_rect(
+        size = 0.5,
+        linetype = "solid",
+        colour = "black"
+      )
+    )
   print(p)
 }
