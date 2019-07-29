@@ -117,9 +117,10 @@ roc_plot <- function(x, pred.probs) {
   # rename probability matrix
   roc_df <- model.matrix(~ x - 1) %>%
     as.data.frame() %>%
+    dplyr::mutate_all(as.integer) %>%
     dplyr::rename_all(~ gsub("x(.*)$", "\\1_true", .)) %>%
     cbind(pred.probs) %>%
-    dplyr::rename_at(unique(x), ~ paste0(., "_pred_model"))
+    dplyr::rename_if(is.double, ~ paste0(., "_pred_model"))
 
   # plotting format
   plot_roc_df <- roc_df %>%
