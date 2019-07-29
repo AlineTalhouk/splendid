@@ -2,6 +2,8 @@
 
 ## New Features
 
+* add `roc_plot()` for plotting multi-class ROC curves
+
 * add custom print method for objects returned from `prediction()`. The output was previously not informative and too long
 
 * add parameter `seed_samp` to `splendid()` to allow setting random seed before subsampling
