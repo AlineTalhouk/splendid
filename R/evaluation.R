@@ -58,7 +58,8 @@ evaluation <- function(x, y, plot = FALSE) {
   # Discriminatory measures
   dm_funs <- tibble::lst(logloss, auc, pdi)
   if (plot) {
-    dm_funs <- c(dm_funs, tibble::lst(discrimination_plot, reliability_plot))
+    dm_funs <- c(dm_funs,
+                 tibble::lst(discrimination_plot, reliability_plot, roc_plot))
   }
   dm <- dm_funs %>%
     purrr::invoke_map(list(list(x = x, pred.probs = probs)))
