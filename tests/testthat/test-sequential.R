@@ -3,6 +3,7 @@ context("sequential")
 data(hgsc)
 dat <- hgsc[1:100, 1:25]
 class <- attr(hgsc, "class.true")[1:100]
+set.seed(2)
 sm <- splendid_model(dat, class, n = 2, algorithms = c("xgboost", "slda"))
 
 test_that("sequential alg fits one fewer model than number of classes", {
@@ -15,6 +16,6 @@ test_that("sequential alg fits one fewer model than number of classes", {
 })
 
 test_that("boxplot showing F1-score distribution can be plotted", {
-  expect_error(sequential_train(sm, dat, class, boxplot = TRUE), NA)
+  expect_warning(sequential_train(sm, dat, class, boxplot = TRUE))
   file.remove(list.files(pattern = "Rplots"))
 })
