@@ -104,7 +104,7 @@ sequential_rank <- function(sm, boxplot) {
   if (boxplot) {
     p <- tidy_evals %>%
       ggplot(aes_(y = ~value, x = ~class, fill = ~model)) +
-      geom_boxplot(alpha = 0.6) +
+      geom_boxplot(alpha = 0.6, na.rm = TRUE) +
       facet_wrap(~model) +
       theme_bw() +
       labs(y = "F1-score")
