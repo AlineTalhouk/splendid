@@ -8,14 +8,16 @@ test_that("dummify converts categorical variables into one column per level", {
 test_that("specifying convert is the same as dummifying", {
   expect_equivalent(
     dummify(iris),
-    splendid_process(iris, iris$Species, algorithms = "algorithm_name", convert = TRUE)$data
+    splendid_process(iris, iris$Species, algorithms = "algorithm_name",
+                     convert = TRUE)$data
   )
 })
 
 test_that("error message is thrown for certain algorithms", {
   expect_identical(
     iris,
-    splendid_process(iris, iris$Species, algorithms = "algorithm_name", convert = FALSE)$data
+    splendid_process(iris, iris$Species, algorithms = "algorithm_name",
+                     convert = FALSE)$data
   )
   expect_error(splendid_process(iris, algorithms = "lda", convert = FALSE))
 })

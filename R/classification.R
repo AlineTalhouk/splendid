@@ -42,7 +42,8 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
                            tune = FALSE, seed_alg = NULL, convert = FALSE) {
   algorithms <- match.arg(algorithms, ALG.NAME)
   # Process the data, allow subsampling on the training data
-  sp <- splendid_process(data, class, algorithms, convert, standardize, sampling, seed_samp)
+  sp <- splendid_process(data, class, algorithms, convert, standardize,
+                         sampling, seed_samp)
   data <- sp[["data"]]
   class <- sp[["class"]]
   switch(
