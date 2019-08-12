@@ -15,16 +15,18 @@ test_that("unsupported model object causes error", {
 
 test_that("lda feature selection works", {
   mod <- classification(hgsc, class, "lda", rfe = TRUE, sizes = 5)
-  expect_error(prediction(mod, hgsc, class = class, standardize = TRUE), NA)
+  pred <- prediction(mod, hgsc, class = class, standardize = TRUE)
+  expect_output(print(pred))
 })
 
 test_that("svm feature selection works", {
   mod <- classification(iris[, -5], iris$Species, "svm", rfe = TRUE, sizes = 3)
-  expect_error(prediction(mod, iris[, -5], class = iris$Species,
-                          standardize = TRUE), NA)
+  pred <- prediction(mod, iris[, -5], class = iris$Species, standardize = TRUE)
+  expect_output(print(pred))
 })
 
 test_that("adaboost_m1 feature selection works", {
   mod <- classification(hgsc, class, "adaboost_m1", rfe = TRUE, sizes = 5)
-  expect_error(prediction(mod, hgsc, class = class, standardize = TRUE), NA)
+  pred <- prediction(mod, hgsc, class = class, standardize = TRUE)
+  expect_output(print(pred))
 })
