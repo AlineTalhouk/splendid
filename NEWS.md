@@ -2,6 +2,8 @@
 
 ## New Features
 
+* pass `seeds` to `caret::trainControl()` for reproducible tuning (#48)
+
 * add `roc_plot()` for plotting multi-class ROC curves
 
 * add custom print method for objects returned from `prediction()`. The output was previously not informative and too long
