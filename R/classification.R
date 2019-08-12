@@ -99,7 +99,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
                       seed_alg = NULL) {
   method <- rfe_method(algorithms)
   sizes <- rfe_sizes(sizes, class)
-  tune_args <- tibble::lst(class, method, trees)
+  tune_args <- tibble::lst(class, method, trees, seed_alg)
   if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
   if (rfe) {
     mod <- suppressWarnings(
@@ -191,7 +191,13 @@ param_grids <- function(data, method, type = c("default", "range")) {
 
 #' Tune models with pre-specified search grids for hyperparameters
 #' @noRd
-tune_model <- function(data, class, method, trees) {
+tune_model <- function(data, class, method, trees, seed_alg) {
+  tune_grid <- param_grids(data, method, type = "range")
+  if (is.null(seed_alg)) {
+    seeds <- NA
+  } else {
+    seeds <- c(purrr::map(1:5, ~ sample(10 ^ 6, nrow(tune_grid))), seed_alg)
+  }
   tune_args <- list(
     x = data,
     y = class,
@@ -200,9 +206,10 @@ tune_model <- function(data, class, method, trees) {
     trControl = caret::trainControl(
       method = "cv",
       number = 5,
-      classProbs = TRUE
+      classProbs = TRUE,
+      seeds = seeds
     ),
-    tuneGrid = param_grids(data, method, type = "range")
+    tuneGrid = tune_grid
   )
   if (is.null(trees)) {
     purrr::invoke(caret::train, tune_args)
