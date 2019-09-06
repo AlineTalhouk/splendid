@@ -39,12 +39,10 @@ Imports:
     ggplot2,
     glmnet,
     grDevices,
-    HandTill2001,
     kernlab,
     maboost,
     magrittr,
     MASS,
-    ModelMetrics,
     multiROC,
     nnet,
     pamr,
@@ -56,7 +54,8 @@ Imports:
     sda,
     tibble,
     tidyr,
-    xgboost
+    xgboost,
+    yardstick
 Suggests: 
     adabag,
     covr,
