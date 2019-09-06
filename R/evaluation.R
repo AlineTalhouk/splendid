@@ -78,8 +78,6 @@ evaluation <- function(x, y, plot = FALSE) {
   mcc <- mcc(cm)
   micro_mcc <- mcc(socm)
 
-  if (plot) dm[c("discrimination_plot", "reliability_plot")]
-
   c(dm[c("logloss", "auc", "pdi")],
     tibble::lst(accuracy, macro_ppv, macro_npv, macro_sensitivity,
                 macro_specificity, macro_f1, mcc, micro_mcc, cs))
