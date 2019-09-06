@@ -39,6 +39,7 @@ Imports:
     ggplot2,
     glmnet,
     grDevices,
+    HandTill2001,
     kernlab,
     maboost,
     magrittr,

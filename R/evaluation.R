@@ -156,7 +156,10 @@ logloss <- function(x, pred.probs) {
 #' @references http://link.springer.com/article/10.1023/A:1010920819831
 #' @noRd
 auc <- function(x, pred.probs) {
-  yardstick::roc_auc_vec(x, pred.probs)
+  mcap.construct <-
+    suppressWarnings(HandTill2001::multcap(response = x,
+                                           predicted = as.matrix(pred.probs)))
+  HandTill2001::auc(mcap.construct)
 }
 
 #' Polytomous Discrimination Index (PDI)
