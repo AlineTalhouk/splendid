@@ -68,11 +68,13 @@ evaluation <- function(x, y, plot = FALSE) {
   accuracy <- yardstick::accuracy_vec(x, y)
 
   # Macro-averaged ppv/npv/sensitivity/sensitivity/F1-score
-  macro_ppv <- yardstick::ppv_vec(x, y)
-  macro_npv <- yardstick::npv_vec(x, y)
-  macro_sensitivity <- yardstick::sens_vec(x, y)
-  macro_specificity <- yardstick::spec_vec(x, y)
-  macro_f1 <- yardstick::f_meas_vec(x, y)
+  suppressWarnings({
+    macro_ppv <- yardstick::ppv_vec(x, y)
+    macro_npv <- yardstick::npv_vec(x, y)
+    macro_sensitivity <- yardstick::sens_vec(x, y)
+    macro_specificity <- yardstick::spec_vec(x, y)
+    macro_f1 <- yardstick::f_meas_vec(x, y)
+  })
 
   # MCC and micro-averaged MCC
   mcc <- mcc(cm)
@@ -86,31 +88,31 @@ evaluation <- function(x, y, plot = FALSE) {
 #' PPV (Precision) for 2 by 2 confusion matrix
 #' @noRd
 ppv <- function(C) {
-  yardstick::ppv(C)[[".estimate"]]
+  suppressWarnings(yardstick::ppv(C)[[".estimate"]])
 }
 
 #' NPV for 2 by 2 confusion matrix
 #' @noRd
 npv <- function(C) {
-  yardstick::npv(C)[[".estimate"]]
+  suppressWarnings(yardstick::npv(C)[[".estimate"]])
 }
 
 #' Sensitivity (Recall) for 2 by 2 confusion matrix
 #' @noRd
 sensitivity <- function(C) {
-  yardstick::sens(C)[[".estimate"]]
+  suppressWarnings(yardstick::sens(C)[[".estimate"]])
 }
 
 #' Specificity for 2 by 2 confusion matrix
 #' @noRd
 specificity <- function(C) {
-  yardstick::spec(C)[[".estimate"]]
+  suppressWarnings(yardstick::spec(C)[[".estimate"]])
 }
 
 #' F1-score for 2 by 2 confusion matrix
 #' @noRd
 f1 <- function(C) {
-  yardstick::f_meas(C)[[".estimate"]]
+  suppressWarnings(yardstick::f_meas(C)[[".estimate"]])
 }
 
 #' Matthew's Correlation Coefficient (Phi Coefficient) for multiclass case
