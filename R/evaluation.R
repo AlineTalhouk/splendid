@@ -65,14 +65,14 @@ evaluation <- function(x, y, plot = FALSE) {
     purrr::invoke_map(list(list(x = x, pred.probs = probs)))
 
   # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
-  accuracy <- sum(diag(cm)) / sum(cm)
+  accuracy <- yardstick::accuracy_vec(x, y)
 
   # Macro-averaged ppv/npv/sensitivity/sensitivity/F1-score
-  macro_ppv <- mean(cs_ppv)
-  macro_npv <- mean(cs_npv)
-  macro_sensitivity <- mean(cs_sens)
-  macro_specificity <- mean(cs_spec)
-  macro_f1 <- mean(cs_f1)
+  macro_ppv <- yardstick::ppv_vec(x, y)
+  macro_npv <- yardstick::npv_vec(x, y)
+  macro_sensitivity <- yardstick::sens_vec(x, y)
+  macro_specificity <- yardstick::spec_vec(x, y)
+  macro_f1 <- yardstick::f_meas_vec(x, y)
 
   # MCC and micro-averaged MCC
   mcc <- mcc(cm)
@@ -86,32 +86,31 @@ evaluation <- function(x, y, plot = FALSE) {
 #' PPV (Precision) for 2 by 2 confusion matrix
 #' @noRd
 ppv <- function(C) {
-  C[1, 1] / (C[1, 1] + C[1, 2])
+  yardstick::ppv(C)[[".estimate"]]
 }
 
 #' NPV for 2 by 2 confusion matrix
 #' @noRd
 npv <- function(C) {
-  C[2, 2] / (C[2, 2] + C[2, 1])
+  yardstick::npv(C)[[".estimate"]]
 }
 
 #' Sensitivity (Recall) for 2 by 2 confusion matrix
 #' @noRd
 sensitivity <- function(C) {
-  C[1, 1] / (C[1, 1] + C[2, 1])
+  yardstick::sens(C)[[".estimate"]]
 }
-
 
 #' Specificity for 2 by 2 confusion matrix
 #' @noRd
 specificity <- function(C) {
-  C[2, 2] / (C[2, 2] + C[1, 2])
+  yardstick::spec(C)[[".estimate"]]
 }
 
 #' F1-score for 2 by 2 confusion matrix
 #' @noRd
 f1 <- function(C) {
-  2 * ppv(C) * sensitivity(C) / (ppv(C) + sensitivity(C))
+  yardstick::f_meas(C)[[".estimate"]]
 }
 
 #' Matthew's Correlation Coefficient (Phi Coefficient) for multiclass case
@@ -119,12 +118,7 @@ f1 <- function(C) {
 #'   http://www.sciencedirect.com/science/article/pii/S1476927104000799
 #' @noRd
 mcc <- function(C) {
-  N <- sum(C)
-  rc <- as.data.frame(which(is.finite(C), arr.ind = TRUE))
-  num <- N * sum(diag(C)) - sum(purrr::pmap_dbl(rc, ~ C[.x, ] %*% C[, .y]))
-  den <- sqrt(N ^ 2 - sum(purrr::pmap_dbl(rc, ~ C[.x, ] %*% C[.y, ]))) *
-    sqrt(N ^ 2 - sum(purrr::pmap_dbl(rc, ~ C[, .x] %*% C[, .y])))
-  num / den
+  yardstick::mcc(C)[[".estimate"]]
 }
 
 #' Create One-Vs-All confusion matrices
@@ -151,8 +145,7 @@ ova <- function(C) {
 #' @param pred.probs predicted probabilities for each class
 #' @noRd
 logloss <- function(x, pred.probs) {
-  class(pred.probs) <- "matrix"
-  ModelMetrics::mlogLoss(x, pred.probs)
+  yardstick::mn_log_loss_vec(x, pred.probs)
 }
 
 #' AUC/M-index: Multiple Class Area under ROC Curve
@@ -161,12 +154,7 @@ logloss <- function(x, pred.probs) {
 #' @references http://link.springer.com/article/10.1023/A:1010920819831
 #' @noRd
 auc <- function(x, pred.probs) {
-  # ui-constructor for multicap class
-  mcap.construct <- suppressWarnings(HandTill2001::multcap(
-    response = x,
-    predicted = as.matrix(pred.probs)
-  ))
-  HandTill2001::auc(mcap.construct)  # multi-class auc metric
+  yardstick::roc_auc_vec(x, pred.probs)
 }
 
 #' Polytomous Discrimination Index (PDI)
