@@ -2,7 +2,7 @@ Type: Package
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic
     IDentification
-Version: 0.1.0.9008
+Version: 0.1.0.9009
 Authors@R: 
     c(person(given = "Derek",
              family = "Chiu",
@@ -44,7 +44,6 @@ Imports:
     maboost,
     magrittr,
     MASS,
-    ModelMetrics,
     multiROC,
     nnet,
     pamr,
@@ -56,7 +55,8 @@ Imports:
     sda,
     tibble,
     tidyr,
-    xgboost
+    xgboost,
+    yardstick
 Suggests: 
     adabag,
     covr,

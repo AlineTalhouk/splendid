@@ -113,9 +113,7 @@ sequential_rank <- function(sm, boxplot) {
   model_ranks <- tidy_evals %>%
     dplyr::mutate(!!"value" := ifelse(is.nan(.data$value), 0, .data$value)) %>%
     dplyr::group_by(.data$class, .data$model) %>%
-    dplyr::summarise(!!"metric" := mean(.data$value)) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(.data$class) %>%
+    dplyr::summarise(!!"metric" := mean(.data$value, na.rm = TRUE)) %>%
     dplyr::summarize(!!"model" := .data$model[which.max(.data$metric)],
                      !!"metric" := max(.data$metric)) %>%
     dplyr::arrange(dplyr::desc(.data$metric)) %>%

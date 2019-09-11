@@ -2,6 +2,8 @@
 
 ## New Features
 
+* use `yardstick` package for most evaluation metrics
+
 * pass `seeds` to `caret::trainControl()` for reproducible tuning (#48)
 
 * add `roc_plot()` for plotting multi-class ROC curves
@@ -27,6 +29,8 @@
 * update vignette parameter descriptions
 
 ## Bug Fixes
+
+* in sequential method, remove bootstrap iterations with an undefined F1-measure from average calculation
 
 * increase `perc.over` and `perc.under` in SMOTE subsampling to ensure the second to smallest class has > 0 cases
 
