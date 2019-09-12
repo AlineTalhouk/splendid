@@ -63,25 +63,20 @@ evaluation <- function(x, y, plot = FALSE) {
   }
   dm <- purrr::invoke_map(dm_funs, x = x, probs = probs)
 
-  # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
-  accuracy <- yardstick::accuracy_vec(x, y)
-
-  # Macro-averaged ppv/npv/sensitivity/sensitivity/F1-score
+  # Accuracy, macro-averaged PPV/NPV/Sensitivity/Specificity/F1-score, MCC
   suppressWarnings({
+    accuracy <- yardstick::accuracy_vec(x, y)
     macro_ppv <- yardstick::ppv_vec(x, y)
     macro_npv <- yardstick::npv_vec(x, y)
     macro_sensitivity <- yardstick::sens_vec(x, y)
     macro_specificity <- yardstick::spec_vec(x, y)
     macro_f1 <- yardstick::f_meas_vec(x, y)
+    mcc <- yardstick::mcc_vec(x, y)
   })
-
-  # MCC and micro-averaged MCC
-  mcc <- mcc(cm)
-  micro_mcc <- mcc(socm)
 
   c(dm[c("logloss", "auc", "pdi")],
     tibble::lst(accuracy, macro_ppv, macro_npv, macro_sensitivity,
-                macro_specificity, macro_f1, mcc, micro_mcc, cs))
+                macro_specificity, macro_f1, mcc, cs))
 }
 
 #' PPV (Precision) for 2 by 2 confusion matrix
@@ -114,12 +109,12 @@ f1 <- function(C) {
   suppressWarnings(yardstick::f_meas(C)[[".estimate"]])
 }
 
-#' Matthew's Correlation Coefficient (Phi Coefficient) for multiclass case
+#' Matthews correlation coefficient for 2 by 2 confusion matrix
 #' @references
-#'   http://www.sciencedirect.com/science/article/pii/S1476927104000799
+#'   https://www.sciencedirect.com/science/article/pii/S1476927104000799
 #' @noRd
 mcc <- function(C) {
-  yardstick::mcc(C)[[".estimate"]]
+  suppressWarnings(yardstick::mcc(C)[[".estimate"]])
 }
 
 #' Create One-Vs-All confusion matrices
