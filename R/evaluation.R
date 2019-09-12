@@ -41,38 +41,40 @@ evaluation <- function(x, y, plot = FALSE) {
   }
 
   # Discriminatory measures
+  dm_args <- list(x, probs)
   dm_funs <- tibble::lst(logloss, auc, pdi)
+  dm <- purrr::invoke_map(dm_funs, list(dm_args))
   if (plot) {
-    dm_funs <- c(dm_funs,
-                 tibble::lst(discrimination_plot, reliability_plot, roc_plot))
+    plot_funs <- list(discrimination_plot, reliability_plot, roc_plot)
+    purrr::invoke_map(plot_funs, list(dm_args))
   }
-  dm <- purrr::invoke_map(dm_funs, x = x, probs = probs)
 
-  # Accuracy, macro-averaged PPV/NPV/Sensitivity/Specificity/F1-score, MCC
+  # Multi-class measures: accuracy, macro-averaged PPV/NPV/Sensitivity/Specificity/F1-score, MCC
+  cm <- conf_mat(x, y)
   suppressWarnings({
-    accuracy <- yardstick::accuracy_vec(x, y)
-    macro_ppv <- yardstick::ppv_vec(x, y)
-    macro_npv <- yardstick::npv_vec(x, y)
-    macro_sensitivity <- yardstick::sens_vec(x, y)
-    macro_specificity <- yardstick::spec_vec(x, y)
-    macro_f1 <- yardstick::f_meas_vec(x, y)
-    mcc <- yardstick::mcc_vec(x, y)
+    mc <-
+      list(yardstick::accuracy, yardstick::ppv, yardstick::npv, yardstick::sens,
+           yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
+      purrr::set_names(c("accuracy", "macro_ppv", "macro_npv", "macro_sensitivity",
+                         "macro_specificity", "macro_f1", "mcc")) %>%
+      purrr::map(~ .(cm)[[".estimate"]])
   })
 
-  # Class-specific PPV/NPV/Sensitivity/Specificity/F1-score/MCC
-  ocm <- ova(conf_mat(x, y))  # one vs. all confusion matrices
-  cs <-
-    list(yardstick::ppv, yardstick::npv, yardstick::sens,
-         yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
-    purrr::set_names(c("ppv", "npv", "sensitivity",
-                       "specificity", "f1", "mcc")) %>%
-    purrr::map(function(f)
-      purrr::map(ocm, ~ suppressWarnings(f(.)[[".estimate"]]))) %>%
-    unlist()
+  # Class-specific measures: PPV/NPV/Sensitivity/Specificity/F1-score/MCC
+  ocm <- ova(cm)  # one vs. all confusion matrices
+  suppressWarnings({
+    cs <-
+      list(yardstick::ppv, yardstick::npv, yardstick::sens,
+           yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
+      purrr::set_names(c("ppv", "npv", "sensitivity",
+                         "specificity", "f1", "mcc")) %>%
+      purrr::map(function(f) purrr::map(ocm, ~ f(.)[[".estimate"]])) %>%
+      unlist() %>%
+      tibble::lst(cs = .)
+  })
 
-  c(dm[names(dm_funs)],
-    tibble::lst(accuracy, macro_ppv, macro_npv, macro_sensitivity,
-                macro_specificity, macro_f1, mcc, cs))
+  # All measures
+  c(dm, mc, cs)
 }
 
 #' Create One-Vs-All confusion matrices
