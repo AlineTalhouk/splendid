@@ -43,7 +43,7 @@ library(splendid)
 data(hgsc)
 class <- attr(hgsc, "class.true")
 sl_result <- splendid(data = hgsc, class = class, n = 1,
-                      algorithms = c("rf", "xgboost"))
+                      algorithms = c("rf", "xgboost"), seed_boot = 5)
 str(sl_result, max.level = 2)
 #> List of 8
 #>  $ models       :List of 2
@@ -54,9 +54,9 @@ str(sl_result, max.level = 2)
 #>   ..$ xgboost:List of 1
 #>  $ evals        :List of 2
 #>   ..$ rf     :'data.frame':  35 obs. of  1 variable:
-#>   .. ..- attr(*, "err_632plus")= num 0.404
+#>   .. ..- attr(*, "err_632plus")= num 0.444
 #>   ..$ xgboost:'data.frame':  35 obs. of  1 variable:
-#>   .. ..- attr(*, "err_632plus")= num 0.852
+#>   .. ..- attr(*, "err_632plus")= num 0.877
 #>  $ bests        : Named chr [1:2] "rf" "rf"
 #>   ..- attr(*, "names")= chr [1:2] "1" "X1"
 #>  $ ensemble_algs: chr "rf"
