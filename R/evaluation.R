@@ -61,8 +61,7 @@ evaluation <- function(x, y, plot = FALSE) {
     dm_funs <- c(dm_funs,
                  tibble::lst(discrimination_plot, reliability_plot, roc_plot))
   }
-  dm <- dm_funs %>%
-    purrr::invoke_map(list(list(x = x, probs = probs)))
+  dm <- purrr::invoke_map(dm_funs, x = x, probs = probs)
 
   # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
   accuracy <- yardstick::accuracy_vec(x, y)
