@@ -56,9 +56,3 @@ binarize <- function(x) {
 conf_mat <- function(reference, prediction) {
   as.matrix(table(Prediction = prediction, Reference = reference))
 }
-
-#' Class error
-#' @noRd
-class_error <- function(confmat) {
-  1 - (sum(diag(confmat)) / sum(confmat))
-}
