@@ -40,20 +40,16 @@ evaluation <- function(x, y, plot = FALSE) {
     y <- y_thres[keep_ind] %>% forcats::fct_drop(only = "unclassified")
   }
 
-  # Multiclass confusion matrix with actual as rows, predicted as columns
-  cm <- conf_mat(x, y)
-  ocm <- ova(cm)  # One Vs. All confusion matrices
-  socm <- purrr::reduce(ocm, `+`)  # Element-wise sum of ocm
-
-  # Class-specific ppv/npv/sensitivity/specificity/F1-score/MCC
-  cs_ppv <- purrr::map_dbl(ocm, ppv)
-  cs_npv <- purrr::map_dbl(ocm, npv)
-  cs_sens <- purrr::map_dbl(ocm, sensitivity)
-  cs_spec <- purrr::map_dbl(ocm, specificity)
-  cs_f1 <- purrr::map_dbl(ocm, f1)
-  cs_mcc <- purrr::map_dbl(ocm, mcc)
-  cs <- c(ppv = cs_ppv, npv = cs_npv, sensitivity = cs_sens,
-          specificity = cs_spec, f1 = cs_f1, mcc = cs_mcc)
+  # Class-specific PPV/NPV/Sensitivity/Specificity/F1-score/MCC
+  ocm <- ova(conf_mat(x, y))  # one vs. all confusion matrices
+  cs <-
+    list(yardstick::ppv, yardstick::npv, yardstick::sens,
+         yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
+    purrr::set_names(c("ppv", "npv", "sensitivity",
+                       "specificity", "f1", "mcc")) %>%
+    purrr::map(function(f)
+      purrr::map(ocm, ~ suppressWarnings(f(.)[[".estimate"]]))) %>%
+    unlist()
 
   # Discriminatory measures
   dm_funs <- tibble::lst(logloss, auc, pdi)
@@ -77,44 +73,6 @@ evaluation <- function(x, y, plot = FALSE) {
   c(dm[c("logloss", "auc", "pdi")],
     tibble::lst(accuracy, macro_ppv, macro_npv, macro_sensitivity,
                 macro_specificity, macro_f1, mcc, cs))
-}
-
-#' PPV (Precision) for 2 by 2 confusion matrix
-#' @noRd
-ppv <- function(C) {
-  suppressWarnings(yardstick::ppv(C)[[".estimate"]])
-}
-
-#' NPV for 2 by 2 confusion matrix
-#' @noRd
-npv <- function(C) {
-  suppressWarnings(yardstick::npv(C)[[".estimate"]])
-}
-
-#' Sensitivity (Recall) for 2 by 2 confusion matrix
-#' @noRd
-sensitivity <- function(C) {
-  suppressWarnings(yardstick::sens(C)[[".estimate"]])
-}
-
-#' Specificity for 2 by 2 confusion matrix
-#' @noRd
-specificity <- function(C) {
-  suppressWarnings(yardstick::spec(C)[[".estimate"]])
-}
-
-#' F1-score for 2 by 2 confusion matrix
-#' @noRd
-f1 <- function(C) {
-  suppressWarnings(yardstick::f_meas(C)[[".estimate"]])
-}
-
-#' Matthews correlation coefficient for 2 by 2 confusion matrix
-#' @references
-#'   https://www.sciencedirect.com/science/article/pii/S1476927104000799
-#' @noRd
-mcc <- function(C) {
-  suppressWarnings(yardstick::mcc(C)[[".estimate"]])
 }
 
 #' Create One-Vs-All confusion matrices
