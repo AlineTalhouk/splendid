@@ -9,7 +9,7 @@
 #' Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
 #' micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
 #'
-#' @param x actual class labels
+#' @param x true class labels
 #' @param y predicted class labels
 #' @param plot logical; if `TRUE` a discrimination plot and reliability plot are
 #'   shown for each class
@@ -62,7 +62,7 @@ evaluation <- function(x, y, plot = FALSE) {
                  tibble::lst(discrimination_plot, reliability_plot, roc_plot))
   }
   dm <- dm_funs %>%
-    purrr::invoke_map(list(list(x = x, pred.probs = probs)))
+    purrr::invoke_map(list(list(x = x, probs = probs)))
 
   # Accuracy (same as micro-averaged ppv/sensitivity/F1-score)
   accuracy <- yardstick::accuracy_vec(x, y)
@@ -143,22 +143,22 @@ ova <- function(C) {
 }
 
 #' Multi-class Log/cross-entropy Loss
-#' @param x actual class labels
-#' @param pred.probs predicted probabilities for each class
+#' @inheritParams evaluation
+#' @inheritParams splendid_graphs
 #' @noRd
-logloss <- function(x, pred.probs) {
-  yardstick::mn_log_loss_vec(x, pred.probs)
+logloss <- function(x, probs) {
+  yardstick::mn_log_loss_vec(x, probs)
 }
 
 #' AUC/M-index: Multiple Class Area under ROC Curve
-#' @param x actual class labels
-#' @param pred.probs predicted probabilities for each class
+#' @inheritParams evaluation
+#' @inheritParams splendid_graphs
 #' @references http://link.springer.com/article/10.1023/A:1010920819831
 #' @noRd
-auc <- function(x, pred.probs) {
+auc <- function(x, probs) {
   mcap.construct <-
     suppressWarnings(HandTill2001::multcap(response = x,
-                                           predicted = as.matrix(pred.probs)))
+                                           predicted = as.matrix(probs)))
   HandTill2001::auc(mcap.construct)
 }
 
@@ -166,18 +166,18 @@ auc <- function(x, pred.probs) {
 #'
 #' Based on `mcca::pdi`
 #'
-#' @param x actual class labels
-#' @param pred.probs predicted probabilities for each class
+#' @inheritParams evaluation
+#' @inheritParams splendid_graphs
 #' @references http://onlinelibrary.wiley.com/doi/10.1002/sim.5321/abstract
 #' @noRd
-pdi <- function(x, pred.probs) {
+pdi <- function(x, probs) {
   x <- as.integer(x)
   cl <- seq_len(dplyr::n_distinct(x))
   n <- purrr::map(cl, ~ which(x == .))
   pdi_all <- purrr::map_dbl(cl, function(j) {
     sum(purrr::map_dbl(seq_along(n[[j]]), function(i) {
-      prod(purrr::map_int(purrr::map(n[-j], ~ pred.probs[., j]),
-                          ~ sum(pred.probs[n[[j]][i], j] > .)))
+      prod(purrr::map_int(purrr::map(n[-j], ~ probs[., j]),
+                          ~ sum(probs[n[[j]][i], j] > .)))
     }))
   })
   sum(pdi_all) / (length(pdi_all) * prod(purrr::map_int(n, length)))
