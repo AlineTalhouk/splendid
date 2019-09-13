@@ -84,7 +84,7 @@ sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
     # confustion matrix for class prediction and class error as attribute
     cl <- model_rank[["class"]][rank_i]
     cm[[rank_i]] <- conf_mat(class_bin[[cl]], pred) %>%
-      structure(error = 1 - yardstick::accuracy(.)[[".estimate"]])
+      structure(error = 1 - (sum(diag(.)) / sum(.)))
 
     # drop classes predicted for next sequential step
     cl.keep <- class != cl
