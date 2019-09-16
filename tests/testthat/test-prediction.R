@@ -30,3 +30,10 @@ test_that("adaboost_m1 feature selection works", {
   pred <- prediction(mod, hgsc, class = class, standardize = TRUE)
   expect_output(print(pred))
 })
+
+test_that("no true class creates error when printing confusion matrix", {
+  mod <- classification(hgsc, class, "lda")
+  pred <- prediction(mod, hgsc, class = NULL)
+  expect_is(pred, "prediction")
+  expect_error(print(pred))
+})
