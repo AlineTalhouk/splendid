@@ -80,12 +80,7 @@ evaluation <- function(x, y, plot = FALSE) {
 #' Create One-Vs-All confusion matrices
 #' @noRd
 ova <- function(C) {
-  # Check if there are class names to use
-  if (is.null(dimnames(C)))
-    nm <- seq_len(nrow(C))
-  else
-    nm <- dimnames(C)[[1]]
-
+  nm <- dimnames(C)[[1]]
   seq_len(nrow(C)) %>%
     purrr::set_names(nm) %>%
     purrr::map(~ {
