@@ -11,6 +11,9 @@ test_that("RFE-SVM works", {
 test_that("RF tuning works", {
   c1 <- classification(dat, class, "rf", tune = TRUE)
   expect_is(c1, "train")
+
+  p <- prediction(c1, dat, class = class)
+  expect_is(p, "prediction")
 })
 
 test_that("RF tuning can be reproducible", {
