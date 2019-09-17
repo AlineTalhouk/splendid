@@ -7,16 +7,16 @@
 \alias{roc_plot}
 \title{Discriminating graphs}
 \usage{
-discrimination_plot(x, pred.probs)
+discrimination_plot(x, probs)
 
-reliability_plot(x, pred.probs)
+reliability_plot(x, probs)
 
-roc_plot(x, pred.probs)
+roc_plot(x, probs)
 }
 \arguments{
 \item{x}{true class labels}
 
-\item{pred.probs}{matrix of predicted class probabilities. Number of rows
+\item{probs}{matrix of predicted class probabilities. Number of rows
 must equal length of \code{x}}
 }
 \value{

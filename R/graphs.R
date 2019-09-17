@@ -16,8 +16,8 @@
 #'
 #' All plots can be called from within [evaluation()].
 #'
-#' @param x true class labels
-#' @param pred.probs matrix of predicted class probabilities. Number of rows
+#' @inheritParams evaluation
+#' @param probs matrix of predicted class probabilities. Number of rows
 #'   must equal length of `x`
 #' @return `ggplot` objects for the desired plot
 #' @name splendid_graphs
@@ -35,10 +35,10 @@
 #' discrimination_plot(class[test.id], attr(pred, "prob"))
 #' reliability_plot(class[test.id], attr(pred, "prob"))
 #' roc_plot(class[test.id], attr(pred, "prob"))
-discrimination_plot <- function(x, pred.probs) {
+discrimination_plot <- function(x, probs) {
 
   # turn into long-form for plotting
-  df.long <- data.frame(true_class = factor(x), pred.probs) %>%
+  df.long <- data.frame(true_class = factor(x), probs) %>%
     tidyr::gather(key = "class", value = "prob", -1, factor_key = TRUE)
 
   # create prevalance (base-line) class proportion table
@@ -69,7 +69,7 @@ discrimination_plot <- function(x, pred.probs) {
 
 #' @name splendid_graphs
 #' @export
-reliability_plot <- function(x, pred.probs) {
+reliability_plot <- function(x, probs) {
 
   # cut each class into probability bins of 10, fit lowess
   df <- x %>%
@@ -77,7 +77,7 @@ reliability_plot <- function(x, pred.probs) {
     levels() %>%
     purrr::set_names() %>%
     purrr::map(~ {
-      prob <- pred.probs[, .]
+      prob <- probs[, .]
       cl <- ifelse(x == ., 1, 0)
       bin.pred <- cut(prob, 10)
       purrr::map_df(levels(bin.pred), ~ {
@@ -112,14 +112,14 @@ reliability_plot <- function(x, pred.probs) {
 
 #' @name splendid_graphs
 #' @export
-roc_plot <- function(x, pred.probs) {
+roc_plot <- function(x, probs) {
 
   # rename probability matrix
   roc_df <- stats::model.matrix(~ x - 1) %>%
     as.data.frame() %>%
     dplyr::mutate_all(as.integer) %>%
     dplyr::rename_all(~ gsub("x(.*)$", "\\1_true", .)) %>%
-    cbind(pred.probs) %>%
+    cbind(probs) %>%
     dplyr::rename_if(is.double, ~ paste0(., "_pred_model"))
 
   # plotting format

@@ -351,8 +351,12 @@ split_data <- function(data, test.id = NULL, train.id = NULL,
 #' @export
 print.prediction <- function(x, ...) {
   cli::cat_line(cli::col_blue("# Prediction Summary\n"))
-  cli::cat_line("Confusion Matrix")
-  print(conf_mat(attr(x, "class.true"), attr(x, "class.thres")))
+  if (is.null(attr(x, "class.true"))) {
+    cli::cat_line("No Confusion Matrix: reference class not provided")
+  } else {
+    cli::cat_line("Confusion Matrix")
+    print(conf_mat(attr(x, "class.true"), attr(x, "class.thres")))
+  }
   cli::cat_line("\nTotal Cases: ", length(x))
   cli::cat_line("Proportion of Classified Predictions: ", attr(x, "class.prop"))
 }

@@ -7,7 +7,7 @@
 evaluation(x, y, plot = FALSE)
 }
 \arguments{
-\item{x}{actual class labels}
+\item{x}{true class labels}
 
 \item{y}{predicted class labels}
 

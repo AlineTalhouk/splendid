@@ -30,3 +30,9 @@ test_that("adaboost_m1 feature selection works", {
   pred <- prediction(mod, hgsc, class = class, standardize = TRUE)
   expect_output(print(pred))
 })
+
+test_that("different output printed when `class` is NULL", {
+  mod <- classification(hgsc, class, "lda")
+  pred <- prediction(mod, hgsc, class = NULL)
+  expect_output(print(pred), "reference class not provided")
+})

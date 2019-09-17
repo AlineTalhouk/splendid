@@ -42,6 +42,6 @@ library(splendid)
 data(hgsc)
 class <- attr(hgsc, "class.true")
 sl_result <- splendid(data = hgsc, class = class, n = 1,
-                      algorithms = c("rf", "xgboost"))
+                      algorithms = c("rf", "xgboost"), seed_boot = 5)
 str(sl_result, max.level = 2)
 ```
