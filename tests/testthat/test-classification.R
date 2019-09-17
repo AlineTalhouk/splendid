@@ -24,3 +24,12 @@ test_that("RF tuning can be reproducible", {
 
   expect_equal(c2$finalModel$votes, c3$votes)
 })
+
+test_that("pam is reproducible", {
+  pam_1 <- classification(dat, class, "pam")
+  pam_2a <- classification(dat, class, "pam", seed_alg = 2)
+  pam_2b <- classification(dat, class, "pam", seed_alg = 2)
+
+  expect_false(identical(pam_1, pam_2a))
+  expect_identical(pam_2a, pam_2b)
+})
