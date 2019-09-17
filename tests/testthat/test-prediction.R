@@ -31,9 +31,8 @@ test_that("adaboost_m1 feature selection works", {
   expect_output(print(pred))
 })
 
-test_that("no true class creates error when printing confusion matrix", {
+test_that("different output printed when `class` is NULL", {
   mod <- classification(hgsc, class, "lda")
   pred <- prediction(mod, hgsc, class = NULL)
-  expect_is(pred, "prediction")
-  expect_error(print(pred))
+  expect_output(print(pred), "reference class not provided")
 })
