@@ -4,8 +4,7 @@
 \alias{split_data}
 \title{Split data into training and test sets}
 \usage{
-split_data(data, test.id = NULL, train.id = NULL,
-  standardize = FALSE)
+split_data(data, test.id = NULL, train.id = NULL, standardize = FALSE)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

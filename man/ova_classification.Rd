@@ -4,9 +4,19 @@
 \alias{ova_classification}
 \title{One-Vs-All training approach}
 \usage{
-ova_classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
-  seed_samp = NULL, trees = 100, tune = FALSE, seed_alg = NULL)
+ova_classification(
+  data,
+  class,
+  algorithms,
+  rfe = FALSE,
+  ova = FALSE,
+  standardize = FALSE,
+  sampling = c("none", "up", "down", "smote"),
+  seed_samp = NULL,
+  trees = 100,
+  tune = FALSE,
+  seed_alg = NULL
+)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

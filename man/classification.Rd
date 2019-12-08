@@ -4,10 +4,21 @@
 \alias{classification}
 \title{Multiclass classification}
 \usage{
-classification(data, class, algorithms, rfe = FALSE, ova = FALSE,
-  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
-  seed_samp = NULL, sizes = NULL, trees = 100, tune = FALSE,
-  seed_alg = NULL, convert = FALSE)
+classification(
+  data,
+  class,
+  algorithms,
+  rfe = FALSE,
+  ova = FALSE,
+  standardize = FALSE,
+  sampling = c("none", "up", "down", "smote"),
+  seed_samp = NULL,
+  sizes = NULL,
+  trees = 100,
+  tune = FALSE,
+  seed_alg = NULL,
+  convert = FALSE
+)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

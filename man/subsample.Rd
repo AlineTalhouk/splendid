@@ -4,8 +4,12 @@
 \alias{subsample}
 \title{Subsampling Imbalanced Data}
 \usage{
-subsample(data, class, sampling = c("none", "up", "down", "smote"),
-  seed_samp = NULL)
+subsample(
+  data,
+  class,
+  sampling = c("none", "up", "down", "smote"),
+  seed_samp = NULL
+)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

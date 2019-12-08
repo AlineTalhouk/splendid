@@ -4,9 +4,15 @@
 \alias{splendid_process}
 \title{Process data}
 \usage{
-splendid_process(data, class, algorithms, convert = FALSE,
-  standardize = FALSE, sampling = c("none", "up", "down", "smote"),
-  seed_samp = NULL)
+splendid_process(
+  data,
+  class,
+  algorithms,
+  convert = FALSE,
+  standardize = FALSE,
+  sampling = c("none", "up", "down", "smote"),
+  seed_samp = NULL
+)
 }
 \arguments{
 \item{data}{data frame with rows as samples, columns as features}

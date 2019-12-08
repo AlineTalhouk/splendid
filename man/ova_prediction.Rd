@@ -4,8 +4,16 @@
 \alias{ova_prediction}
 \title{One-Vs-All prediction approach}
 \usage{
-ova_prediction(fits, data, class, test.id = NULL, train.id = NULL,
-  threshold = 0, standardize = FALSE, ...)
+ova_prediction(
+  fits,
+  data,
+  class,
+  test.id = NULL,
+  train.id = NULL,
+  threshold = 0,
+  standardize = FALSE,
+  ...
+)
 }
 \arguments{
 \item{fits}{list of ova fits from \code{ova_classification}}

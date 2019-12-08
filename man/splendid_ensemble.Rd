@@ -4,8 +4,15 @@
 \alias{splendid_ensemble}
 \title{Combine classification models into an ensemble}
 \usage{
-splendid_ensemble(sm, data, class, top = 3, seed_rank = 1,
-  rfe = FALSE, sequential = FALSE)
+splendid_ensemble(
+  sm,
+  data,
+  class,
+  top = 3,
+  seed_rank = 1,
+  rfe = FALSE,
+  sequential = FALSE
+)
 }
 \arguments{
 \item{sm}{a \code{splendid_model} object}

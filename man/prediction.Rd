@@ -7,18 +7,49 @@
 \alias{prediction.knn}
 \title{Class prediction on OOB set}
 \usage{
-prediction(mod, data, class = NULL, test.id = NULL, train.id = NULL,
-  threshold = 0, standardize = FALSE, ...)
+prediction(
+  mod,
+  data,
+  class = NULL,
+  test.id = NULL,
+  train.id = NULL,
+  threshold = 0,
+  standardize = FALSE,
+  ...
+)
 
-\method{prediction}{default}(mod, data, class = NULL, test.id = NULL,
-  train.id = NULL, threshold = 0, standardize = FALSE, ...)
+\method{prediction}{default}(
+  mod,
+  data,
+  class = NULL,
+  test.id = NULL,
+  train.id = NULL,
+  threshold = 0,
+  standardize = FALSE,
+  ...
+)
 
-\method{prediction}{pamrtrained}(mod, data, class = NULL,
-  test.id = NULL, train.id = NULL, threshold = 0,
-  standardize = FALSE, ...)
+\method{prediction}{pamrtrained}(
+  mod,
+  data,
+  class = NULL,
+  test.id = NULL,
+  train.id = NULL,
+  threshold = 0,
+  standardize = FALSE,
+  ...
+)
 
-\method{prediction}{knn}(mod, data, class = NULL, test.id = NULL,
-  train.id = NULL, threshold = 0, standardize = FALSE, ...)
+\method{prediction}{knn}(
+  mod,
+  data,
+  class = NULL,
+  test.id = NULL,
+  train.id = NULL,
+  threshold = 0,
+  standardize = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mod}{model object from \code{\link[=classification]{classification()}}}
