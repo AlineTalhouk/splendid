@@ -24,6 +24,8 @@
 
 ## Minor Changes
 
+* update roxygen and docs
+
 * internal functions deprecated and imported from new packages as needed
 
 * update vignette parameter descriptions
