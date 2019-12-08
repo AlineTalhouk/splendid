@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Model Extensions • splendid</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Model Extensions">
 <meta property="og:description" content="">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9011</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
 
       
 
-      </header><script src="model_extensions_files/htmlwidgets-1.3/htmlwidgets.js"></script><script src="model_extensions_files/viz-0.3/viz.js"></script><link href="model_extensions_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+      </header><script src="model_extensions_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="model_extensions_files/viz-0.3/viz.js"></script><link href="model_extensions_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
 <script src="model_extensions_files/grViz-binding-1.0.1/grViz.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -82,20 +82,20 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p><code>splendid</code> supports two modelling extensions to how ensemble classification is performed. Both paradigms are constructed from a set of binary classifiers. The first extension is called the <strong>one-vs-all</strong> approach, where each class is compared to its complement. The second extension utilizes a <strong>sequential algorithm</strong> to build the ensemble classifier, assigning class membership sequentially, in the order of highest performance. Our goal is to provide the user additional options and flexibility with modelling, since there is no guarantee that prediction accuracy is improved.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># devtools::install_github("AlineTalhouk/splendid")</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(splendid)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(knitr)</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(hgsc)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co"># devtools::install_github("AlineTalhouk/splendid")</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(splendid)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(knitr)</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(hgsc)</a></code></pre></div>
 </div>
 <div id="one-vs-all" class="section level2">
 <h2 class="hasAnchor">
 <a href="#one-vs-all" class="anchor"></a>One-Vs-All</h2>
 <p>To build a one-vs-all model, or <code>ova</code> model for short, we first need to create a binarized class matrix, where each class is compared to its complement. Take the <code>hgsc</code> data set for example. The first 10 classes as predicted by TCGA are:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>class &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(hgsc, <span class="st">"class.true"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(class, <span class="dv">10</span>)</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt;  [1] "PRO.C5" "MES.C1" "DIF.C4" "MES.C1" "MES.C1" "PRO.C5" "DIF.C4"</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt;  [8] "MES.C1" "IMM.C2" "PRO.C5"</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">class &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(hgsc, <span class="st">"class.true"</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(class, <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="co">#&gt;  [1] "PRO.C5" "MES.C1" "DIF.C4" "MES.C1" "MES.C1" "PRO.C5" "DIF.C4" "MES.C1"</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co">#&gt;  [9] "IMM.C2" "PRO.C5"</span></a></code></pre></div>
 <p>The corresponding binarized class matrix is shown in Table 1. We denote a <code>"0"</code> meaning “not equal” to the class as indicated by the column name.</p>
 <table class="table">
 <caption>Table 1: Binarized class matrix for <code>ova</code>
@@ -178,10 +178,10 @@
 <a href="#sequential-algorithm" class="anchor"></a>Sequential Algorithm</h2>
 <p>The sequential algorithm follows a more complicated workflow. This is an ensemble method, meaning that we work with fitted models, predictions, and evaluation metrics, whereas the <code>ova</code> approach is integrated in the initial classification.</p>
 <p>By <em>sequential</em>, the idea is that we want to sequentially assign classes in a binary fashion, until all classes have been assigned. The diagram below is a simple example for a 4-class case.</p>
-<div id="htmlwidget-315b699aa05c64e88f6e" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-315b699aa05c64e88f6e">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
+<div id="htmlwidget-d8ae1198de70d07eda6d" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d8ae1198de70d07eda6d">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
 <p>Suppose we fit a set of classifiers with 2 bootstrap replicates on the <code>xgboost</code> and <code>rf</code> algorithms.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>sm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid_model.html">splendid_model</a></span>(hgsc, class, <span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">algorithms =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"xgboost"</span>, <span class="st">"rf"</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">sm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/splendid_model.html">splendid_model</a></span>(hgsc, class, <span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">algorithms =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"xgboost"</span>, <span class="st">"rf"</span>))</a></code></pre></div>
 <p>Table 2 shows the per-class F1-scores for model fitted and bootstrap replicate. An logical column indicates whether <code>ova</code> was used for the particular algorithm.</p>
 <table class="table">
 <caption>Table 2: Per-class F1-scores by model and bootstrap replicate</caption>
@@ -196,97 +196,97 @@
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.8172043</td>
+<td align="right">0.6593407</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.7710843</td>
+<td align="right">0.7532468</td>
 </tr>
 <tr class="odd">
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8648649</td>
+<td align="right">0.9010989</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.8333333</td>
+<td align="right">0.7878788</td>
 </tr>
 <tr class="odd">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.7378641</td>
+<td align="right">0.8043478</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.6575342</td>
+<td align="right">0.7536232</td>
 </tr>
 <tr class="odd">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8539326</td>
+<td align="right">0.8500000</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.8190476</td>
+<td align="right">0.8282828</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.8260870</td>
+<td align="right">0.8867925</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.8780488</td>
+<td align="right">0.8450704</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">MES.C1</td>
-<td align="right">0.9750000</td>
+<td align="right">0.9247312</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.9130435</td>
+<td align="right">0.9090909</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.8461538</td>
+<td align="right">0.8571429</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.8358209</td>
+<td align="right">0.9142857</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8936170</td>
+<td align="right">0.9411765</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.8952381</td>
+<td align="right">0.9148936</td>
 </tr>
 </tbody>
 </table>
@@ -395,7 +395,7 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
         <div id="tocnav">
       <h2 class="hasAnchor">
@@ -418,7 +418,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

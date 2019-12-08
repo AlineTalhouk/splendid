@@ -1,6 +1,6 @@
-pandoc: 2.7.3
-pkgdown: 1.4.0.9000
-pkgdown_sha: b6eec62574f1a0087c70eeb6574d6af0435828ff
+pandoc: 2.7.2
+pkgdown: 1.4.1.9000
+pkgdown_sha: 24ef1bbdec0de44fe11eb1d58b40dba961525d43
 articles:
   ensemble_classification: ensemble_classification.html
   model_extensions: model_extensions.html
