@@ -49,7 +49,7 @@ evaluation <- function(x, y, plot = FALSE) {
     purrr::invoke_map(plot_funs, list(dm_args))
   }
 
-  # Multi-class measures: accuracy, macro-averaged PPV/NPV/Sensitivity/Specificity/F1-score, MCC
+  # Multi-class measures: accuracy, macro-averaged PPV/NPV/Sensitivity/Specificity/F1-score, MCC, G-mean
   cm <- conf_mat(x, y)
   suppressWarnings({
     mc <-
@@ -57,7 +57,8 @@ evaluation <- function(x, y, plot = FALSE) {
            yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
       purrr::set_names(c("accuracy", "macro_ppv", "macro_npv", "macro_sensitivity",
                          "macro_specificity", "macro_f1", "mcc")) %>%
-      purrr::map(~ .(cm)[[".estimate"]])
+      purrr::map(~ .(cm)[[".estimate"]]) %>%
+      c(gmean = gmean(cm))
   })
 
   # Class-specific measures: PPV/NPV/Sensitivity/Specificity/F1-score/MCC
@@ -130,4 +131,15 @@ pdi <- function(x, probs) {
     }))
   })
   sum(pdi_all) / (length(pdi_all) * prod(purrr::map_int(n, length)))
+}
+
+#' G-mean
+#' @param cm confusion matrix
+#' @param tol tolerance for comparing with column sums'
+#' @noRd
+gmean <- function(cm, tol = 0.1) {
+  cumratio <-
+    purrr::map2_dbl(diag(cm), colSums(cm), ~ .x / max(.y, tol)) %>%
+    purrr::reduce(`*`)
+  cumratio ^ (1 / nrow(cm))
 }
