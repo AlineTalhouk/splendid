@@ -2,6 +2,10 @@
 
 ## New Features
 
+* use a "recursive" SMOTE subsampling technique: repeat SMOTE for one less than the number of categories, in case there are multiple minority classes
+
+* new multiclass metric G-mean
+
 * use `yardstick` package for most evaluation metrics
 
 * pass `seeds` to `caret::trainControl()` for reproducible tuning (#48)

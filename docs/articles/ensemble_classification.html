@@ -173,11 +173,11 @@
 <span class="co">#&gt;   ..$ svm :List of 2</span>
 <span class="co">#&gt;  $ evals        :List of 3</span>
 <span class="co">#&gt;   ..$ slda:'data.frame': 34 obs. of  2 variables:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 2.25</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 2.08</span>
 <span class="co">#&gt;   ..$ knn :'data.frame': 34 obs. of  2 variables:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.82</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.79</span>
 <span class="co">#&gt;   ..$ svm :'data.frame': 34 obs. of  2 variables:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.214</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.226</span>
 <span class="co">#&gt;  $ bests        : Named chr [1:2] "svm" "svm"</span>
 <span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "1" "2"</span>
 <span class="co">#&gt;  $ ensemble_algs: chr "svm"</span>
@@ -307,30 +307,30 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">sl_result</span><span class="op">$</span><span class="va">preds</span>, max.level <span class="op">=</span> <span class="fl">2</span>, list.len <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; List of 3</span>
 <span class="co">#&gt;  $ slda:List of 2</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 3 1 3 2 4 2 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:171, 1:4] 1.96e-05 0.00 0.00 9.79e-01 9.98e-04 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 4 1 4 1 4 4 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:179, 1:4] 0.00 1.00 5.09e-05 5.38e-01 0.00 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 3 4 3 2 4 2 1 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 3 1 3 2 4 2 4 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 2 4 1 1 1 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 4 1 4 1 4 4 1 1 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 1 1 4 1 1 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:185, 1:4] 1 0.875 0.914 1 0 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 4 2 4 1 2 2 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:178, 1:4] 0 1 0.188 0 0 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 2 1 4 1 4 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 1 1 4 1 1 1 4 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 4 1 4 2 4 1 2 2 4 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 4 2 4 1 2 2 1 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
 <span class="co">#&gt;  $ knn :List of 2</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 3 1 3 2 4 2 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:171, 1:4] 0.333 0 0 0.714 0.2 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 2 4 1 1 1 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:179, 1:4] 0 0.6 0.4 0 0 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 3 4 3 2 4 2 1 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 3 1 3 2 4 2 4 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 2 4 1 1 1 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 2 4 1 1 1 1 1 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 2 1 4 1 1 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:185, 1:4] 0.6 1 0 0.6 0 1 1 1 0 1 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 1 4 2 4 1 2 2 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:178, 1:4] 0 0.4 0.6 0 0 0 0.6 0 0.2 1 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 2 1 4 1 4 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 2 1 4 1 1 1 4 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 4 1 4 2 4 1 2 2 4 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 1 4 2 4 1 2 2 1 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
 <span class="co">#&gt;   [list output truncated]</span></code></pre></div>
 <div id="attributes" class="section level3">
@@ -358,173 +358,173 @@
 <tbody>
 <tr class="odd">
 <td align="left">logloss</td>
-<td align="right">0.3022995</td>
-<td align="right">0.2668440</td>
+<td align="right">0.2604957</td>
+<td align="right">0.3192103</td>
 </tr>
 <tr class="even">
 <td align="left">auc</td>
-<td align="right">0.9866995</td>
-<td align="right">0.9928499</td>
+<td align="right">0.9932480</td>
+<td align="right">0.9830034</td>
 </tr>
 <tr class="odd">
 <td align="left">pdi</td>
-<td align="right">0.9635137</td>
-<td align="right">0.9800894</td>
+<td align="right">0.9810367</td>
+<td align="right">0.9532859</td>
 </tr>
 <tr class="even">
 <td align="left">accuracy</td>
-<td align="right">0.8830409</td>
-<td align="right">0.9243243</td>
+<td align="right">0.9273743</td>
+<td align="right">0.8820225</td>
 </tr>
 <tr class="odd">
 <td align="left">macro_ppv</td>
-<td align="right">0.8884484</td>
-<td align="right">0.9265459</td>
+<td align="right">0.9232316</td>
+<td align="right">0.8869963</td>
 </tr>
 <tr class="even">
 <td align="left">macro_npv</td>
-<td align="right">0.9601100</td>
-<td align="right">0.9747884</td>
+<td align="right">0.9760934</td>
+<td align="right">0.9604964</td>
 </tr>
 <tr class="odd">
 <td align="left">macro_sensitivity</td>
-<td align="right">0.8883074</td>
-<td align="right">0.9247032</td>
+<td align="right">0.9284909</td>
+<td align="right">0.8837090</td>
 </tr>
 <tr class="even">
 <td align="left">macro_specificity</td>
-<td align="right">0.9596072</td>
-<td align="right">0.9745632</td>
+<td align="right">0.9764481</td>
+<td align="right">0.9605011</td>
 </tr>
 <tr class="odd">
 <td align="left">macro_f1</td>
-<td align="right">0.8872056</td>
-<td align="right">0.9242947</td>
+<td align="right">0.9228790</td>
+<td align="right">0.8840167</td>
 </tr>
 <tr class="even">
 <td align="left">mcc</td>
-<td align="right">0.8426270</td>
-<td align="right">0.8991685</td>
+<td align="right">0.9039972</td>
+<td align="right">0.8432964</td>
 </tr>
 <tr class="odd">
 <td align="left">ppv.DIF.C4</td>
-<td align="right">0.8448276</td>
-<td align="right">0.9107143</td>
+<td align="right">0.9583333</td>
+<td align="right">0.8076923</td>
 </tr>
 <tr class="even">
 <td align="left">ppv.IMM.C2</td>
-<td align="right">0.9090909</td>
-<td align="right">0.8837209</td>
+<td align="right">0.9743590</td>
+<td align="right">0.9761905</td>
 </tr>
 <tr class="odd">
 <td align="left">ppv.MES.C1</td>
-<td align="right">0.9024390</td>
-<td align="right">0.9729730</td>
+<td align="right">0.8157895</td>
+<td align="right">0.8974359</td>
 </tr>
 <tr class="even">
 <td align="left">ppv.PRO.C5</td>
-<td align="right">0.8974359</td>
-<td align="right">0.9387755</td>
+<td align="right">0.9444444</td>
+<td align="right">0.8666667</td>
 </tr>
 <tr class="odd">
 <td align="left">npv.DIF.C4</td>
-<td align="right">0.9380531</td>
-<td align="right">0.9767442</td>
+<td align="right">0.9694656</td>
+<td align="right">0.9603175</td>
 </tr>
 <tr class="even">
 <td align="left">npv.IMM.C2</td>
-<td align="right">0.9782609</td>
-<td align="right">0.9929577</td>
+<td align="right">0.9500000</td>
+<td align="right">0.9558824</td>
 </tr>
 <tr class="odd">
 <td align="left">npv.MES.C1</td>
-<td align="right">0.9923077</td>
-<td align="right">0.9662162</td>
+<td align="right">0.9929078</td>
+<td align="right">0.9784173</td>
 </tr>
 <tr class="even">
 <td align="left">npv.PRO.C5</td>
-<td align="right">0.9318182</td>
-<td align="right">0.9632353</td>
+<td align="right">0.9920000</td>
+<td align="right">0.9473684</td>
 </tr>
 <tr class="odd">
 <td align="left">sensitivity.DIF.C4</td>
-<td align="right">0.8750000</td>
-<td align="right">0.9444444</td>
+<td align="right">0.9200000</td>
+<td align="right">0.8936170</td>
 </tr>
 <tr class="even">
 <td align="left">sensitivity.IMM.C2</td>
-<td align="right">0.9090909</td>
-<td align="right">0.9743590</td>
+<td align="right">0.8444444</td>
+<td align="right">0.8723404</td>
 </tr>
 <tr class="odd">
 <td align="left">sensitivity.MES.C1</td>
-<td align="right">0.9736842</td>
-<td align="right">0.8780488</td>
+<td align="right">0.9687500</td>
+<td align="right">0.9210526</td>
 </tr>
 <tr class="even">
 <td align="left">sensitivity.PRO.C5</td>
-<td align="right">0.7954545</td>
-<td align="right">0.9019608</td>
+<td align="right">0.9807692</td>
+<td align="right">0.8478261</td>
 </tr>
 <tr class="odd">
 <td align="left">specificity.DIF.C4</td>
-<td align="right">0.9217391</td>
-<td align="right">0.9618321</td>
+<td align="right">0.9844961</td>
+<td align="right">0.9236641</td>
 </tr>
 <tr class="even">
 <td align="left">specificity.IMM.C2</td>
-<td align="right">0.9782609</td>
-<td align="right">0.9657534</td>
+<td align="right">0.9925373</td>
+<td align="right">0.9923664</td>
 </tr>
 <tr class="odd">
 <td align="left">specificity.MES.C1</td>
-<td align="right">0.9699248</td>
-<td align="right">0.9930556</td>
+<td align="right">0.9523810</td>
+<td align="right">0.9714286</td>
 </tr>
 <tr class="even">
 <td align="left">specificity.PRO.C5</td>
-<td align="right">0.9685039</td>
-<td align="right">0.9776119</td>
+<td align="right">0.9763780</td>
+<td align="right">0.9545455</td>
 </tr>
 <tr class="odd">
 <td align="left">f1.DIF.C4</td>
-<td align="right">0.8596491</td>
-<td align="right">0.9272727</td>
+<td align="right">0.9387755</td>
+<td align="right">0.8484848</td>
 </tr>
 <tr class="even">
 <td align="left">f1.IMM.C2</td>
-<td align="right">0.9090909</td>
-<td align="right">0.9268293</td>
+<td align="right">0.9047619</td>
+<td align="right">0.9213483</td>
 </tr>
 <tr class="odd">
 <td align="left">f1.MES.C1</td>
-<td align="right">0.9367089</td>
-<td align="right">0.9230769</td>
+<td align="right">0.8857143</td>
+<td align="right">0.9090909</td>
 </tr>
 <tr class="even">
 <td align="left">f1.PRO.C5</td>
-<td align="right">0.8433735</td>
-<td align="right">0.9200000</td>
+<td align="right">0.9622642</td>
+<td align="right">0.8571429</td>
 </tr>
 <tr class="odd">
 <td align="left">mcc.DIF.C4</td>
-<td align="right">0.7897795</td>
-<td align="right">0.8968181</td>
+<td align="right">0.9160735</td>
+<td align="right">0.7922625</td>
 </tr>
 <tr class="even">
 <td align="left">mcc.IMM.C2</td>
-<td align="right">0.8873518</td>
-<td align="right">0.9078417</td>
+<td align="right">0.8795860</td>
+<td align="right">0.8977582</td>
 </tr>
 <tr class="odd">
 <td align="left">mcc.MES.C1</td>
-<td align="right">0.9188531</td>
-<td align="right">0.9045064</td>
+<td align="right">0.8630852</td>
+<td align="right">0.8841281</td>
 </tr>
 <tr class="even">
 <td align="left">mcc.PRO.C5</td>
-<td align="right">0.7959370</td>
-<td align="right">0.8907211</td>
+<td align="right">0.9467392</td>
+<td align="right">0.8081823</td>
 </tr>
 </tbody>
 </table>
@@ -557,7 +557,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">sl_result</span><span class="op">$</span><span class="va">evals</span>, <span class="va">attr</span>, <span class="st">"err_632plus"</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">double</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;      slda       knn       svm </span>
-<span class="co">#&gt; 2.2530298 1.8197362 0.2143041</span></code></pre></div>
+<span class="co">#&gt; 2.0778125 1.7885054 0.2260176</span></code></pre></div>
 </div>
 <div id="plots" class="section level3">
 <h3 class="hasAnchor">
