@@ -125,6 +125,7 @@ roc_plot <- function(x, probs) {
   # plotting format
   plot_roc_df <- roc_df %>%
     multiROC::multi_roc(force_diag = TRUE) %>%
+    suppressWarnings() %>%
     multiROC::plot_roc_data()
 
   # multi-class ROC curves
