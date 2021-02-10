@@ -126,7 +126,8 @@ roc_plot <- function(x, probs) {
   plot_roc_df <- roc_df %>%
     multiROC::multi_roc(force_diag = TRUE) %>%
     suppressWarnings() %>%
-    multiROC::plot_roc_data()
+    multiROC::plot_roc_data() %>%
+    dplyr::mutate(Group = forcats::fct_relevel(Group, "Macro", "Micro", after = Inf))
 
   # multi-class ROC curves
   cols <- c(grDevices::rainbow(dplyr::n_distinct(x)), c("grey60", "grey80"))
