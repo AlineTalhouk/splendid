@@ -3,7 +3,7 @@ context("prediction")
 data(hgsc)
 class <- attr(hgsc, "class.true")
 dat <- data.frame(hgsc, class)
-dat$class <- as.numeric(dat$class)
+dat$class <- as.numeric(as.factor(dat$class))
 
 test_that("unsupported model object causes error", {
   set.seed(1)
