@@ -148,11 +148,17 @@ subsample <- function(data, class,
       sampling,
       up = caret::upSample(data, class, yname = "class"),
       down = caret::downSample(data, class, yname = "class"),
-      smote = DMwR::SMOTE(class ~ .,
-                          cbind(data, class),
-                          perc.over = 400,
-                          perc.under = 400) %>%
-        tidyr::drop_na()
+      smote = {
+        smote <- purrr::partial(
+          DMwR::SMOTE,
+          form = class ~ .,
+          perc.over = 400,
+          perc.under = 400
+        )
+        smote_recurse <-
+          purrr::compose(!!!replicate(n = nlevels(class) - 1, smote))
+        smote_recurse(cbind(data, class)) %>% tidyr::drop_na()
+      }
     )
   }
 }
