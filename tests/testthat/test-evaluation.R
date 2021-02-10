@@ -1,5 +1,3 @@
-context("evaluation")
-
 test_that("evaluation plots can be outputted", {
   data(hgsc)
   class <- factor(attr(hgsc, "class.true"))

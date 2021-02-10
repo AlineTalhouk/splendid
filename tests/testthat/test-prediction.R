@@ -1,5 +1,3 @@
-context("prediction")
-
 data(hgsc)
 class <- attr(hgsc, "class.true")
 dat <- data.frame(hgsc, class)

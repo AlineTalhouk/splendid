@@ -1,5 +1,3 @@
-context("classification")
-
 data(hgsc)
 dat <- hgsc[1:15, 1:5]
 class <- attr(hgsc, "class.true")[1:15]

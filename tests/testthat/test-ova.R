@@ -1,5 +1,3 @@
-context("ova")
-
 data(hgsc)
 dat <- hgsc[1:50, 1:25]
 class <- attr(hgsc, "class.true")[1:50]

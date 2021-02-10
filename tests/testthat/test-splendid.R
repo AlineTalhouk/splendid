@@ -1,5 +1,3 @@
-context("splendid")
-
 data(hgsc)
 class <- attr(hgsc, "class.true")
 

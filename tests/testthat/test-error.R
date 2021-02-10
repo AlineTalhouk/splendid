@@ -1,5 +1,3 @@
-context("error")
-
 test_that(".632 and .632+ estimators depend on plus argument", {
   data(hgsc)
   class <- attr(hgsc, "class.true")

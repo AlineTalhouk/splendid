@@ -1,5 +1,3 @@
-context("sequential")
-
 data(hgsc)
 dat <- hgsc[1:100, 1:25]
 class <- attr(hgsc, "class.true")[1:100]

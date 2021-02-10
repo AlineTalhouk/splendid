@@ -1,5 +1,3 @@
-context("boot")
-
 test_that("stratified bootstrap samples preserve class proportions", {
   iris2 <- iris[1:130, ]
   counts <- as.vector(table(iris2$Species))
