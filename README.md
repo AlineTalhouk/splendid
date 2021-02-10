@@ -53,10 +53,10 @@ str(sl_result, max.level = 2)
 #>   ..$ rf     :List of 1
 #>   ..$ xgboost:List of 1
 #>  $ evals        :List of 2
-#>   ..$ rf     :'data.frame':  35 obs. of  1 variable:
-#>   .. ..- attr(*, "err_632plus")= num 0.444
-#>   ..$ xgboost:'data.frame':  35 obs. of  1 variable:
-#>   .. ..- attr(*, "err_632plus")= num 0.877
+#>   ..$ rf     :'data.frame':  34 obs. of  1 variable:
+#>   .. ..- attr(*, "err_632plus")= num 0.433
+#>   ..$ xgboost:'data.frame':  34 obs. of  1 variable:
+#>   .. ..- attr(*, "err_632plus")= num 0.858
 #>  $ bests        : Named chr [1:2] "rf" "rf"
 #>   ..- attr(*, "names")= chr [1:2] "1" "X1"
 #>  $ ensemble_algs: chr "rf"

@@ -77,21 +77,23 @@ pam_model <- function(data, class, seed_alg = NULL) {
   nc <- dplyr::n_distinct(class)
   pamr_data <- list(x = t(data), y = class)
 
-  mod <- sink_output(pamr::pamr.train(
-    data = pamr_data,
-    n.threshold = 100,
-    prior = rep(1 / nc, nc)
-  ))
-  mod_cv <- sink_output(pamr::pamr.cv(
-    fit = mod,
-    data = pamr_data,
-    nfold = 5
-  ))
-  delta <-
-    mod_cv$threshold[max(which(mod_cv$error == min(mod_cv$error)))]
-  mod <- c(mod, delta = delta)
-  class(mod) <- "pamrtrained"
-  mod
+  if (requireNamespace("pamr", quietly = TRUE)) {
+    mod <- sink_output(pamr::pamr.train(
+      data = pamr_data,
+      n.threshold = 100,
+      prior = rep(1 / nc, nc)
+    ))
+    mod_cv <- sink_output(pamr::pamr.cv(
+      fit = mod,
+      data = pamr_data,
+      nfold = 5
+    ))
+    delta <-
+      mod_cv$threshold[max(which(mod_cv$error == min(mod_cv$error)))]
+    mod <- c(mod, delta = delta)
+    class(mod) <- "pamrtrained"
+    mod
+  }
 }
 
 #' RFE model
@@ -103,18 +105,20 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
   tune_args <- tibble::lst(class, method, trees, seed_alg)
   if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
   if (rfe) {
-    mod <- suppressWarnings(
-      caret::rfe(
-        x = data,
-        y = class,
-        sizes = sizes,
-        metric = "Accuracy",
-        rfeControl = caret::rfeControl(method = "cv", number = 2),
-        trControl = caret::trainControl(method = "none"),
-        method = method,
-        tuneGrid = param_grids(data, method, type = "default")
+    if (requireNamespace("caret", quietly = TRUE)) {
+      mod <- suppressWarnings(
+        caret::rfe(
+          x = data,
+          y = class,
+          sizes = sizes,
+          metric = "Accuracy",
+          rfeControl = caret::rfeControl(method = "cv", number = 2),
+          trControl = caret::trainControl(method = "none"),
+          method = method,
+          tuneGrid = param_grids(data, method, type = "default")
+        )
       )
-    )
+    }
     data <- data[mod[["optVariables"]]]
   }
   if (!is.null(seed_alg)) set.seed(seed_alg)
@@ -123,12 +127,28 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
   } else {
     switch(
       algorithms,
-      rf = randomForest::randomForest(x = data, y = class),
-      lda = suppressWarnings(MASS::lda(x = data, grouping = class)),
-      svm = e1071::svm(x = data, y = class, probability = TRUE),
-      adaboost_m1 = adabag::boosting(formula = class ~ .,
-                                     data = cbind(data, class),
-                                     mfinal = 3)
+      rf = {
+        if (requireNamespace("randomForest", quietly = TRUE)) {
+          randomForest::randomForest(x = data, y = class)
+        }
+      },
+      lda = {
+        if (requireNamespace("MASS", quietly = TRUE)) {
+          suppressWarnings(MASS::lda(x = data, grouping = class))
+        }
+      },
+      svm = {
+        if (requireNamespace("e1071", quietly = TRUE)) {
+          e1071::svm(x = data, y = class, probability = TRUE)
+        }
+      },
+      adaboost_m1 = {
+        if (requireNamespace("adabag", quietly = TRUE)) {
+          adabag::boosting(formula = class ~ .,
+                           data = cbind(data, class),
+                           mfinal = 3)
+        }
+      }
     )
   }
 }
@@ -223,18 +243,28 @@ tune_model <- function(data, class, method, trees, seed_alg) {
 #' @noRd
 sda_model <- function(data, class, algorithms) {
   diagonal <- switch(algorithms, slda = FALSE, sdda = TRUE)
-  sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
+  if (requireNamespace("sda", quietly = TRUE)) {
+    sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
+  }
 }
 
 #' Multinomial Logistic Regression
 #' @noRd
 mlr_model <- function(data, class, algorithms) {
-  switch(
-    algorithms,
-    mlr_nnet = nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE),
-    mlr_glm = glmnet::glmnet(as.matrix(data), class, lambda = 0,
-                             family = "multinomial")
-  )
+  switch(algorithms,
+         mlr_nnet = {
+           if (requireNamespace("nnet", quietly = TRUE)) {
+             nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE)
+           }
+         },
+         mlr_glm = {
+           if (requireNamespace("glmnet", quietly = TRUE)) {
+             glmnet::glmnet(as.matrix(data),
+                            class,
+                            lambda = 0,
+                            family = "multinomial")
+           }
+         })
 }
 
 #' Cross-validated regularized MLR
@@ -242,28 +272,33 @@ mlr_model <- function(data, class, algorithms) {
 cv_mlr_model <- function(data, class, algorithms, seed_alg = NULL) {
   if (!is.null(seed_alg)) set.seed(seed_alg)
   alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
-  glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha,
-                    family = "multinomial")
+  if (requireNamespace("glmnet", quietly = TRUE)) {
+    glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha, family = "multinomial")
+  }
 }
 
 #' neural network model
 #' @noRd
 nnet_model <- function(data, class) {
   if (!"package:nnet" %in% search()) attachNamespace("nnet")
-  suppressWarnings(e1071::best.nnet(
-    class ~ .,
-    data = cbind(data, class),
-    size = seq_len(5),
-    decay = seq(0, 0.5, length.out = 5),
-    MaxNWts = 2000,
-    tunecontrol = e1071::tune.control(sampling = "fix")
-  ))
+  if (requireNamespace("e1071", quietly = TRUE)) {
+    suppressWarnings(e1071::best.nnet(
+      class ~ .,
+      data = cbind(data, class),
+      size = seq_len(5),
+      decay = seq(0, 0.5, length.out = 5),
+      MaxNWts = 2000,
+      tunecontrol = e1071::tune.control(sampling = "fix")
+    ))
+  }
 }
 
 #' naive bayes model
 #' @noRd
 nbayes_model <- function(data, class) {
-  e1071::naiveBayes(data, class)
+  if (requireNamespace("e1071", quietly = TRUE)) {
+    e1071::naiveBayes(data, class)
+  }
 }
 
 #' boosting models
@@ -271,15 +306,31 @@ nbayes_model <- function(data, class) {
 boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
   if (!is.null(seed_alg)) set.seed(seed_alg)
   switch(algorithms,
-         adaboost = sink_output(maboost::maboost(
-           x = data, y = class, breg = "entrop", iter = trees, minsplit = 2)),
-         xgboost = xgboost::xgb.train(
-           params = list("objective" = "multi:softprob",
-                         "eval_metric" = "mlogloss",
-                         "num_class" = nlevels(class)),
-           data = xgboost::xgb.DMatrix(data = as.matrix(data),
-                                       label = as.integer(class) - 1),
-           nrounds = 2))
+         adaboost = {
+           if (requireNamespace("maboost", quietly = TRUE)) {
+             sink_output(maboost::maboost(
+               x = data,
+               y = class,
+               breg = "entrop",
+               iter = trees,
+               minsplit = 2
+             ))
+           }
+         },
+         xgboost = {
+           if (requireNamespace("xgboost", quietly = TRUE)) {
+             xgboost::xgb.train(
+               params = list(
+                 "objective" = "multi:softprob",
+                 "eval_metric" = "mlogloss",
+                 "num_class" = nlevels(class)
+               ),
+               data = xgboost::xgb.DMatrix(data = as.matrix(data),
+                                           label = as.integer(class) - 1),
+               nrounds = 2
+             )
+           }
+         })
 }
 
 #' knn "dummy model" returns training class

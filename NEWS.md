@@ -1,6 +1,10 @@
-# splendid (development version)
+# splendid 0.2.0
 
 ## New Features
+
+* use a "one-vs-all" SMOTE subsampling technique: over-sample each class vs. the other classes and combine the oversampled datasets to create the "balanced" dataset
+
+* new multiclass metric G-mean
 
 * use `yardstick` package for most evaluation metrics
 
@@ -24,6 +28,12 @@
 
 ## Minor Changes
 
+* increase minimum R version to 3.6.0
+
+* move packages used for classification to `Suggests` to reduce the number of dependencies and are used conditionally
+
+* remove deprecated `context()` from tests
+
 * update roxygen and docs
 
 * internal functions deprecated and imported from new packages as needed
@@ -31,6 +41,10 @@
 * update vignette parameter descriptions
 
 ## Bug Fixes
+
+* put the macro and micro averaged ROC curves at the end of legend in `roc_plot()`
+
+* suppress warnings in call to `multiROC::multi_roc()` after updates to `stats:::regularize.values()` in R-3.6.0 passes `warn.collapsing = TRUE` if there is no value for `ties` in `stats::approx()`
 
 * in sequential method, remove bootstrap iterations with an undefined F1-measure from average calculation
 

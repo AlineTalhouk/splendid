@@ -1,5 +1,3 @@
-context("sequential")
-
 data(hgsc)
 dat <- hgsc[1:100, 1:25]
 class <- attr(hgsc, "class.true")[1:100]
@@ -17,5 +15,7 @@ test_that("sequential alg fits one fewer model than number of classes", {
 
 test_that("boxplot showing F1-score distribution can be plotted", {
   expect_error(sequential_train(sm, dat, class, boxplot = TRUE), NA)
-  file.remove(list.files(pattern = "Rplots"))
 })
+
+dev.off()
+if (file.exists("Rplots.pdf")) file.remove("Rplots.pdf")

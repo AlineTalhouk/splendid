@@ -1,5 +1,3 @@
-context("process")
-
 test_that("dummify converts categorical variables into one column per level", {
   ncol <- sum(purrr::map_lgl(iris, is.numeric), purrr::map_int(iris, nlevels))
   expect_length(dummify(iris), ncol)
@@ -32,5 +30,5 @@ test_that("subsampling methods create different number of cases", {
   expect_equal(nrow(iris_orig), 130)
   expect_equal(nrow(iris_up), 150)
   expect_equal(nrow(iris_down), 90)
-  expect_equal(nrow(iris_smote), 630)
+  expect_equal(nrow(iris_smote), 102)
 })

@@ -1,5 +1,3 @@
-context("standardize")
-
 test_that("standardizing ignores dummy variables", {
   data <- iris
   class <- iris$Species

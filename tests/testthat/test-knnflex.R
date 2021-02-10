@@ -1,5 +1,3 @@
-context("knnflex.R")
-
 test_that("leave one out prediction works for knn", {
   data(hgsc)
   class <- attr(hgsc, "class.true")

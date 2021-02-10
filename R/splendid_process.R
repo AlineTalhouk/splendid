@@ -148,11 +148,30 @@ subsample <- function(data, class,
       sampling,
       up = caret::upSample(data, class, yname = "class"),
       down = caret::downSample(data, class, yname = "class"),
-      smote = DMwR::SMOTE(class ~ .,
-                          cbind(data, class),
-                          perc.over = 400,
-                          perc.under = 400) %>%
-        tidyr::drop_na()
+      smote = {
+        dat <- cbind(data, class)
+        cl <- dat[["class"]]
+        smote_size <-
+          min(max(table(cl)) * 0.7, nrow(dat) %/% nlevels(cl) * 1.1)
+        purrr::map_df(levels(cl), ~ {
+          dat <-
+            dplyr::mutate(dat, class_ova = forcats::fct_other(class, keep = .x))
+          c1 <- dplyr::filter(dat, class_ova == .x)
+          perc.over <- ceiling(((smote_size / nrow(c1)) - 1) * 100)
+          if (nrow(c1) < smote_size) {
+            new_df <- DMwR::SMOTE(class_ova ~ .,
+                                  dat,
+                                  perc.over = perc.over,
+                                  k = min(10, nrow(c1) - 1)) %>%
+              tidyr::drop_na() %>%
+              dplyr::filter(class_ova == .x)
+          } else {
+            ind <- sample(seq_len(nrow(c1)), size = smote_size, replace = FALSE)
+            new_df <- c1[ind,]
+          }
+          dplyr::select(new_df, -"class_ova")
+        })
+      }
     )
   }
 }

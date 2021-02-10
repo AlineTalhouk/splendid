@@ -1,5 +1,3 @@
-context("splendid")
-
 data(hgsc)
 class <- attr(hgsc, "class.true")
 
@@ -8,7 +6,7 @@ test_that("missing algorithm parameter means use all", {
   expect_length(sl_result$models, length(ALG.NAME))
   expect_length(sl_result$preds, length(ALG.NAME))
   expect_equal(sum(purrr::map_int(sl_result$evals, nrow)),
-               length(ALG.NAME) * 28)
+               length(ALG.NAME) * 29)
 })
 
 test_that("unsupported algorithm call causes error", {
