@@ -30,40 +30,40 @@ BugReports: https://github.com/AlineTalhouk/splendid/issues
 Depends: 
     R (>= 3.1)
 Imports: 
-    caret,
     cli,
     DMwR,
     dplyr,
-    e1071,
     forcats,
     ggplot2,
-    glmnet,
     grDevices,
     HandTill2001,
     kernlab,
-    maboost,
     magrittr,
-    MASS,
     multiROC,
-    nnet,
-    pamr,
     purrr,
-    randomForest,
     RankAggreg,
     rlang,
     rsample,
-    sda,
     tibble,
     tidyr,
-    xgboost,
     yardstick
 Suggests: 
     adabag,
+    caret,
     covr,
     DiagrammeR,
+    e1071,
+    glmnet,
     knitr,
+    maboost,
+    nnet,
+    pamr,
     rmarkdown,
-    testthat (>= 2.1.0)
+    sda,
+    testthat (>= 2.1.0),
+    xgboost,
+    randomForest,
+    MASS
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
