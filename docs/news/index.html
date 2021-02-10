@@ -118,7 +118,7 @@
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New Features</h2>
 <ul>
-<li><p>use a “recursive” SMOTE subsampling technique: repeat SMOTE for one less than the number of categories, in case there are multiple minority classes</p></li>
+<li><p>use a “one-vs-all” SMOTE subsampling technique: over-sample each class vs. the other classes and combine the oversampled datasets to create the “balanced” dataset</p></li>
 <li><p>new multiclass metric G-mean</p></li>
 <li><p>use <code>yardstick</code> package for most evaluation metrics</p></li>
 <li><p>pass <code>seeds</code> to <code><a href="https://rdrr.io/pkg/caret/man/trainControl.html">caret::trainControl()</a></code> for reproducible tuning (<a href='https://github.com/AlineTalhouk/splendid/issues/48'>#48</a>)</p></li>

@@ -2,7 +2,7 @@
 
 ## New Features
 
-* use a "recursive" SMOTE subsampling technique: repeat SMOTE for one less than the number of categories, in case there are multiple minority classes
+* use a "one-vs-all" SMOTE subsampling technique: over-sample each class vs. the other classes and combine the oversampled datasets to create the "balanced" dataset
 
 * new multiclass metric G-mean
 
