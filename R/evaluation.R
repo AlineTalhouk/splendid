@@ -49,16 +49,16 @@ evaluation <- function(x, y, plot = FALSE) {
     purrr::invoke_map(plot_funs, list(dm_args))
   }
 
-  # Multi-class measures: accuracy, macro-averaged PPV/NPV/Sensitivity/Specificity/F1-score, MCC, G-mean
+  # Multi-class measures: accuracy, macro-averaged
+  # PPV/NPV/Sensitivity/Specificity/F1-score, MCC, Kappa, G-mean
   cm <- conf_mat(x, y)
   suppressWarnings({
-    mc <-
-      list(yardstick::accuracy, yardstick::ppv, yardstick::npv, yardstick::sens,
-           yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
+    mc <-list(yardstick::accuracy, yardstick::ppv, yardstick::npv, yardstick::sens,
+               yardstick::spec, yardstick::f_meas, yardstick::mcc, yardstick::kap, gmean) %>%
       purrr::set_names(c("accuracy", "macro_ppv", "macro_npv", "macro_sensitivity",
-                         "macro_specificity", "macro_f1", "mcc")) %>%
-      purrr::map(~ .(cm)[[".estimate"]]) %>%
-      c(gmean = gmean(cm))
+                         "macro_specificity", "macro_f1", "mcc", "kappa", "gmean")) %>%
+      purrr::map(~ .(cm)) %>%
+      purrr::map_at(dplyr::vars(-dplyr::matches("gmean")), ~ .[[".estimate"]])
   })
 
   # Class-specific measures: PPV/NPV/Sensitivity/Specificity/F1-score/MCC
@@ -66,9 +66,9 @@ evaluation <- function(x, y, plot = FALSE) {
   suppressWarnings({
     cs <-
       list(yardstick::ppv, yardstick::npv, yardstick::sens,
-           yardstick::spec, yardstick::f_meas, yardstick::mcc) %>%
+           yardstick::spec, yardstick::f_meas, yardstick::mcc, yardstick::kap) %>%
       purrr::set_names(c("ppv", "npv", "sensitivity",
-                         "specificity", "f1", "mcc")) %>%
+                         "specificity", "f1", "mcc", "kappa")) %>%
       purrr::map(function(f) purrr::map(ocm, ~ f(.)[[".estimate"]])) %>%
       unlist() %>%
       tibble::lst(cs = .)
