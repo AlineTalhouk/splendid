@@ -1,3 +1,9 @@
+# splendid 0.2.1
+
+* add Kappa to evaluation metrics (overall and class-specific)
+
+* add class-specific G-mean metric
+
 # splendid 0.2.0
 
 ## New Features

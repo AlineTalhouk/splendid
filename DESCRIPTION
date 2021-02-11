@@ -2,7 +2,7 @@ Type: Package
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic
     IDentification
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     c(person(given = "Derek",
              family = "Chiu",
