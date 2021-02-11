@@ -7,7 +7,8 @@
 #' like log loss, AUC, and PDI, macro-averaged PPV (Precision)/Sensitivity
 #' (Recall)/F1-score, accuracy (same as micro-averaged PPV
 #' Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
-#' micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.
+#' micro-averaged analog), Kappa, G-mean, and class-specific
+#' PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean.
 #'
 #' @param x true class labels
 #' @param y predicted class labels
