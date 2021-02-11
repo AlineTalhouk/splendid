@@ -61,15 +61,17 @@ evaluation <- function(x, y, plot = FALSE) {
       purrr::map_at(dplyr::vars(-dplyr::matches("gmean")), ~ .[[".estimate"]])
   })
 
-  # Class-specific measures: PPV/NPV/Sensitivity/Specificity/F1-score/MCC
+  # Class-specific measures: PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean
   ocm <- ova(cm)  # one vs. all confusion matrices
   suppressWarnings({
-    cs <-
-      list(yardstick::ppv, yardstick::npv, yardstick::sens,
-           yardstick::spec, yardstick::f_meas, yardstick::mcc, yardstick::kap) %>%
+    cs <- list(yardstick::ppv, yardstick::npv, yardstick::sens,
+               yardstick::spec, yardstick::f_meas, yardstick::mcc,
+               yardstick::kap, gmean) %>%
       purrr::set_names(c("ppv", "npv", "sensitivity",
-                         "specificity", "f1", "mcc", "kappa")) %>%
-      purrr::map(function(f) purrr::map(ocm, ~ f(.)[[".estimate"]])) %>%
+                         "specificity", "f1", "mcc", "kappa", "gmean")) %>%
+      purrr::map(function(f) purrr::map(ocm, f)) %>%
+      purrr::map_at(dplyr::vars(-dplyr::matches("gmean")),
+                    ~ purrr::map(., ~ .[[".estimate"]])) %>%
       unlist() %>%
       tibble::lst(cs = .)
   })
