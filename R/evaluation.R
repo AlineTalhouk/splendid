@@ -65,10 +65,10 @@ evaluation <- function(x, y, plot = FALSE) {
   # Class-specific measures: PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean
   ocm <- ova(cm)  # one vs. all confusion matrices
   suppressWarnings({
-    cs <- list(yardstick::ppv, yardstick::npv, yardstick::sens,
+    cs <- list(yardstick::accuracy, yardstick::ppv, yardstick::npv, yardstick::sens,
                yardstick::spec, yardstick::f_meas, yardstick::mcc,
                yardstick::kap, gmean) %>%
-      purrr::set_names(c("ppv", "npv", "sensitivity",
+      purrr::set_names(c("accuracy", "ppv", "npv", "sensitivity",
                          "specificity", "f1", "mcc", "kappa", "gmean")) %>%
       purrr::map(function(f) purrr::map(ocm, f)) %>%
       purrr::map_at(dplyr::vars(-dplyr::matches("gmean")),
