@@ -28,7 +28,7 @@ like log loss, AUC, and PDI, macro-averaged PPV (Precision)/Sensitivity
 (Recall)/F1-score, accuracy (same as micro-averaged PPV
 Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
 micro-averaged analog), Kappa, G-mean, and class-specific
-PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean.
+accuracy/PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean.
 }
 \examples{
 data(hgsc)

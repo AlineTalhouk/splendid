@@ -1,7 +1,5 @@
 # splendid 0.2.1
 
-* add class-specific
-
 * add Kappa to evaluation metrics (overall and class-specific)
 
 * add class-specific accuracy and G-mean metric

@@ -73,7 +73,7 @@ measure for classification problems." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -149,7 +149,8 @@ element, which returns a list of class-specific evaluation measures.</p>
 like log loss, AUC, and PDI, macro-averaged PPV (Precision)/Sensitivity
 (Recall)/F1-score, accuracy (same as micro-averaged PPV
 Sensitivity/F1-score), Matthew's Correlation Coefficient (and its
-micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
+micro-averaged analog), Kappa, G-mean, and class-specific
+accuracy/PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Derek Chiu</p>
@@ -193,10 +194,15 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
 #&gt; $mcc
 #&gt; [1] 0.6726097
 #&gt; 
+#&gt; $kappa
+#&gt; [1] 0.6714537
+#&gt; 
 #&gt; $gmean
 #&gt; [1] 0.7548308
 #&gt; 
 #&gt; $cs
+#&gt;    accuracy.DIF.C4    accuracy.IMM.C2    accuracy.MES.C1    accuracy.PRO.C5 
+#&gt;          0.8235294          0.8770053          0.9251337          0.8823529 
 #&gt;         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 
 #&gt;          0.6851852          0.7045455          0.8125000          0.8292683 
 #&gt;         npv.DIF.C4         npv.IMM.C2         npv.MES.C1         npv.PRO.C5 
@@ -209,6 +215,10 @@ micro-averaged analog), and class-specific PPV/Sensitivity/F1-score/MCC.</p>
 #&gt;          0.6915888          0.7294118          0.8478261          0.7555556 
 #&gt;         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 
 #&gt;          0.5680571          0.6506338          0.7996339          0.6835707 
+#&gt;       kappa.DIF.C4       kappa.IMM.C2       kappa.MES.C1       kappa.PRO.C5 
+#&gt;          0.5680084          0.6499552          0.7983051          0.6788948 
+#&gt;       gmean.DIF.C4       gmean.IMM.C2       gmean.MES.C1       gmean.PRO.C5 
+#&gt;          0.7807347          0.8299240          0.9113608          0.8115916 
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

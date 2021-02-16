@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -180,8 +180,8 @@
 <a href="#sequential-algorithm" class="anchor"></a>Sequential Algorithm</h2>
 <p>The sequential algorithm follows a more complicated workflow. This is an ensemble method, meaning that we work with fitted models, predictions, and evaluation metrics, whereas the <code>ova</code> approach is integrated in the initial classification.</p>
 <p>By <em>sequential</em>, the idea is that we want to sequentially assign classes in a binary fashion, until all classes have been assigned. The diagram below is a simple example for a 4-class case.</p>
-<div id="htmlwidget-2f20c87bf1fd92c4b587" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2f20c87bf1fd92c4b587">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
+<div id="htmlwidget-ec736b14084fc2236be9" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ec736b14084fc2236be9">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
 <p>Suppose we fit a set of classifiers with 2 bootstrap replicates on the <code>xgboost</code> and <code>rf</code> algorithms.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/splendid_model.html">splendid_model</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="va">class</span>, n <span class="op">=</span> <span class="fl">2</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"xgboost"</span>, <span class="st">"rf"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -199,97 +199,97 @@
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.7964602</td>
+<td align="right">0.7000000</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.7906977</td>
+<td align="right">0.7317073</td>
 </tr>
 <tr class="odd">
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8780488</td>
+<td align="right">0.8045977</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">1</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.7848101</td>
+<td align="right">0.6666667</td>
 </tr>
 <tr class="odd">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.7311828</td>
+<td align="right">0.7747748</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.6956522</td>
+<td align="right">0.8285714</td>
 </tr>
 <tr class="odd">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">MES.C1</td>
-<td align="right">0.7865169</td>
+<td align="right">0.8571429</td>
 </tr>
 <tr class="even">
 <td align="left">xgboost</td>
 <td align="left">2</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.7663551</td>
+<td align="right">0.8041237</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.8380952</td>
+<td align="right">0.7961165</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.8627451</td>
+<td align="right">0.7407407</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8809524</td>
+<td align="right">0.8409091</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">1</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.8985507</td>
+<td align="right">0.8444444</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">DIF.C4</td>
-<td align="right">0.7924528</td>
+<td align="right">0.8653846</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">IMM.C2</td>
-<td align="right">0.7096774</td>
+<td align="right">0.8800000</td>
 </tr>
 <tr class="odd">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">MES.C1</td>
-<td align="right">0.8988764</td>
+<td align="right">0.9577465</td>
 </tr>
 <tr class="even">
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="left">PRO.C5</td>
-<td align="right">0.8910891</td>
+<td align="right">0.8775510</td>
 </tr>
 </tbody>
 </table>
@@ -305,12 +305,12 @@
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">PRO.C5</td>
+<td align="left">MES.C1</td>
 <td align="left">rf</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">MES.C1</td>
+<td align="left">PRO.C5</td>
 <td align="left">rf</td>
 </tr>
 <tr class="odd">
