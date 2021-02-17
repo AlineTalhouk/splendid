@@ -132,9 +132,12 @@ sequential_eval <- function(sm) {
     tibble::rownames_to_column("class") %>%
     dplyr::filter(grepl("f1\\.", .data$class)) %>%
     dplyr::mutate(!!"class" := gsub("f1\\.", "", .data$class)) %>%
-    tidyr::gather(!!"score", !!"value", -!!"class") %>%
-    tidyr::separate(!!"score", c("model", "boot"), sep = "\\.") %>%
-    dplyr::select("model", "boot", "class", "value")
+    tidyr::pivot_longer(
+      cols = -!!"class",
+      names_to = c("model", "boot"),
+      names_sep = "\\.",
+      values_to = "value"
+    )
   evals
 }
 
