@@ -1,5 +1,7 @@
 # splendid (development version)
 
+* fix `sequential_eval()` for n = 1 bootstrap case
+
 # splendid 0.2.1
 
 * add Kappa to evaluation metrics (overall and class-specific)
