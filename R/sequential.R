@@ -128,7 +128,7 @@ sequential_rank <- function(sm, boxplot) {
 #' @noRd
 sequential_eval <- function(sm) {
   evals <- sm %>%
-    purrr::invoke(cbind, .) %>%
+    purrr::imap_dfc(~ `colnames<-`(.x, paste0(.y, ".", names(.x)))) %>%
     tibble::rownames_to_column("class") %>%
     dplyr::filter(grepl("f1\\.", .data$class)) %>%
     dplyr::mutate(!!"class" := gsub("f1\\.", "", .data$class)) %>%
