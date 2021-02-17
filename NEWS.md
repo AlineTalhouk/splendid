@@ -1,3 +1,5 @@
+# splendid (development version)
+
 # splendid 0.2.1
 
 * add Kappa to evaluation metrics (overall and class-specific)
