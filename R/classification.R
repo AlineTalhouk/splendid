@@ -77,7 +77,10 @@ pam_model <- function(data, class, seed_alg = NULL) {
   nc <- dplyr::n_distinct(class)
   pamr_data <- list(x = t(data), y = class)
 
-  if (requireNamespace("pamr", quietly = TRUE)) {
+  if (!requireNamespace("pamr", quietly = TRUE)) {
+    stop("Package \"pamr\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
     mod <- sink_output(pamr::pamr.train(
       data = pamr_data,
       n.threshold = 100,
@@ -105,7 +108,10 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
   tune_args <- tibble::lst(class, method, trees, seed_alg)
   if (method == "AdaBoost.M1") names(data) <- make.names(names(data))
   if (rfe) {
-    if (requireNamespace("caret", quietly = TRUE)) {
+    if (!requireNamespace("caret", quietly = TRUE)) {
+      stop("Package \"caret\" is needed. Please install it.",
+           call. = FALSE)
+    } else {
       mod <- suppressWarnings(
         caret::rfe(
           x = data,
@@ -128,22 +134,34 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
     switch(
       algorithms,
       rf = {
-        if (requireNamespace("randomForest", quietly = TRUE)) {
+        if (!requireNamespace("randomForest", quietly = TRUE)) {
+          stop("Package \"randomForest\" is needed. Please install it.",
+               call. = FALSE)
+        } else {
           randomForest::randomForest(x = data, y = class)
         }
       },
       lda = {
-        if (requireNamespace("MASS", quietly = TRUE)) {
+        if (!requireNamespace("MASS", quietly = TRUE)) {
+          stop("Package \"MASS\" is needed. Please install it.",
+               call. = FALSE)
+        } else {
           suppressWarnings(MASS::lda(x = data, grouping = class))
         }
       },
       svm = {
-        if (requireNamespace("e1071", quietly = TRUE)) {
+        if (!requireNamespace("e1071", quietly = TRUE)) {
+          stop("Package \"e1071\" is needed. Please install it.",
+               call. = FALSE)
+        } else {
           e1071::svm(x = data, y = class, probability = TRUE)
         }
       },
       adaboost_m1 = {
-        if (requireNamespace("adabag", quietly = TRUE)) {
+        if (!requireNamespace("adabag", quietly = TRUE)) {
+          stop("Package \"adabag\" is needed. Please install it.",
+               call. = FALSE)
+        } else {
           adabag::boosting(formula = class ~ .,
                            data = cbind(data, class),
                            mfinal = 3)
@@ -243,7 +261,10 @@ tune_model <- function(data, class, method, trees, seed_alg) {
 #' @noRd
 sda_model <- function(data, class, algorithms) {
   diagonal <- switch(algorithms, slda = FALSE, sdda = TRUE)
-  if (requireNamespace("sda", quietly = TRUE)) {
+  if (!requireNamespace("sda", quietly = TRUE)) {
+    stop("Package \"sda\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
     sda::sda(as.matrix(data), class, diagonal = diagonal, verbose = FALSE)
   }
 }
@@ -253,12 +274,18 @@ sda_model <- function(data, class, algorithms) {
 mlr_model <- function(data, class, algorithms) {
   switch(algorithms,
          mlr_nnet = {
-           if (requireNamespace("nnet", quietly = TRUE)) {
+           if (!requireNamespace("nnet", quietly = TRUE)) {
+             stop("Package \"nnet\" is needed. Please install it.",
+                  call. = FALSE)
+           } else {
              nnet::multinom(class ~ ., data, MaxNWts = 2000, trace = FALSE)
            }
          },
          mlr_glm = {
-           if (requireNamespace("glmnet", quietly = TRUE)) {
+           if (!requireNamespace("glmnet", quietly = TRUE)) {
+             stop("Package \"glmnet\" is needed. Please install it.",
+                  call. = FALSE)
+           } else {
              glmnet::glmnet(as.matrix(data),
                             class,
                             lambda = 0,
@@ -272,7 +299,10 @@ mlr_model <- function(data, class, algorithms) {
 cv_mlr_model <- function(data, class, algorithms, seed_alg = NULL) {
   if (!is.null(seed_alg)) set.seed(seed_alg)
   alpha <- switch(algorithms, mlr_lasso = 1, mlr_ridge = 0)
-  if (requireNamespace("glmnet", quietly = TRUE)) {
+  if (!requireNamespace("glmnet", quietly = TRUE)) {
+    stop("Package \"glmnet\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
     glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha, family = "multinomial")
   }
 }
@@ -281,7 +311,10 @@ cv_mlr_model <- function(data, class, algorithms, seed_alg = NULL) {
 #' @noRd
 nnet_model <- function(data, class) {
   if (!"package:nnet" %in% search()) attachNamespace("nnet")
-  if (requireNamespace("e1071", quietly = TRUE)) {
+  if (!requireNamespace("e1071", quietly = TRUE)) {
+    stop("Package \"e1071\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
     suppressWarnings(e1071::best.nnet(
       class ~ .,
       data = cbind(data, class),
@@ -296,7 +329,10 @@ nnet_model <- function(data, class) {
 #' naive bayes model
 #' @noRd
 nbayes_model <- function(data, class) {
-  if (requireNamespace("e1071", quietly = TRUE)) {
+  if (!requireNamespace("e1071", quietly = TRUE)) {
+    stop("Package \"e1071\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
     e1071::naiveBayes(data, class)
   }
 }
@@ -307,7 +343,10 @@ boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
   if (!is.null(seed_alg)) set.seed(seed_alg)
   switch(algorithms,
          adaboost = {
-           if (requireNamespace("maboost", quietly = TRUE)) {
+           if (!requireNamespace("maboost", quietly = TRUE)) {
+             stop("Package \"maboost\" is needed. Please install it.",
+                  call. = FALSE)
+           } else {
              sink_output(maboost::maboost(
                x = data,
                y = class,
@@ -318,7 +357,10 @@ boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
            }
          },
          xgboost = {
-           if (requireNamespace("xgboost", quietly = TRUE)) {
+           if (!requireNamespace("xgboost", quietly = TRUE)) {
+             stop("Package \"xgboost\" is needed. Please install it.",
+                  call. = FALSE)
+           } else {
              xgboost::xgb.train(
                params = list(
                  "objective" = "multi:softprob",
