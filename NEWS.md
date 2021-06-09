@@ -1,5 +1,7 @@
 # splendid (development version)
 
+* print error message if suggested package not available
+
 * fix `sequential_eval()` for n = 1 bootstrap case
 
 # splendid 0.2.1
