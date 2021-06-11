@@ -100,7 +100,11 @@ ova <- function(C) {
 #' @inheritParams splendid_graphs
 #' @noRd
 logloss <- function(x, probs) {
-  yardstick::mn_log_loss_vec(x, probs)
+  if (ncol(probs) > 2) {  # multi-class case
+    yardstick::mn_log_loss_vec(x, probs)
+  } else {  # binary case
+    yardstick::mn_log_loss_vec(x, probs[, 1])
+  }
 }
 
 #' AUC/M-index: Multiple Class Area under ROC Curve
