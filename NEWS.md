@@ -1,4 +1,4 @@
-# splendid (development version)
+# splendid 0.3.0
 
 * add GitHub Action workflows for R CMD check, test coverage, and pkgdown
 
