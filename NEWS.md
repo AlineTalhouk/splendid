@@ -1,5 +1,11 @@
 # splendid (development version)
 
+* add GitHub Action workflows for R CMD check, test coverage, and pkgdown
+
+* calculate AUC from `yardstick`
+
+* package `DMwR` has been archived, so use SMOTE implementation from package `performanceEstimation`
+
 * print error message if suggested package not available
 
 * fix `sequential_eval()` for n = 1 bootstrap case
