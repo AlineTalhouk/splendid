@@ -1,21 +1,12 @@
 Type: Package
 Package: splendid
-Title: SuPervised Learning ENsemble for Diagnostic
-    IDentification
+Title: SuPervised Learning ENsemble for Diagnostic IDentification
 Version: 0.2.1.9000
-Authors@R: 
-    c(person(given = "Derek",
-             family = "Chiu",
-             role = c("aut", "cre"),
-             email = "dchiu@bccrc.ca"),
-      person(given = "Aline",
-             family = "Talhouk",
-             role = "aut",
-             email = "atalhouk@bccrc.ca"),
-      person(given = "Dustin",
-             family = "Johnson",
-             role = "aut",
-             email = "djohnson@bccrc.ca"))
+Authors@R: c(
+    person("Derek", "Chiu", , "dchiu@bccrc.ca", role = c("aut", "cre")),
+    person("Aline", "Talhouk", , "atalhouk@bccrc.ca", role = "aut"),
+    person("Dustin", "Johnson", , "djohnson@bccrc.ca", role = "aut")
+  )
 Description: Provides a bootstrapping and ensemble framework for
     supervised learning analyses using multiclass classification
     algorithms for modelling, prediction, and evaluation. Predicted
@@ -31,7 +22,6 @@ Depends:
     R (>= 3.6.0)
 Imports: 
     cli,
-    DMwR,
     dplyr,
     forcats,
     ggplot2,
@@ -40,6 +30,7 @@ Imports:
     kernlab,
     magrittr,
     multiROC,
+    performanceEstimation,
     purrr,
     RankAggreg,
     rlang,
@@ -56,17 +47,17 @@ Suggests:
     glmnet,
     knitr,
     maboost,
+    MASS,
     nnet,
     pamr,
+    randomForest,
     rmarkdown,
     sda,
     testthat (>= 2.1.0),
-    xgboost,
-    randomForest,
-    MASS
+    xgboost
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

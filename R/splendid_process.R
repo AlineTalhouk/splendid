@@ -157,17 +157,19 @@ subsample <- function(data, class,
           dat <-
             dplyr::mutate(dat, class_ova = forcats::fct_other(class, keep = .x))
           c1 <- dplyr::filter(dat, class_ova == .x)
-          perc.over <- ceiling(((smote_size / nrow(c1)) - 1) * 100)
+          perc.over <- smote_size / nrow(c1) - 1
           if (nrow(c1) < smote_size) {
-            new_df <- DMwR::SMOTE(class_ova ~ .,
-                                  dat,
-                                  perc.over = perc.over,
-                                  k = min(10, nrow(c1) - 1)) %>%
+            new_df <- performanceEstimation::smote(
+              form = class_ova ~ .,
+              data = dat,
+              perc.over = perc.over,
+              k = min(10, nrow(c1) - 1)
+            ) %>%
               tidyr::drop_na() %>%
               dplyr::filter(class_ova == .x)
           } else {
             ind <- sample(seq_len(nrow(c1)), size = smote_size, replace = FALSE)
-            new_df <- c1[ind,]
+            new_df <- c1[ind, ]
           }
           dplyr::select(new_df, -"class_ova")
         })
