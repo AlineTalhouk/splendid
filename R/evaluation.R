@@ -113,10 +113,11 @@ logloss <- function(x, probs) {
 #' @references http://link.springer.com/article/10.1023/A:1010920819831
 #' @noRd
 auc <- function(x, probs) {
-  mcap.construct <-
-    suppressWarnings(HandTill2001::multcap(response = x,
-                                           predicted = as.matrix(probs)))
-  HandTill2001::auc(mcap.construct)
+  if (ncol(probs) > 2) {  # multi-class case
+    yardstick::roc_auc_vec(x, as.matrix(probs))
+  } else {  # binary case
+    yardstick::roc_auc_vec(x, probs[, 1])
+  }
 }
 
 #' Polytomous Discrimination Index (PDI)
