@@ -75,6 +75,7 @@
 <div id="splendid" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#splendid" class="anchor"></a>splendid</h1></div>
+<!-- badges: start -->
 
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
@@ -92,7 +93,7 @@
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>The following example shows how to use the main function of the package, <code><a href="reference/splendid.html">splendid()</a></code>. A data matrix <code>hgsc</code> contains a subset of gene expression measurements of High Grade Serous Ovarian Carcinoma patients from the Cancer Genome Atlas publically available datasets. Samples as rows, features as columns. The function below runs the package through the <code><a href="reference/splendid.html">splendid()</a></code> function. First we extract the reference class labels (by TCGA) from the row names of <code>hgsc</code>. Then we fit the random forest and extreme gradient boosting classifiers to one bootstrapped replicate of the data.</p>
+<p>The following example shows how to use the main function of the package, <code><a href="reference/splendid.html">splendid()</a></code>. A data matrix <code>hgsc</code> contains a subset of gene expression measurements of High Grade Serous Ovarian Carcinoma patients from the Cancer Genome Atlas publicly available datasets. Samples as rows, features as columns. The function below runs the package through the <code><a href="reference/splendid.html">splendid()</a></code> function. First we extract the reference class labels (by TCGA) from the row names of <code>hgsc</code>. Then we fit the random forest and extreme gradient boosting classifiers to one bootstrapped replicate of the data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AlineTalhouk/splendid">splendid</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span>
@@ -108,9 +109,9 @@
 <span class="co">#&gt;   ..$ rf     :List of 1</span>
 <span class="co">#&gt;   ..$ xgboost:List of 1</span>
 <span class="co">#&gt;  $ evals        :List of 2</span>
-<span class="co">#&gt;   ..$ rf     :'data.frame':  34 obs. of  1 variable:</span>
+<span class="co">#&gt;   ..$ rf     :'data.frame':  48 obs. of  1 variable:</span>
 <span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.433</span>
-<span class="co">#&gt;   ..$ xgboost:'data.frame':  34 obs. of  1 variable:</span>
+<span class="co">#&gt;   ..$ xgboost:'data.frame':  48 obs. of  1 variable:</span>
 <span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.858</span>
 <span class="co">#&gt;  $ bests        : Named chr [1:2] "rf" "rf"</span>
 <span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "1" "X1"</span>
@@ -153,8 +154,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/AlineTalhouk/splendid"><img src="https://travis-ci.org/AlineTalhouk/splendid.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://ci.appveyor.com/project/AlineTalhouk/splendid"><img src="https://ci.appveyor.com/api/projects/status/github/AlineTalhouk/splendid?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
+<li><a href="https://github.com/AlineTalhouk/splendid/actions"><img src="https://github.com/AlineTalhouk/splendid/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/github/AlineTalhouk/splendid?branch=master"><img src="https://codecov.io/gh/AlineTalhouk/splendid/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
 </ul>
 </div>
