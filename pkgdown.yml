@@ -1,0 +1,11 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  ensemble_classification: ensemble_classification.html
+  model_extensions: model_extensions.html
+last_built: 2021-10-04T19:45Z
+urls:
+  reference: https://alinetalhouk.github.io/splendid/reference
+  article: https://alinetalhouk.github.io/splendid/articles
+
