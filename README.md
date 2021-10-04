@@ -31,7 +31,7 @@ devtools::install_github("AlineTalhouk/splendid")
 The following example shows how to use the main function of the package,
 `splendid()`. A data matrix `hgsc` contains a subset of gene expression
 measurements of High Grade Serous Ovarian Carcinoma patients from the
-Cancer Genome Atlas publically available datasets. Samples as rows,
+Cancer Genome Atlas publicly available datasets. Samples as rows,
 features as columns. The function below runs the package through the
 `splendid()` function. First we extract the reference class labels (by
 TCGA) from the row names of `hgsc`. Then we fit the random forest and
