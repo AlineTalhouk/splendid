@@ -26,7 +26,6 @@ Imports:
     forcats,
     ggplot2,
     grDevices,
-    HandTill2001,
     kernlab,
     magrittr,
     multiROC,
