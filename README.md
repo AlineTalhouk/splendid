@@ -3,12 +3,12 @@
 
 # splendid
 
-[![Travis build
-status](https://travis-ci.org/AlineTalhouk/splendid.svg?branch=master)](https://travis-ci.org/AlineTalhouk/splendid)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/AlineTalhouk/splendid?branch=master&svg=true)](https://ci.appveyor.com/project/AlineTalhouk/splendid)
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/AlineTalhouk/splendid/workflows/R-CMD-check/badge.svg)](https://github.com/AlineTalhouk/splendid/actions)
 [![Coverage
 status](https://codecov.io/gh/AlineTalhouk/splendid/branch/master/graph/badge.svg)](https://codecov.io/github/AlineTalhouk/splendid?branch=master)
+<!-- badges: end -->
 
 ## Overview
 
@@ -53,9 +53,9 @@ str(sl_result, max.level = 2)
 #>   ..$ rf     :List of 1
 #>   ..$ xgboost:List of 1
 #>  $ evals        :List of 2
-#>   ..$ rf     :'data.frame':  34 obs. of  1 variable:
+#>   ..$ rf     :'data.frame':  48 obs. of  1 variable:
 #>   .. ..- attr(*, "err_632plus")= num 0.433
-#>   ..$ xgboost:'data.frame':  34 obs. of  1 variable:
+#>   ..$ xgboost:'data.frame':  48 obs. of  1 variable:
 #>   .. ..- attr(*, "err_632plus")= num 0.858
 #>  $ bests        : Named chr [1:2] "rf" "rf"
 #>   ..- attr(*, "names")= chr [1:2] "1" "X1"
