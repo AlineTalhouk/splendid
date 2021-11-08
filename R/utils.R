@@ -10,7 +10,7 @@ ALG.CLASS <- c("pamrtrained", "train", "svm", "randomForest", "lda", "sda",
                "maboost", "boosting", "xgb.Booster", "knn")
 
 # Algorithms that need all continuous predictors
-ALG.CONT <- c("lda", "mlr_glm", "mlr_lasso", "mlr_ridge")
+ALG.CONT <- c("svm", "lda", "mlr_glm", "mlr_lasso", "mlr_ridge")
 
 #' Redirect any console printouts from print() or cat() to null device
 #' @references
