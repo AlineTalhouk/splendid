@@ -59,8 +59,9 @@ splendid_process <- function(data, class, algorithms, convert = FALSE,
     if (convert) {
       data <- dummify(data)
       if (standardize) {
+        dummy_vars <- purrr::flatten_chr(attr(data, "dummy_vars"))
         data <- data %>%
-          dplyr::mutate_at(dplyr::vars(-c(attr(., "dummy_vars"))), scale)
+          dplyr::mutate(dplyr::across(-dummy_vars, scale))
       }
     }
     else {
@@ -100,7 +101,7 @@ dummify <- function(data) {
 
   dummy_vars <- purrr::map(desmat, colnames) %>%
     purrr::keep(~ length(.) > 1) %>%
-    purrr::map(tail, -1)
+    purrr::map(utils::tail, -1)
 
   desmat %>%
     purrr::map_at(names(dummy_vars), ~ .[, -1, drop = FALSE]) %>%
