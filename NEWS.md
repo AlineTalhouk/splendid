@@ -1,3 +1,9 @@
+# splendid 0.3.1
+
+* use reference cell parameterization to create dummy variables for factors. The reference level (default first level) does not have a dummy variable. A factor with k levels creates k-1 dummy variables.
+
+* add SVM to the list of algorithms that need all numeric variables, otherwise create dummy variables
+
 # splendid 0.3.0
 
 * add GitHub Action workflows for R CMD check, test coverage, and pkgdown
