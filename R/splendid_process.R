@@ -97,10 +97,13 @@ dummify <- function(data) {
   desmat <- data %>%
     purrr::map(~ stats::model.matrix(~ .x - 1)) %>%
     purrr::imap(~ magrittr::set_colnames(.x, gsub("\\.x", .y, colnames(.x))))
+
   dummy_vars <- purrr::map(desmat, colnames) %>%
     purrr::keep(~ length(.) > 1) %>%
-    purrr::flatten_chr()
+    purrr::map(tail, -1)
+
   desmat %>%
+    purrr::map_at(names(dummy_vars), ~ .[, -1, drop = FALSE]) %>%
     purrr::invoke(cbind, .) %>%
     as.data.frame() %>%
     magrittr::set_rownames(NULL) %>%
