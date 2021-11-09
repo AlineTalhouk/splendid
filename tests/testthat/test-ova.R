@@ -1,6 +1,6 @@
 data(hgsc)
-dat <- hgsc[1:50, 1:25]
-class <- attr(hgsc, "class.true")[1:50]
+dat <- hgsc[1:100, 1:25]
+class <- attr(hgsc, "class.true")[1:100]
 
 test_that("knn ova works", {
   sl_result <- splendid_model(dat, class, n = 1, algorithms = "knn",

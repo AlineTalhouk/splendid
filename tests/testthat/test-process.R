@@ -1,6 +1,6 @@
 test_that("dummify converts categorical variables into one column per level", {
   ncol <- sum(purrr::map_lgl(iris, is.numeric), purrr::map_int(iris, nlevels))
-  expect_length(dummify(iris), ncol)
+  expect_length(dummify(iris), ncol - 1)
 })
 
 test_that("specifying convert is the same as dummifying", {
