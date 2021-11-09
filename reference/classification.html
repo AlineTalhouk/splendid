@@ -73,7 +73,7 @@ class." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -255,24 +255,25 @@ additional class "ova" is added if <code>ova = TRUE</code>.</p>
     <p>Derek Chiu</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>hgsc</span><span class='op'>)</span>
-<span class='va'>class</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>hgsc</span>, <span class='st'>"class.true"</span><span class='op'>)</span>
-<span class='fu'>classification</span><span class='op'>(</span><span class='va'>hgsc</span>, <span class='va'>class</span>, <span class='st'>"xgboost"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; ##### xgb.Booster
-#&gt; raw: 22.3 Kb 
-#&gt; call:
-#&gt;   xgboost::xgb.train(params = list(objective = "multi:softprob", 
-#&gt;     eval_metric = "mlogloss", num_class = nlevels(class)), data = xgboost::xgb.DMatrix(data = as.matrix(data), 
-#&gt;     label = as.integer(class) - 1), nrounds = 2)
-#&gt; params (as set within xgb.train):
-#&gt;   objective = "multi:softprob", eval_metric = "mlogloss", num_class = "4", validate_parameters = "TRUE"
-#&gt; xgb.attributes:
-#&gt;   niter
-#&gt; callbacks:
-#&gt;   cb.print.evaluation(period = print_every_n)
-#&gt; # of features: 321 
-#&gt; niter: 2
-#&gt; nfeatures : 321 </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>hgsc</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>class</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>hgsc</span>, <span class='st'>"class.true"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>classification</span><span class='op'>(</span><span class='va'>hgsc</span>, <span class='va'>class</span>, <span class='st'>"xgboost"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ##### xgb.Booster</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> raw: 22.2 Kb </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   xgboost::xgb.train(params = list(objective = "multi:softprob", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     eval_metric = "mlogloss", num_class = nlevels(class)), data = xgboost::xgb.DMatrix(data = as.matrix(data), </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     label = as.integer(class) - 1), nrounds = 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> params (as set within xgb.train):</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   objective = "multi:softprob", eval_metric = "mlogloss", num_class = "4", validate_parameters = "TRUE"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> xgb.attributes:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   niter</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> callbacks:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   cb.print.evaluation(period = print_every_n)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # of features: 321 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> niter: 2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> nfeatures : 321 </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

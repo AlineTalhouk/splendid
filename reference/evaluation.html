@@ -73,7 +73,7 @@ measure for classification problems." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -156,70 +156,71 @@ accuracy/PPV/NPV/Sensitivity/Specificity/F1-score/MCC/Kappa/G-mean.</p>
     <p>Derek Chiu</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>hgsc</span><span class='op'>)</span>
-<span class='va'>class</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>hgsc</span>, <span class='st'>"class.true"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>training.id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>class</span><span class='op'>)</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>test.id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>class</span><span class='op'>)</span> <span class='op'>%in%</span> <span class='va'>training.id</span><span class='op'>)</span>
-<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span><span class='op'>(</span><span class='va'>hgsc</span><span class='op'>[</span><span class='va'>training.id</span>, <span class='op'>]</span>, <span class='va'>class</span><span class='op'>[</span><span class='va'>training.id</span><span class='op'>]</span>, <span class='st'>"xgboost"</span><span class='op'>)</span>
-<span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span><span class='op'>(</span><span class='va'>mod</span>, <span class='va'>hgsc</span>, <span class='va'>class</span>, <span class='va'>test.id</span><span class='op'>)</span>
-<span class='fu'>evaluation</span><span class='op'>(</span><span class='va'>class</span><span class='op'>[</span><span class='va'>test.id</span><span class='op'>]</span>, <span class='va'>pred</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $logloss
-#&gt; [1] 0.9125752
-#&gt; 
-#&gt; $auc
-#&gt; [1] 0.9372867
-#&gt; 
-#&gt; $pdi
-#&gt; [1] 0.8493226
-#&gt; 
-#&gt; $accuracy
-#&gt; [1] 0.7540107
-#&gt; 
-#&gt; $macro_ppv
-#&gt; [1] 0.7578747
-#&gt; 
-#&gt; $macro_npv
-#&gt; [1] 0.9177646
-#&gt; 
-#&gt; $macro_sensitivity
-#&gt; [1] 0.758613
-#&gt; 
-#&gt; $macro_specificity
-#&gt; [1] 0.9176079
-#&gt; 
-#&gt; $macro_f1
-#&gt; [1] 0.7560955
-#&gt; 
-#&gt; $mcc
-#&gt; [1] 0.6726097
-#&gt; 
-#&gt; $kappa
-#&gt; [1] 0.6714537
-#&gt; 
-#&gt; $gmean
-#&gt; [1] 0.7548308
-#&gt; 
-#&gt; $cs
-#&gt;    accuracy.DIF.C4    accuracy.IMM.C2    accuracy.MES.C1    accuracy.PRO.C5 
-#&gt;          0.8235294          0.8770053          0.9251337          0.8823529 
-#&gt;         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 
-#&gt;          0.6851852          0.7045455          0.8125000          0.8292683 
-#&gt;         npv.DIF.C4         npv.IMM.C2         npv.MES.C1         npv.PRO.C5 
-#&gt;          0.8796992          0.9300699          0.9640288          0.8972603 
-#&gt; sensitivity.DIF.C4 sensitivity.IMM.C2 sensitivity.MES.C1 sensitivity.PRO.C5 
-#&gt;          0.6981132          0.7560976          0.8863636          0.6938776 
-#&gt; specificity.DIF.C4 specificity.IMM.C2 specificity.MES.C1 specificity.PRO.C5 
-#&gt;          0.8731343          0.9109589          0.9370629          0.9492754 
-#&gt;          f1.DIF.C4          f1.IMM.C2          f1.MES.C1          f1.PRO.C5 
-#&gt;          0.6915888          0.7294118          0.8478261          0.7555556 
-#&gt;         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 
-#&gt;          0.5680571          0.6506338          0.7996339          0.6835707 
-#&gt;       kappa.DIF.C4       kappa.IMM.C2       kappa.MES.C1       kappa.PRO.C5 
-#&gt;          0.5680084          0.6499552          0.7983051          0.6788948 
-#&gt;       gmean.DIF.C4       gmean.IMM.C2       gmean.MES.C1       gmean.PRO.C5 
-#&gt;          0.7807347          0.8299240          0.9113608          0.8115916 
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>hgsc</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>class</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>hgsc</span>, <span class='st'>"class.true"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>training.id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>class</span><span class='op'>)</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>test.id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>class</span><span class='op'>)</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='va'>training.id</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='classification.html'>classification</a></span><span class='op'>(</span><span class='va'>hgsc</span><span class='op'>[</span><span class='va'>training.id</span>, <span class='op'>]</span>, <span class='va'>class</span><span class='op'>[</span><span class='va'>training.id</span><span class='op'>]</span>, <span class='st'>"xgboost"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prediction.html'>prediction</a></span><span class='op'>(</span><span class='va'>mod</span>, <span class='va'>hgsc</span>, <span class='va'>class</span>, <span class='va'>test.id</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>evaluation</span><span class='op'>(</span><span class='va'>class</span><span class='op'>[</span><span class='va'>test.id</span><span class='op'>]</span>, <span class='va'>pred</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $logloss</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.9125752</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $auc</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.9372867</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $pdi</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.8493226</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $accuracy</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.7540107</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $macro_ppv</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.7578747</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $macro_npv</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.9177646</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $macro_sensitivity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.758613</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $macro_specificity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.9176079</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $macro_f1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.7560955</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $mcc</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.6726097</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $kappa</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.6714537</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $gmean</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.7548308</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $cs</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    accuracy.DIF.C4    accuracy.IMM.C2    accuracy.MES.C1    accuracy.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.8235294          0.8770053          0.9251337          0.8823529 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ppv.DIF.C4         ppv.IMM.C2         ppv.MES.C1         ppv.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.6851852          0.7045455          0.8125000          0.8292683 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         npv.DIF.C4         npv.IMM.C2         npv.MES.C1         npv.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.8796992          0.9300699          0.9640288          0.8972603 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> sensitivity.DIF.C4 sensitivity.IMM.C2 sensitivity.MES.C1 sensitivity.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.6981132          0.7560976          0.8863636          0.6938776 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> specificity.DIF.C4 specificity.IMM.C2 specificity.MES.C1 specificity.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.8731343          0.9109589          0.9370629          0.9492754 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          f1.DIF.C4          f1.IMM.C2          f1.MES.C1          f1.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.6915888          0.7294118          0.8478261          0.7555556 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         mcc.DIF.C4         mcc.IMM.C2         mcc.MES.C1         mcc.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.5680571          0.6506338          0.7996339          0.6835707 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       kappa.DIF.C4       kappa.IMM.C2       kappa.MES.C1       kappa.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.5680084          0.6499552          0.7983051          0.6788948 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       gmean.DIF.C4       gmean.IMM.C2       gmean.MES.C1       gmean.PRO.C5 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          0.7807347          0.8299240          0.9113608          0.8115916 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

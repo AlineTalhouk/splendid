@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   ensemble_classification: ensemble_classification.html
   model_extensions: model_extensions.html
-last_built: 2021-10-05T18:18Z
+last_built: 2021-11-09T00:44Z
 urls:
   reference: https://alinetalhouk.github.io/splendid/reference
   article: https://alinetalhouk.github.io/splendid/articles
