@@ -93,7 +93,7 @@ prediction.svm <- function(mod, data, class = NULL, test.id = NULL,
     unname()
   prob <- attr(pred, "probabilities")
   if (!("class_0" %in% mod$levels))
-    prob <- prob[, order(colnames(prob), mod$levels)]
+    prob <- prob[, colnames(prob)[match(colnames(prob), mod$levels)]]
   prediction_output(pred, prob, class, test.id, threshold) %>%
     structure(probabilities = NULL)
 }

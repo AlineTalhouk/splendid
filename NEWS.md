@@ -1,3 +1,7 @@
+# splendid 0.3.1.9000
+
+* fix reordering of SVM probability matrix
+
 # splendid 0.3.1
 
 * use reference cell parameterization to create dummy variables for factors. The reference level (default first level) does not have a dummy variable. A factor with k levels creates k-1 dummy variables.
