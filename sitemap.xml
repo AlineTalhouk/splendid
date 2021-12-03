@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://alinetalhouk.github.io/splendid/404.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/articles/ensemble_classification.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/articles/model_extensions.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/authors.html</loc>
+  </url>
+  <url>
     <loc>https://alinetalhouk.github.io/splendid/index.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/news/index.html</loc>
   </url>
   <url>
     <loc>https://alinetalhouk.github.io/splendid/reference/boot_test.html</loc>
@@ -23,6 +47,9 @@
   </url>
   <url>
     <loc>https://alinetalhouk.github.io/splendid/reference/hgsc.html</loc>
+  </url>
+  <url>
+    <loc>https://alinetalhouk.github.io/splendid/reference/index.html</loc>
   </url>
   <url>
     <loc>https://alinetalhouk.github.io/splendid/reference/ova_classification.html</loc>
@@ -59,11 +86,5 @@
   </url>
   <url>
     <loc>https://alinetalhouk.github.io/splendid/reference/subsample.html</loc>
-  </url>
-  <url>
-    <loc>https://alinetalhouk.github.io/splendid/articles/ensemble_classification.html</loc>
-  </url>
-  <url>
-    <loc>https://alinetalhouk.github.io/splendid/articles/model_extensions.html</loc>
   </url>
 </urlset>

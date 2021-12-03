@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9000</span>
       </span>
     </div>
 
@@ -49,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/AlineTalhouk/splendid">
+  <a href="https://github.com/AlineTalhouk/splendid" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -71,28 +73,28 @@
 </h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/AlineTalhouk/splendid/blob/master/vignettes/ensemble_classification.Rmd"><code>vignettes/ensemble_classification.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/AlineTalhouk/splendid/blob/HEAD/vignettes/ensemble_classification.Rmd" class="external-link"><code>vignettes/ensemble_classification.Rmd</code></a></small>
       <div class="hidden name"><code>ensemble_classification.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>Supervised learning is the branch of statistical learning where we construct a predictive model with the goal of regression or classification. The <code>splendid</code> package focuses on classification with an ensemble framework: many classification algorithms are used, and prediction is done across bootstrap replicates of the data. An ensemble classifier is built from the best performing algorithms according to evaluation measures. No single classifier always performs the best for every data set that exists, so there is increasing utility to come up with ensemble classifiers. The objective is to use this classifier to obtain highly accurate predictions in independent data sets for the purposes of diagnostic identification. In genomic studies for example, one might be interested in using the class labels of a cancer subtype in one cohort to predict the subtypes in an independent cohort.</p>
 <p><code>splendid</code> is currently only available on GitHub (<em>the second line below will be uncommented once the repository becomes public</em>).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="co"># devtools::install_github("AlineTalhouk/splendid")</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AlineTalhouk/splendid">splendid</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AlineTalhouk/splendid" class="external-link">splendid</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>The main function of <code>splendid</code> is <code><a href="../reference/splendid.html">splendid()</a></code>, and the usage is intuitive:</p>
 <ul>
 <li>
@@ -138,13 +140,13 @@
 <code>sequential</code>: whether to run the sequential ensemble</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="st">"class.true"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="st">"class.true"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span>
 <span class="co">#&gt; class</span>
 <span class="co">#&gt; DIF.C4 IMM.C2 MES.C1 PRO.C5 </span>
 <span class="co">#&gt;    135    107    109    138</span>
 <span class="va">sl_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/splendid.html">splendid</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">hgsc</span>, class <span class="op">=</span> <span class="va">class</span>, n <span class="op">=</span> <span class="fl">2</span>,
-                      algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"slda"</span>, <span class="st">"knn"</span>, <span class="st">"svm"</span><span class="op">)</span>, rfe <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+                      algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"slda"</span>, <span class="st">"knn"</span>, <span class="st">"svm"</span><span class="op">)</span>, rfe <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>The resulting object is a list with the following elements:</p>
 <ul>
 <li>
@@ -161,7 +163,7 @@
 <code>ensemble</code> is a list of model fits for each of the algorithms in <code>ensemble_algs</code>, fit on the full data.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">sl_result</span>, max.level <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sl_result</span>, max.level <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; List of 8</span>
 <span class="co">#&gt;  $ models       :List of 3</span>
 <span class="co">#&gt;   ..$ slda:List of 2</span>
@@ -173,11 +175,11 @@
 <span class="co">#&gt;   ..$ svm :List of 2</span>
 <span class="co">#&gt;  $ evals        :List of 3</span>
 <span class="co">#&gt;   ..$ slda:'data.frame': 48 obs. of  2 variables:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.71</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.84</span>
 <span class="co">#&gt;   ..$ knn :'data.frame': 48 obs. of  2 variables:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 1.43</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 2.47</span>
 <span class="co">#&gt;   ..$ svm :'data.frame': 48 obs. of  2 variables:</span>
-<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.191</span>
+<span class="co">#&gt;   .. ..- attr(*, "err_632plus")= num 0.244</span>
 <span class="co">#&gt;  $ bests        : Named chr [1:2] "svm" "svm"</span>
 <span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "1" "2"</span>
 <span class="co">#&gt;  $ ensemble_algs: chr "svm"</span>
@@ -187,13 +189,13 @@
 <span class="co">#&gt;  $ seq_mods     : NULL</span>
 <span class="co">#&gt;  $ seq_preds    : NULL</span></code></pre></div>
 </div>
-<div id="classification" class="section level2">
-<h2 class="hasAnchor">
-<a href="#classification" class="anchor"></a>Classification</h2>
+<div class="section level2">
+<h2 id="classification">Classification<a class="anchor" aria-label="anchor" href="#classification"></a>
+</h2>
 <p>The first step in the <code>splendid</code> pipeline is classification. Given explanatory data and a reference response of classes, we wish to build a classifier that can accurately predict class representation in a separate validation data set. To avoid overfitting, we split the given data into a training set and test set. The training set is constructed by taking a random sample with replacement of all samples. The test set is comprised of all samples which are not included in the corresponding training set, also known as an OOB sample. This is a simple bootstrap resampling scheme, which we replicate a sufficient number of times to capture sampling variability.</p>
-<div id="algorithms" class="section level3">
-<h3 class="hasAnchor">
-<a href="#algorithms" class="anchor"></a>Algorithms</h3>
+<div class="section level3">
+<h3 id="algorithms">Algorithms<a class="anchor" aria-label="anchor" href="#algorithms"></a>
+</h3>
 <p>There exist a vast number of classification algorithms. Those currently in <code>splendid</code> are:</p>
 <ul>
 <li>Prediction Analysis for Microarrays (<code>"pam"</code>)</li>
@@ -224,10 +226,10 @@
 </ul>
 <p>These algorithms are implemented in <code><a href="../reference/classification.html">classification()</a></code>.</p>
 </div>
-<div id="hyperparameters-and-other-details" class="section level3">
-<h3 class="hasAnchor">
-<a href="#hyperparameters-and-other-details" class="anchor"></a>Hyperparameters and other Details</h3>
-<p>Certain functions have hyperparameters that need to be tuned in order to select the best model before prediction. We use a grid search on a pre-specified range of the hyperparameters and choose the optimal values using <code><a href="https://rdrr.io/pkg/caret/man/train.html">caret::train()</a></code>.</p>
+<div class="section level3">
+<h3 id="hyperparameters-and-other-details">Hyperparameters and other Details<a class="anchor" aria-label="anchor" href="#hyperparameters-and-other-details"></a>
+</h3>
+<p>Certain functions have hyperparameters that need to be tuned in order to select the best model before prediction. We use a grid search on a pre-specified range of the hyperparameters and choose the optimal values using <code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">caret::train()</a></code>.</p>
 <p>The ranges for the tuning parameters are:</p>
 <ul>
 <li>
@@ -259,7 +261,7 @@
 </ul>
 </li>
 </ul>
-<p>We use <code><a href="https://rdrr.io/pkg/e1071/man/tune.html">e1071::tune()</a></code> for neural network parameters. The ranges are:</p>
+<p>We use <code><a href="https://rdrr.io/pkg/e1071/man/tune.html" class="external-link">e1071::tune()</a></code> for neural network parameters. The ranges are:</p>
 <ul>
 <li>
 <code>nnet</code>
@@ -285,68 +287,68 @@
 <code>xgboost</code>: the objective function is soft probability, and the evaluation metric is log loss.</li>
 </ul>
 </div>
-<div id="feature-selection" class="section level3">
-<h3 class="hasAnchor">
-<a href="#feature-selection" class="anchor"></a>Feature Selection</h3>
+<div class="section level3">
+<h3 id="feature-selection">Feature Selection<a class="anchor" aria-label="anchor" href="#feature-selection"></a>
+</h3>
 <p>We use Recursive Feature Elimination (RFE)<sup>3</sup> on <code>lda</code>, <code>rf</code>, <code>svm</code>, and <code>adaboost_m1</code> to reduce the dimensionality before classification. In <code>svm</code>, we do this before tuning because of the computational complexity. However, we can embed this feature selection within the tuning step for the other three algorithms. Set <code>rfe = TRUE</code> in <code>splendid</code> to use feature selection.</p>
 <p>One limitation of RFE is that an a priori set of feature subset sizes need to be specified, determining the search space for the algorithm. By default, we set the <code>sizes</code> parameter to be every 5 integers from 0 up to one-half of the smallest class size. Recall the class sizes:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span>
 <span class="co">#&gt; class</span>
 <span class="co">#&gt; DIF.C4 IMM.C2 MES.C1 PRO.C5 </span>
 <span class="co">#&gt;    135    107    109    138</span></code></pre></div>
 <p>We tell RFE to search for the best models with 5, 10, …, 50 features. Cross-validation with 2 folds is used in the algorithm.</p>
 </div>
 </div>
-<div id="prediction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#prediction" class="anchor"></a>Prediction</h2>
+<div class="section level2">
+<h2 id="prediction">Prediction<a class="anchor" aria-label="anchor" href="#prediction"></a>
+</h2>
 <p>There is a different prediction method for each classifier, since they are all imported from an external package. The <code><a href="../reference/prediction.html">prediction()</a></code> function calls each method based on the class of the model output from <code><a href="../reference/classification.html">classification()</a></code>. <code><a href="../reference/prediction.html">prediction()</a></code> also performs some manipulations so that the results all have the same data structure: unnamed factors, with labels given in the same order as the true class labels.</p>
 <p>The method for <code>"pam"</code> is an exception: the output from <code><a href="../reference/prediction.html">prediction()</a></code> not only has the predicted class labels, but also the cross-validated threshold value calculated from the training set to use in prediction on the test set, named <code>delta</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">sl_result</span><span class="op">$</span><span class="va">preds</span>, max.level <span class="op">=</span> <span class="fl">2</span>, list.len <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sl_result</span><span class="op">$</span><span class="va">preds</span>, max.level <span class="op">=</span> <span class="fl">2</span>, list.len <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; List of 3</span>
 <span class="co">#&gt;  $ slda:List of 2</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 4 2 4 4 1 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:183, 1:4] 0 0 0 0 0.285 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 2 4 1 2 2 1 2 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:184, 1:4] 4.20e-06 2.70e-01 4.17e-02 1.00 2.12e-02 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 4 2 1 4 1 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 4 2 4 4 1 1 4 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 1 1 2 1 2 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 2 4 1 2 2 1 2 1 1 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 1 1 4 4 1 1 1 4 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:173, 1:4] 0.000227 0.999976 0.972403 0.972583 0 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 1 3 4 1 4 4 1 2 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:188, 1:4] 0 0.00251 0.99704 0.00367 0 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 4 1 4 4 1 1 1 4 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 1 1 4 4 1 1 1 4 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 1 3 4 1 4 1 1 2 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 1 3 4 1 4 4 1 2 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
 <span class="co">#&gt;  $ knn :List of 2</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 3 4 2 1 4 1 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:183, 1:4] 0.429 0 0 0 0.8 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 3 4 1 2 1 2 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:184, 1:4] 0 1 0 0.4 0.6 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 4 2 1 4 1 1 4 1 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 3 4 2 1 4 1 1 4 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 3 1 1 2 1 2 1 1 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 3 1 1 2 1 2 1 1 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
-<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 3 1 1 1 4 4 1 1 4 4 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:173, 1:4] 0.333 1 0.6 0.6 0 ...</span>
+<span class="co">#&gt;   ..$ : Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 1 3 4 1 4 1 1 2 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "prob")= num [1:188, 1:4] 0.4 0.6 0.667 0 0 ...</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dimnames")=List of 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 1 4 1 4 4 1 1 1 4 ...</span>
-<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 1 1 4 4 1 1 4 4 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.true")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 4 3 1 3 4 1 4 1 1 2 ...</span>
+<span class="co">#&gt;   .. ..- attr(*, "class.thres")= Factor w/ 4 levels "DIF.C4","IMM.C2",..: 1 1 1 3 4 1 4 1 1 2 ...</span>
 <span class="co">#&gt;   .. ..- attr(*, "class.prop")= num 1</span>
 <span class="co">#&gt;   [list output truncated]</span></code></pre></div>
-<div id="attributes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#attributes" class="anchor"></a>Attributes</h3>
+<div class="section level3">
+<h3 id="attributes">Attributes<a class="anchor" aria-label="anchor" href="#attributes"></a>
+</h3>
 <p>Note that each predicted class has an attribute that shows the class probabilities in a matrix. We ensure that the class probabilities for every sample sum to one by making a small adjustment to one of the classes depending on whether the probability was over or under one. These matrices are useful to compute evaluation measures and generate discriminating graphs that we detail below, and is stored in <code>attr(*, "prob")</code>.</p>
 <p>To obtain better performance under evaluation metrics, we may want to exclude samples which have a maximum class probability below a threshold. For example, we may only compare the true test labels with the corresponding OOB samples where the winning class has a probability at least 50%. Samples below this threshold are labelled as <code>"unclassified"</code>. If the threshold results in all samples being unclassified, then we use the unfiltered, original predicted labels for evaluation. This object is stored in <code>attr(*, "class.thres")</code>.</p>
 <p>The final attribute of a prediction object is stored <code>attr(*, "class.prop")</code>, showing the proportion of classified cases. This value is inversely proportional to the <code>threshold</code> setting.</p>
 </div>
 </div>
-<div id="evaluation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#evaluation" class="anchor"></a>Evaluation</h2>
-<div id="metrics" class="section level3">
-<h3 class="hasAnchor">
-<a href="#metrics" class="anchor"></a>Metrics</h3>
+<div class="section level2">
+<h2 id="evaluation">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation"></a>
+</h2>
+<div class="section level3">
+<h3 id="metrics">Metrics<a class="anchor" aria-label="anchor" href="#metrics"></a>
+</h3>
 <p>Evaluation measures are important because they tell us the prediction performance of a classifier. The table below shows all the measures for <code>svm</code>, for two bootstrap replicates. The <code>logloss</code>, <code>auc</code> and <code>pdi</code> measures make use of the prediction probabilities, whereas the rest are computed from the multiclass confusion matrix of reference and predicted class labels.</p>
 <table class="table">
 <caption>SVM Evaluation Metrics</caption>
@@ -358,243 +360,243 @@
 <tbody>
 <tr class="odd">
 <td align="left">logloss</td>
-<td align="right">0.2605148</td>
-<td align="right">0.2617183</td>
+<td align="right">0.3621245</td>
+<td align="right">0.2680567</td>
 </tr>
 <tr class="even">
 <td align="left">auc</td>
-<td align="right">0.9906747</td>
-<td align="right">0.9890276</td>
+<td align="right">0.9782607</td>
+<td align="right">0.9882386</td>
 </tr>
 <tr class="odd">
 <td align="left">pdi</td>
-<td align="right">0.9740922</td>
-<td align="right">0.9702841</td>
+<td align="right">0.9416330</td>
+<td align="right">0.9692426</td>
 </tr>
 <tr class="even">
 <td align="left">accuracy</td>
-<td align="right">0.9016393</td>
-<td align="right">0.9132948</td>
+<td align="right">0.8641304</td>
+<td align="right">0.9148936</td>
 </tr>
 <tr class="odd">
 <td align="left">macro_ppv</td>
-<td align="right">0.9027926</td>
-<td align="right">0.9144617</td>
+<td align="right">0.8774574</td>
+<td align="right">0.9180654</td>
 </tr>
 <tr class="even">
 <td align="left">macro_npv</td>
-<td align="right">0.9672527</td>
-<td align="right">0.9715736</td>
+<td align="right">0.9548134</td>
+<td align="right">0.9717229</td>
 </tr>
 <tr class="odd">
 <td align="left">macro_sensitivity</td>
-<td align="right">0.9017019</td>
-<td align="right">0.9111683</td>
+<td align="right">0.8613753</td>
+<td align="right">0.9130733</td>
 </tr>
 <tr class="even">
 <td align="left">macro_specificity</td>
-<td align="right">0.9671582</td>
-<td align="right">0.9708830</td>
+<td align="right">0.9534702</td>
+<td align="right">0.9711636</td>
 </tr>
 <tr class="odd">
 <td align="left">macro_f1</td>
-<td align="right">0.9017487</td>
-<td align="right">0.9116201</td>
+<td align="right">0.8652796</td>
+<td align="right">0.9148339</td>
 </tr>
 <tr class="even">
 <td align="left">mcc</td>
-<td align="right">0.8690244</td>
-<td align="right">0.8846031</td>
+<td align="right">0.8187042</td>
+<td align="right">0.8862210</td>
 </tr>
 <tr class="odd">
 <td align="left">kappa</td>
-<td align="right">0.8687126</td>
-<td align="right">0.8836897</td>
+<td align="right">0.8169008</td>
+<td align="right">0.8857143</td>
 </tr>
 <tr class="even">
 <td align="left">gmean</td>
-<td align="right">0.9011306</td>
-<td align="right">0.9101622</td>
+<td align="right">0.8582250</td>
+<td align="right">0.9127181</td>
 </tr>
 <tr class="odd">
 <td align="left">accuracy.DIF.C4</td>
-<td align="right">0.9562842</td>
-<td align="right">0.9537572</td>
+<td align="right">0.9076087</td>
+<td align="right">0.9574468</td>
 </tr>
 <tr class="even">
 <td align="left">accuracy.IMM.C2</td>
-<td align="right">0.9562842</td>
-<td align="right">0.9537572</td>
+<td align="right">0.9456522</td>
+<td align="right">0.9627660</td>
 </tr>
 <tr class="odd">
 <td align="left">accuracy.MES.C1</td>
-<td align="right">0.9617486</td>
-<td align="right">0.9595376</td>
+<td align="right">0.9619565</td>
+<td align="right">0.9627660</td>
 </tr>
 <tr class="even">
 <td align="left">accuracy.PRO.C5</td>
-<td align="right">0.9289617</td>
-<td align="right">0.9595376</td>
+<td align="right">0.9130435</td>
+<td align="right">0.9468085</td>
 </tr>
 <tr class="odd">
 <td align="left">ppv.DIF.C4</td>
-<td align="right">0.9361702</td>
-<td align="right">0.9512195</td>
+<td align="right">0.8518519</td>
+<td align="right">0.9387755</td>
 </tr>
 <tr class="even">
 <td align="left">ppv.IMM.C2</td>
-<td align="right">0.9250000</td>
-<td align="right">0.9268293</td>
-</tr>
-<tr class="odd">
-<td align="left">ppv.MES.C1</td>
-<td align="right">0.8958333</td>
-<td align="right">0.8888889</td>
-</tr>
-<tr class="even">
-<td align="left">ppv.PRO.C5</td>
-<td align="right">0.8541667</td>
-<td align="right">0.8909091</td>
-</tr>
-<tr class="odd">
-<td align="left">npv.DIF.C4</td>
-<td align="right">0.9632353</td>
-<td align="right">0.9545455</td>
-</tr>
-<tr class="even">
-<td align="left">npv.IMM.C2</td>
-<td align="right">0.9650350</td>
-<td align="right">0.9621212</td>
-</tr>
-<tr class="odd">
-<td align="left">npv.MES.C1</td>
-<td align="right">0.9851852</td>
-<td align="right">0.9781022</td>
-</tr>
-<tr class="even">
-<td align="left">npv.PRO.C5</td>
-<td align="right">0.9555556</td>
-<td align="right">0.9915254</td>
-</tr>
-<tr class="odd">
-<td align="left">sensitivity.DIF.C4</td>
-<td align="right">0.8979592</td>
-<td align="right">0.8666667</td>
-</tr>
-<tr class="even">
-<td align="left">sensitivity.IMM.C2</td>
-<td align="right">0.8809524</td>
-<td align="right">0.8837209</td>
-</tr>
-<tr class="odd">
-<td align="left">sensitivity.MES.C1</td>
-<td align="right">0.9555556</td>
-<td align="right">0.9142857</td>
-</tr>
-<tr class="even">
-<td align="left">sensitivity.PRO.C5</td>
-<td align="right">0.8723404</td>
-<td align="right">0.9800000</td>
-</tr>
-<tr class="odd">
-<td align="left">specificity.DIF.C4</td>
-<td align="right">0.9776119</td>
-<td align="right">0.9843750</td>
-</tr>
-<tr class="even">
-<td align="left">specificity.IMM.C2</td>
-<td align="right">0.9787234</td>
-<td align="right">0.9769231</td>
-</tr>
-<tr class="odd">
-<td align="left">specificity.MES.C1</td>
-<td align="right">0.9637681</td>
-<td align="right">0.9710145</td>
-</tr>
-<tr class="even">
-<td align="left">specificity.PRO.C5</td>
-<td align="right">0.9485294</td>
-<td align="right">0.9512195</td>
-</tr>
-<tr class="odd">
-<td align="left">f1.DIF.C4</td>
-<td align="right">0.9166667</td>
-<td align="right">0.9069767</td>
-</tr>
-<tr class="even">
-<td align="left">f1.IMM.C2</td>
-<td align="right">0.9024390</td>
+<td align="right">0.9655172</td>
 <td align="right">0.9047619</td>
 </tr>
 <tr class="odd">
+<td align="left">ppv.MES.C1</td>
+<td align="right">0.8888889</td>
+<td align="right">0.9473684</td>
+</tr>
+<tr class="even">
+<td align="left">ppv.PRO.C5</td>
+<td align="right">0.8035714</td>
+<td align="right">0.8813559</td>
+</tr>
+<tr class="odd">
+<td align="left">npv.DIF.C4</td>
+<td align="right">0.9307692</td>
+<td align="right">0.9640288</td>
+</tr>
+<tr class="even">
+<td align="left">npv.IMM.C2</td>
+<td align="right">0.9419355</td>
+<td align="right">0.9794521</td>
+</tr>
+<tr class="odd">
+<td align="left">npv.MES.C1</td>
+<td align="right">0.9856115</td>
+<td align="right">0.9666667</td>
+</tr>
+<tr class="even">
+<td align="left">npv.PRO.C5</td>
+<td align="right">0.9609375</td>
+<td align="right">0.9767442</td>
+</tr>
+<tr class="odd">
+<td align="left">sensitivity.DIF.C4</td>
+<td align="right">0.8363636</td>
+<td align="right">0.9019608</td>
+</tr>
+<tr class="even">
+<td align="left">sensitivity.IMM.C2</td>
+<td align="right">0.7567568</td>
+<td align="right">0.9268293</td>
+</tr>
+<tr class="odd">
+<td align="left">sensitivity.MES.C1</td>
+<td align="right">0.9523810</td>
+<td align="right">0.8780488</td>
+</tr>
+<tr class="even">
+<td align="left">sensitivity.PRO.C5</td>
+<td align="right">0.9000000</td>
+<td align="right">0.9454545</td>
+</tr>
+<tr class="odd">
+<td align="left">specificity.DIF.C4</td>
+<td align="right">0.9379845</td>
+<td align="right">0.9781022</td>
+</tr>
+<tr class="even">
+<td align="left">specificity.IMM.C2</td>
+<td align="right">0.9931973</td>
+<td align="right">0.9727891</td>
+</tr>
+<tr class="odd">
+<td align="left">specificity.MES.C1</td>
+<td align="right">0.9647887</td>
+<td align="right">0.9863946</td>
+</tr>
+<tr class="even">
+<td align="left">specificity.PRO.C5</td>
+<td align="right">0.9179104</td>
+<td align="right">0.9473684</td>
+</tr>
+<tr class="odd">
+<td align="left">f1.DIF.C4</td>
+<td align="right">0.8440367</td>
+<td align="right">0.9200000</td>
+</tr>
+<tr class="even">
+<td align="left">f1.IMM.C2</td>
+<td align="right">0.8484848</td>
+<td align="right">0.9156627</td>
+</tr>
+<tr class="odd">
 <td align="left">f1.MES.C1</td>
-<td align="right">0.9247312</td>
-<td align="right">0.9014085</td>
+<td align="right">0.9195402</td>
+<td align="right">0.9113924</td>
 </tr>
 <tr class="even">
 <td align="left">f1.PRO.C5</td>
-<td align="right">0.8631579</td>
-<td align="right">0.9333333</td>
+<td align="right">0.8490566</td>
+<td align="right">0.9122807</td>
 </tr>
 <tr class="odd">
 <td align="left">mcc.DIF.C4</td>
-<td align="right">0.8874083</td>
-<td align="right">0.8779771</td>
+<td align="right">0.7784736</td>
+<td align="right">0.8913611</td>
 </tr>
 <tr class="even">
 <td align="left">mcc.IMM.C2</td>
-<td align="right">0.8747237</td>
-<td align="right">0.8746827</td>
+<td align="right">0.8249532</td>
+<td align="right">0.8918829</td>
 </tr>
 <tr class="odd">
 <td align="left">mcc.MES.C1</td>
-<td align="right">0.8999673</td>
-<td align="right">0.8760978</td>
+<td align="right">0.8955810</td>
+<td align="right">0.8888934</td>
 </tr>
 <tr class="even">
 <td align="left">mcc.PRO.C5</td>
-<td align="right">0.8152770</td>
-<td align="right">0.9064989</td>
+<td align="right">0.7907590</td>
+<td align="right">0.8752894</td>
 </tr>
 <tr class="odd">
 <td align="left">kappa.DIF.C4</td>
-<td align="right">0.8870545</td>
-<td align="right">0.8762960</td>
+<td align="right">0.7784075</td>
+<td align="right">0.8910303</td>
 </tr>
 <tr class="even">
 <td align="left">kappa.IMM.C2</td>
-<td align="right">0.8742916</td>
-<td align="right">0.8742504</td>
+<td align="right">0.8159632</td>
+<td align="right">0.8917763</td>
 </tr>
 <tr class="odd">
 <td align="left">kappa.MES.C1</td>
-<td align="right">0.8991259</td>
-<td align="right">0.8759603</td>
+<td align="right">0.8946680</td>
+<td align="right">0.8878664</td>
 </tr>
 <tr class="even">
 <td align="left">kappa.PRO.C5</td>
-<td align="right">0.8151946</td>
-<td align="right">0.9043822</td>
+<td align="right">0.7882624</td>
+<td align="right">0.8741802</td>
 </tr>
 <tr class="odd">
 <td align="left">gmean.DIF.C4</td>
-<td align="right">0.9369395</td>
-<td align="right">0.9236477</td>
+<td align="right">0.8857179</td>
+<td align="right">0.9392603</td>
 </tr>
 <tr class="even">
 <td align="left">gmean.IMM.C2</td>
-<td align="right">0.9285519</td>
-<td align="right">0.9291541</td>
+<td align="right">0.8669537</td>
+<td align="right">0.9495312</td>
 </tr>
 <tr class="odd">
 <td align="left">gmean.MES.C1</td>
-<td align="right">0.9596531</td>
-<td align="right">0.9422233</td>
+<td align="right">0.9585648</td>
+<td align="right">0.9306463</td>
 </tr>
 <tr class="even">
 <td align="left">gmean.PRO.C5</td>
-<td align="right">0.9096376</td>
-<td align="right">0.9655025</td>
+<td align="right">0.9089111</td>
+<td align="right">0.9464110</td>
 </tr>
 </tbody>
 </table>
@@ -625,39 +627,39 @@
 <p>Class-specific measures fill in the rest of the matrix, labelled with the naming scheme <code>metric.class</code>.</p>
 <p>The .632 estimator are implemented for the multiclass log loss function. This error estimate aims to make a compromise between an overbiased prediction like the leave-one-out bootstrap error with an underbiased prediction like the training (or apparent) error. If we set <code>plus = TRUE</code> in <code><a href="../reference/splendid.html">splendid()</a></code> (default), one can calculate the .632+ estimator, an improvement over the .632 estimator that takes into account the amount of overfitting.<sup>5</sup> The value is stored as an attribute in the evaluation object:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">sl_result</span><span class="op">$</span><span class="va">evals</span>, <span class="va">attr</span>, <span class="st">"err_632plus"</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">double</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">sl_result</span><span class="op">$</span><span class="va">evals</span>, <span class="va">attr</span>, <span class="st">"err_632plus"</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;      slda       knn       svm </span>
-<span class="co">#&gt; 1.7051852 1.4292724 0.1907443</span></code></pre></div>
+<span class="co">#&gt; 1.8351057 2.4690499 0.2443584</span></code></pre></div>
 </div>
-<div id="plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#plots" class="anchor"></a>Plots</h3>
+<div class="section level3">
+<h3 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
+</h3>
 <p>To assess the performance of a classifier, we can look at a discriminating plot and reliability plot.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span>
-<span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="st">"class.true"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">training.id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">test.id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">training.id</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span>
+<span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="st">"class.true"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="va">training.id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">test.id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">training.id</span><span class="op">)</span>
 <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/classification.html">classification</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">[</span><span class="va">training.id</span>, <span class="op">]</span>, <span class="va">class</span><span class="op">[</span><span class="va">training.id</span><span class="op">]</span>, <span class="st">"adaboost"</span><span class="op">)</span>
 <span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prediction.html">prediction</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">hgsc</span>, <span class="va">test.id</span>, class <span class="op">=</span> <span class="va">class</span><span class="op">)</span>
 <span class="va">evals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/evaluation.html">evaluation</a></span><span class="op">(</span><span class="va">class</span><span class="op">[</span><span class="va">test.id</span><span class="op">]</span>, <span class="va">pred</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="ensemble_classification_files/figure-html/plots-1.png" width="576"><img src="ensemble_classification_files/figure-html/plots-2.png" width="576"><img src="ensemble_classification_files/figure-html/plots-3.png" width="576"></p>
 </div>
 </div>
-<div id="ensemble-construction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#ensemble-construction" class="anchor"></a>Ensemble Construction</h2>
+<div class="section level2">
+<h2 id="ensemble-construction">Ensemble Construction<a class="anchor" aria-label="anchor" href="#ensemble-construction"></a>
+</h2>
 <p>For each bootstrap replicate training set, we want to find the top performing classifier. We use Rank Aggregation with the Genetic Algorithm to choose the top algorithm by comparing across evaluation metrics<sup>4</sup>. In the case of log loss, we need to first invert its value since it its objective function is minimization. Class-specific measures are not included in the rank aggregation because they are interdependent. For example, a sample with a true class of “A” should not be treated differently depending on whether it was misclassified into “B” or “C”.</p>
 <p>After obtaining the list of top classifiers for each bootstrap replicate, we sort them by decreasing frequency and keep the top 3 to use in the ensemble. The <code>ensemble_mods</code> output of <code>splendid</code> is a list of models fit on the full data for the top classifiers.</p>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <ol style="list-style-type: decimal">
 <li>Ahdesmäki, Miika, and Korbinian Strimmer. “Feature selection in omics prediction problems using cat scores and false nondiscovery rate control.” <em>The Annals of Applied Statistics</em> 4.1 (2010): 503-519.</li>
-<li><a href="https://web.stanford.edu/~hastie/glmnet/glmnet_beta.html" class="uri">https://web.stanford.edu/~hastie/glmnet/glmnet_beta.html</a></li>
-<li><a href="https://topepo.github.io/caret/recursive-feature-elimination.html" class="uri">https://topepo.github.io/caret/recursive-feature-elimination.html</a></li>
+<li><a href="https://web.stanford.edu/~hastie/glmnet/glmnet_beta.html" class="external-link uri">https://web.stanford.edu/~hastie/glmnet/glmnet_beta.html</a></li>
+<li><a href="https://topepo.github.io/caret/recursive-feature-elimination.html" class="external-link uri">https://topepo.github.io/caret/recursive-feature-elimination.html</a></li>
 <li>Pihur, Vasyl, Susmita Datta, and Somnath Datta. “RankAggreg, an R package for weighted rank aggregation.” <em>BMC bioinformatics</em> 10.1 (2009): 62.</li>
 <li>Efron, Bradley and Tibshirani, Robert (1997), “Improvements on Cross-Validation: The .632+ Bootstrap Method,” Journal of American Statistical Association, 92, 438, 548-560.</li>
 </ol>
@@ -675,11 +677,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
+  <p></p>
+<p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -687,6 +691,8 @@
 
   
 
+
+  
 
   </body>
 </html>

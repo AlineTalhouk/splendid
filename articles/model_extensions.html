@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">splendid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9000</span>
       </span>
     </div>
 
@@ -49,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/AlineTalhouk/splendid">
+  <a href="https://github.com/AlineTalhouk/splendid" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -71,31 +73,31 @@
       <h1 data-toc-skip>Model Extensions</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/AlineTalhouk/splendid/blob/master/vignettes/model_extensions.Rmd"><code>vignettes/model_extensions.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/AlineTalhouk/splendid/blob/HEAD/vignettes/model_extensions.Rmd" class="external-link"><code>vignettes/model_extensions.Rmd</code></a></small>
       <div class="hidden name"><code>model_extensions.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p><code>splendid</code> supports two modelling extensions to how ensemble classification is performed. Both paradigms are constructed from a set of binary classifiers. The first extension is called the <strong>one-vs-all</strong> approach, where each class is compared to its complement. The second extension utilizes a <strong>sequential algorithm</strong> to build the ensemble classifier, assigning class membership sequentially, in the order of highest performance. Our goal is to provide the user additional options and flexibility with modelling, since there is no guarantee that prediction accuracy is improved.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="co"># devtools::install_github("AlineTalhouk/splendid")</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AlineTalhouk/splendid">splendid</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AlineTalhouk/splendid" class="external-link">splendid</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hgsc</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="one-vs-all" class="section level2">
-<h2 class="hasAnchor">
-<a href="#one-vs-all" class="anchor"></a>One-Vs-All</h2>
+<div class="section level2">
+<h2 id="one-vs-all">One-Vs-All<a class="anchor" aria-label="anchor" href="#one-vs-all"></a>
+</h2>
 <p>To build a one-vs-all model, or <code>ova</code> model for short, we first need to create a binarized class matrix, where each class is compared to its complement. Take the <code>hgsc</code> data set for example. The first 10 classes as predicted by TCGA are:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="st">"class.true"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">class</span>, <span class="fl">10</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="st">"class.true"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">class</span>, <span class="fl">10</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "PRO.C5" "MES.C1" "DIF.C4" "MES.C1" "MES.C1" "PRO.C5" "DIF.C4" "MES.C1"</span>
 <span class="co">#&gt;  [9] "IMM.C2" "PRO.C5"</span></code></pre></div>
 <p>The corresponding binarized class matrix is shown in Table 1. We denote a <code>"0"</code> meaning “not equal” to the class as indicated by the column name.</p>
@@ -175,16 +177,16 @@
 <p>There is a bit of data manipulation required for obtaining the predicted class and probability matrix. Let K be the number of classes and N be the number of samples to classify. For each of the K fits, there is an N by 2 probability matrix from classifying <em>k</em> vs. <em>not k</em>, <em>k = 1, …, K</em>. We extract the column of probabilities pertaining to <em>k</em> for each fit and construct an N by K probability matrix. Of course, the sum of probabilities for each sample would likely not equate to one. To normalize the probability matrix, we divide each row by its sum. Finally, the <code>ova</code> predicted class is taken as the largest probability from each row.</p>
 <p>The <code>ova</code> approach would hence produce a probability matrix that has a similar pattern to the conventional, multiclass approach but with <em>less extreme</em> values. This results in potentially more unclassified cases when we choose to threshold the predictions.</p>
 </div>
-<div id="sequential-algorithm" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sequential-algorithm" class="anchor"></a>Sequential Algorithm</h2>
+<div class="section level2">
+<h2 id="sequential-algorithm">Sequential Algorithm<a class="anchor" aria-label="anchor" href="#sequential-algorithm"></a>
+</h2>
 <p>The sequential algorithm follows a more complicated workflow. This is an ensemble method, meaning that we work with fitted models, predictions, and evaluation metrics, whereas the <code>ova</code> approach is integrated in the initial classification.</p>
 <p>By <em>sequential</em>, the idea is that we want to sequentially assign classes in a binary fashion, until all classes have been assigned. The diagram below is a simple example for a 4-class case.</p>
-<div id="htmlwidget-2330d5e0d6b4557abccf" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2330d5e0d6b4557abccf">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
+<div id="htmlwidget-c81fdaf9ae7c263f6d74" style="width:700px;height:432.632880098888px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c81fdaf9ae7c263f6d74">{"x":{"diagram":"\ndigraph sequential {\n\n # add node statements\n node [shape = box,\n       style = filled]\n A [label = \"1, 2, 3, 4\", fillcolor = gray]\n B [label = \"3\", fillcolor = tomato]\n C [label = \"Not 3\", fillcolor = red]\n D [label = \"4\", fillcolor = lightblue]\n E [label = \"Not 4\", fillcolor = dodgerblue]\n F [label = \"1\", fillcolor = yellow]\n G [label = \"2\", fillcolor = green]\n\n # add edge statements\n A->B\n A->C\n C->D\n C->E\n E->F\n E->G\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Notice that in a 4-class case, there are only 3 fits (since the last binary classification class “2” is the same as class “Not 1”). But how do we determine the sequence in which classes are assigned? Why did we classify 3, then 4, then 1 vs. 2 in the example above? We use the per-class F1-score evaluation metric. The F1-score has been shown to be more robust than traditional measures such as accuracy, and represents a balance between precision and recall.</p>
 <p>Suppose we fit a set of classifiers with 2 bootstrap replicates on the <code>xgboost</code> and <code>rf</code> algorithms.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/splendid_model.html">splendid_model</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="va">class</span>, n <span class="op">=</span> <span class="fl">2</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"xgboost"</span>, <span class="st">"rf"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/splendid_model.html">splendid_model</a></span><span class="op">(</span><span class="va">hgsc</span>, <span class="va">class</span>, n <span class="op">=</span> <span class="fl">2</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xgboost"</span>, <span class="st">"rf"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Table 2 shows the per-class F1-scores for model fitted and bootstrap replicate. An logical column indicates whether <code>ova</code> was used for the particular algorithm.</p>
 <table class="table">
 <caption>Table 2: Per-class F1-scores by model and bootstrap replicate</caption>
@@ -199,97 +201,97 @@
 <td align="left">DIF.C4</td>
 <td align="left">xgboost</td>
 <td align="left">1</td>
-<td align="right">0.6868687</td>
+<td align="right">0.7047619</td>
 </tr>
 <tr class="even">
 <td align="left">DIF.C4</td>
 <td align="left">xgboost</td>
 <td align="left">2</td>
-<td align="right">0.6888889</td>
+<td align="right">0.7339450</td>
 </tr>
 <tr class="odd">
 <td align="left">DIF.C4</td>
 <td align="left">rf</td>
 <td align="left">1</td>
-<td align="right">0.8316832</td>
+<td align="right">0.8453608</td>
 </tr>
 <tr class="even">
 <td align="left">DIF.C4</td>
-<td align="left">rf</td>
-<td align="left">2</td>
-<td align="right">0.8631579</td>
-</tr>
-<tr class="odd">
-<td align="left">IMM.C2</td>
-<td align="left">xgboost</td>
-<td align="left">1</td>
-<td align="right">0.7764706</td>
-</tr>
-<tr class="even">
-<td align="left">IMM.C2</td>
-<td align="left">xgboost</td>
-<td align="left">2</td>
-<td align="right">0.7415730</td>
-</tr>
-<tr class="odd">
-<td align="left">IMM.C2</td>
-<td align="left">rf</td>
-<td align="left">1</td>
-<td align="right">0.8809524</td>
-</tr>
-<tr class="even">
-<td align="left">IMM.C2</td>
 <td align="left">rf</td>
 <td align="left">2</td>
 <td align="right">0.8571429</td>
 </tr>
 <tr class="odd">
+<td align="left">IMM.C2</td>
+<td align="left">xgboost</td>
+<td align="left">1</td>
+<td align="right">0.7252747</td>
+</tr>
+<tr class="even">
+<td align="left">IMM.C2</td>
+<td align="left">xgboost</td>
+<td align="left">2</td>
+<td align="right">0.8064516</td>
+</tr>
+<tr class="odd">
+<td align="left">IMM.C2</td>
+<td align="left">rf</td>
+<td align="left">1</td>
+<td align="right">0.8941176</td>
+</tr>
+<tr class="even">
+<td align="left">IMM.C2</td>
+<td align="left">rf</td>
+<td align="left">2</td>
+<td align="right">0.8235294</td>
+</tr>
+<tr class="odd">
 <td align="left">MES.C1</td>
 <td align="left">xgboost</td>
 <td align="left">1</td>
-<td align="right">0.8250000</td>
+<td align="right">0.7792208</td>
 </tr>
 <tr class="even">
 <td align="left">MES.C1</td>
 <td align="left">xgboost</td>
 <td align="left">2</td>
-<td align="right">0.7948718</td>
+<td align="right">0.8607595</td>
 </tr>
 <tr class="odd">
 <td align="left">MES.C1</td>
 <td align="left">rf</td>
 <td align="left">1</td>
-<td align="right">0.9397590</td>
+<td align="right">0.9000000</td>
 </tr>
 <tr class="even">
 <td align="left">MES.C1</td>
 <td align="left">rf</td>
 <td align="left">2</td>
-<td align="right">0.9047619</td>
+<td align="right">0.9135802</td>
 </tr>
 <tr class="odd">
 <td align="left">PRO.C5</td>
 <td align="left">xgboost</td>
 <td align="left">1</td>
-<td align="right">0.6808511</td>
+<td align="right">0.6153846</td>
 </tr>
 <tr class="even">
 <td align="left">PRO.C5</td>
 <td align="left">xgboost</td>
 <td align="left">2</td>
-<td align="right">0.6868687</td>
+<td align="right">0.8043478</td>
 </tr>
 <tr class="odd">
 <td align="left">PRO.C5</td>
 <td align="left">rf</td>
 <td align="left">1</td>
-<td align="right">0.8666667</td>
+<td align="right">0.8627451</td>
 </tr>
 <tr class="even">
 <td align="left">PRO.C5</td>
 <td align="left">rf</td>
 <td align="left">2</td>
-<td align="right">0.9032258</td>
+<td align="right">0.9090909</td>
 </tr>
 </tbody>
 </table>
@@ -389,9 +391,9 @@
 <p>Table 4 is similar in nature to Table 1, except that the two “worst-classified” classes are grouped together (i.e. “PRO.C5” and “DIF.C4”). In each sequential fit, the nonzero rows are removed from the entire matrix and the classified class column is removed. This means in the final sequential fit, the matrix reduces to a single column of “PRO.C5” and “DIF.C4” values.</p>
 <p>The prediction output is generated from applying the sequential algorithm on the <strong>full data</strong>. We can extract the binarized probability matrices and also the 2-by-2 confusion matrices.</p>
 </div>
-<div id="usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
 <p>The <code>ova</code> approach can be used in <code><a href="../reference/splendid.html">splendid()</a></code> by setting <code>ova = TRUE</code>. For every algorithm specified in <code>algorithms</code>, an analogous <code>ova</code> version is implemented. All pertinent results are labelled with the string <code>ova_algorithm_name</code>.</p>
 <p>The <code>sequential</code> algorithm can be used to construct an ensemble classifier by setting <code>sequential = TRUE</code> in <code><a href="../reference/splendid.html">splendid()</a></code>.</p>
 <p>Please read the function documentation for further details.</p>
@@ -409,11 +411,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
+  <p></p>
+<p>Developed by Derek Chiu, Aline Talhouk, Dustin Johnson.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -421,6 +425,8 @@
 
   
 
+
+  
 
   </body>
 </html>
