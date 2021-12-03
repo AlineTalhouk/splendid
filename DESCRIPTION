@@ -1,8 +1,8 @@
 Type: Package
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.3.1
-Date: 2021-11-08
+Version: 0.3.1.9000
+Date: 2021-12-02
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", role = c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", role = "aut"),
