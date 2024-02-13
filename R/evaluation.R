@@ -101,7 +101,7 @@ ova <- function(C) {
 #' @noRd
 logloss <- function(x, probs) {
   if (ncol(probs) > 2) {  # multi-class case
-    yardstick::mn_log_loss_vec(x, probs)
+    yardstick::mn_log_loss_vec(x, as.matrix(probs))
   } else {  # binary case
     yardstick::mn_log_loss_vec(x, probs[, 1])
   }
