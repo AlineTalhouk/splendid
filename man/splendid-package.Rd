@@ -3,7 +3,6 @@
 \docType{package}
 \name{splendid-package}
 \alias{splendid-package}
-\alias{_PACKAGE}
 \title{splendid: SuPervised Learning ENsemble for Diagnostic IDentification}
 \description{
 Provides a bootstrapping and ensemble framework for supervised learning analyses using multiclass classification algorithms for modelling, prediction, and evaluation. Predicted classes are evaluated under metrics such as log loss, AUC, F1-score, Matthew's correlation coefficient, and accuracy. Discrimination and reliability plots visualize the classifier performances. The .632+ estimator is implemented for the log loss error rate.
