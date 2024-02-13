@@ -98,6 +98,7 @@ Train, predict, and evaluate classification models
 \item Generalized Linear Model with no penalization ("mlr_glm")
 \item GLM with LASSO penalty ("mlr_lasso")
 \item GLM with ridge penalty ("mlr_ridge")
+\item GLM with elastic net penalty ("mlr_enet")
 \item Neural Networks ("mlr_nnet")
 }
 \item Neural Networks ("nnet")

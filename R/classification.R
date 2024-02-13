@@ -57,6 +57,7 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
     mlr_glm = mlr_model(data, class, "mlr_glm"),
     mlr_lasso = cv_mlr_model(data, class, "mlr_lasso", seed_alg),
     mlr_ridge = cv_mlr_model(data, class, "mlr_ridge", seed_alg),
+    mlr_enet = enet_model(data, class, seed_alg),
     mlr_nnet = mlr_model(data, class, "mlr_nnet"),
     nnet = nnet_model(data, class),
     nbayes = nbayes_model(data, class),
@@ -304,6 +305,28 @@ cv_mlr_model <- function(data, class, algorithms, seed_alg = NULL) {
          call. = FALSE)
   } else {
     glmnet::cv.glmnet(as.matrix(data), class, alpha = alpha, family = "multinomial")
+  }
+}
+
+#' Elastic net model
+#' @noRd
+enet_model <- function(data, class, seed_alg = NULL) {
+  if (!is.null(seed_alg)) set.seed(seed_alg)
+  if (!requireNamespace("caret", quietly = TRUE)) {
+    stop("Package \"caret\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
+    caret::train(
+      x = as.matrix(data),
+      y = class,
+      method = "glmnet",
+      tuneLength = 10,
+      trControl = caret::trainControl(
+        method = "cv",
+        number = 5,
+        classProbs = TRUE
+      )
+    )
   }
 }
 

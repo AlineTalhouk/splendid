@@ -1,5 +1,6 @@
 # splendid 0.4.0
 
+* add elastic net penalty for multinomial logistic regression
 * fix calculation of multi-class log loss metric
 * increased minimum R version to 4.1.0
 * fix warnings pertaining to deprecated functions

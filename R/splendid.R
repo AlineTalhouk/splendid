@@ -24,6 +24,7 @@
 #'     * Generalized Linear Model with no penalization ("mlr_glm")
 #'     * GLM with LASSO penalty ("mlr_lasso")
 #'     * GLM with ridge penalty ("mlr_ridge")
+#'     * GLM with elastic net penalty ("mlr_enet")
 #'     * Neural Networks ("mlr_nnet")
 #' * Neural Networks ("nnet")
 #' * Naive Bayes ("nbayes")
