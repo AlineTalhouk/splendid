@@ -86,7 +86,6 @@ prediction.svm <- function(mod, data, class = NULL, test.id = NULL,
                            train.id = NULL, threshold = 0, standardize = FALSE,
                            ...) {
   loadNamespace("e1071")
-  names(data) <- make.names(names(data))
   p_args <- tibble::lst(mod, test.id, train.id, standardize,
                         data = data[colnames(mod$SV)])
   pred <- purrr::invoke(prediction.default, p_args, probability = TRUE, ...) %>%
