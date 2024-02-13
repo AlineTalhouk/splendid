@@ -42,10 +42,12 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed_rank = 1,
     purrr::map(classification, data = data, class = class, rfe = rfe)
 
   # Conditionally evaluate sequential model and prediction on full data
-  seq_mods <- sequential %>%
-    purrr::when(. ~ sequential_train(sm, data, class))
-  seq_preds <- sequential %>%
-    purrr::when(. ~ sequential_pred(seq_mods, sm, data, class))
+  if (sequential) {
+    seq_mods <- sequential_train(sm, data, class)
+    seq_preds <- sequential_pred(seq_mods, sm, data, class)
+  } else {
+    seq_mods <- seq_preds <- NULL
+  }
 
   tibble::lst(bests, ensemble_algs, ensemble_mods, seq_mods, seq_preds)
 }

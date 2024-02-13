@@ -61,7 +61,7 @@ splendid_process <- function(data, class, algorithms, convert = FALSE,
       if (standardize) {
         dummy_vars <- purrr::flatten_chr(attr(data, "dummy_vars"))
         data <- data %>%
-          dplyr::mutate(dplyr::across(-dummy_vars, scale))
+          dplyr::mutate(dplyr::across(-dplyr::all_of(dummy_vars), scale))
       }
     }
     else {
@@ -78,7 +78,7 @@ splendid_process <- function(data, class, algorithms, convert = FALSE,
     }
   }
   processed <- subsample(data, class, sampling, seed_samp)
-  list(data = dplyr::select(processed, -.data[["class"]]),
+  list(data = dplyr::select(processed, -dplyr::all_of("class")),
        class = processed[["class"]])
 }
 

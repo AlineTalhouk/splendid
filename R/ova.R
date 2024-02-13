@@ -36,12 +36,12 @@ ova_prediction <- function(fits, data, class, test.id = NULL, train.id = NULL,
     )) %>%
     purrr::map(`%@%`, "prob") %>%
     purrr::imap(~ {
-      colnames(.x) %>%
-        purrr::when(
-          is.null(.) ~ magrittr::set_colnames(.x, c("class_0", .y)), # xgboost
-          ~ .x
-        ) %>%
-        `[`(, .y)
+      cl <- colnames(.x)
+      if (is.null(cl)) {
+        magrittr::set_colnames(.x, c("class_0", .y))[, .y] # xgboost
+      } else {
+        .x[, .y]
+      }
     }) %>%
     as.data.frame() %>%
     sum_to_one()

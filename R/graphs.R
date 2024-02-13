@@ -52,9 +52,9 @@ discrimination_plot <- function(x, probs) {
 
   # discrimination plot
   cols <- grDevices::rainbow(dplyr::n_distinct(x))
-  p <- ggplot(df.long, aes_(x = ~class, y = ~prob, fill = ~class)) +
+  p <- ggplot(df.long, aes(x = .data$class, y = .data$prob, fill = .data$class)) +
     geom_boxplot(alpha = 0.6) +
-    geom_hline(data = df.prevalence, aes_(yintercept = ~prevalence),
+    geom_hline(data = df.prevalence, aes(yintercept = .data$prevalence),
                colour = "lightgrey") +
     scale_fill_manual(values = cols) +
     facet_wrap(~true_class) +
@@ -87,12 +87,12 @@ reliability_plot <- function(x, probs) {
         dplyr::filter(!is.nan(MP)) %>%
         with(., stats::lowess(MP, OF))
     }) %>%
-    purrr::imap_dfr(~ purrr::splice(.x, class = rep(.y, 10))) %>%
+    purrr::imap_dfr(~ purrr::list_flatten(list(.x, class = rep(.y, 10)))) %>%
     dplyr::mutate(class = factor(class))
 
   # reliability plot
   cols <- grDevices::rainbow(dplyr::n_distinct(x))
-  p <- ggplot(df, aes_(~x, ~y, group = ~class, colour = ~class)) +
+  p <- ggplot(df, aes(.data$x, .data$y, group = .data$class, colour = .data$class)) +
     geom_line(lwd = 2) +
     geom_abline(intercept = 0, slope = 1, color = "grey") +
     scale_color_manual(values = cols) +
@@ -131,8 +131,8 @@ roc_plot <- function(x, probs) {
 
   # multi-class ROC curves
   cols <- c(grDevices::rainbow(dplyr::n_distinct(x)), c("grey60", "grey80"))
-  p <- ggplot(plot_roc_df,  aes_string("1-Specificity", "Sensitivity")) +
-    geom_path(aes_(color = ~Group), size = 1) +
+  p <- ggplot(plot_roc_df, aes(1 - .data$Specificity, .data$Sensitivity)) +
+    geom_path(aes(color = .data$Group), linewidth = 1) +
     geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1),
                  colour = "grey",
                  linetype = "dotdash") +
@@ -145,7 +145,7 @@ roc_plot <- function(x, probs) {
       legend.position = c(0.95, 0.05),
       legend.title = element_blank(),
       legend.background = element_rect(
-        size = 0.5,
+        linewidth = 0.5,
         linetype = "solid",
         colour = "black"
       )

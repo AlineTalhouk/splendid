@@ -34,7 +34,7 @@ sequential_train <- function(sm, data, class, boxplot = FALSE) {
   model_rank <- sequential_rank(sm[["evals"]], boxplot = boxplot)
   class_bin <- sequential_binarize(model_rank, class)
   fits <- class_bin %>%
-    purrr::list_along() %>%
+    rlang::rep_along(list()) %>%
     purrr::set_names(utils::head(model_rank[["class"]], -1))
 
   # sequentially train
@@ -64,21 +64,30 @@ sequential_pred <- function(fit, sm, data, class, boxplot = FALSE) {
   model_rank <- sequential_rank(sm[["evals"]], boxplot = boxplot)
   class_bin <- sequential_binarize(model_rank, class)
   prob <- cm <- class_bin %>%
-    purrr::list_along() %>%
+    rlang::rep_along(list()) %>%
     purrr::set_names(names(fit))
 
   # sequential prediction
   for (rank_i in seq_along(class_bin)) {
     # predict classes sequentially according to rank
-    prob[[rank_i]] <- fit[[rank_i]] %>%
+    p <- fit[[rank_i]] %>%
       prediction(data = data, test.id = seq_len(nrow(data)), class = class,
                  train.id = seq_len(nrow(data))) %>%
-      `%@%`("prob") %>%
-      purrr::when(
-        is.null(colnames(.)) ~
-          magrittr::set_colnames(., c("0", names(fit)[rank_i])),
-        ~ .
-      )
+      `%@%`("prob")
+    if (is.null(colnames(p))) {
+      prob[[rank_i]] <- magrittr::set_colnames(p, c("0", names(fit)[rank_i]))
+    } else {
+      prob[[rank_i]] <- p
+    }
+    # prob[[rank_i]] <- fit[[rank_i]] %>%
+    #   prediction(data = data, test.id = seq_len(nrow(data)), class = class,
+    #              train.id = seq_len(nrow(data))) %>%
+    #   `%@%`("prob") %>%
+    #   purrr::when(
+    #     is.null(colnames(.)) ~
+    #       magrittr::set_colnames(., c("0", names(fit)[rank_i])),
+    #     ~ .
+    #   )
     pred <- apply(prob[[rank_i]], 1, function(x) names(x)[which.max(x)])
 
     # confustion matrix for class prediction and class error as attribute
@@ -103,7 +112,7 @@ sequential_rank <- function(sm, boxplot) {
   tidy_evals <- sequential_eval(sm)
   if (boxplot) {
     p <- tidy_evals %>%
-      ggplot(aes_(y = ~value, x = ~class, fill = ~model)) +
+      ggplot(aes(y = .data$value, x = .data$class, fill = .data$model)) +
       geom_boxplot(alpha = 0.6, na.rm = TRUE) +
       facet_wrap(~model) +
       theme_bw() +
@@ -149,7 +158,7 @@ sequential_binarize <- function(mr, class) {
   last_two <- utils::tail(mr[["class"]], 2)
   class_bin <- class %>%
     binarize() %>%
-    tidyr::unite(!!sym(last_two[1]), last_two) %>%
+    tidyr::unite(!!sym(last_two[1]), dplyr::all_of(last_two)) %>%
     dplyr::mutate_at(last_two[1], list(~ gsub("_class_0|class_0_", "", .)))
   class_bin
 }

@@ -310,7 +310,7 @@ class_threshold <- function(prob, threshold = 0) {
         purrr::map_chr(~ names(which.max(.))) %>%
         ifelse(.data$max_prop >= threshold, ., "unclassified") %>%
         factor(levels = colnames(prob)) %>%
-        forcats::fct_explicit_na(na_level = "unclassified")
+        forcats::fct_na_value_to_level(level = "unclassified")
     ) %>%
     dplyr::pull()
 }

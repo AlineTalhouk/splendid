@@ -61,8 +61,11 @@ error_training <- function(data, class, algorithm, plus) {
   prob <- adjust_prob(attr(pred_out, "prob"))  # predicted probability matrix
 
   # Training error rate
-  logloss(class, prob) %>%
-    purrr::when(plus ~ `attr<-`(., "pred_full", factor(pred_out)), ~ .)
+  ll <- logloss(class, prob)
+  if (plus) {
+    attr(ll, "pred_full") <- factor(pred_out)
+  }
+  return(ll)
 }
 
 #' Leave-one-out bootstrap error rate

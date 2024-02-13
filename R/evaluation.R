@@ -44,10 +44,10 @@ evaluation <- function(x, y, plot = FALSE) {
   # Discriminatory measures
   dm_args <- list(x, probs)
   dm_funs <- tibble::lst(logloss, auc, pdi)
-  dm <- purrr::invoke_map(dm_funs, list(dm_args))
+  dm <- purrr::map(dm_funs, rlang::exec, !!!dm_args)
   if (plot) {
     plot_funs <- list(discrimination_plot, reliability_plot, roc_plot)
-    purrr::invoke_map(plot_funs, list(dm_args))
+    purrr::map(plot_funs, rlang::exec, !!!dm_args)
   }
 
   # Multi-class measures: accuracy, macro-averaged
