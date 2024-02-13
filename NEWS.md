@@ -1,5 +1,8 @@
-# splendid 0.3.1.9000
+# splendid 0.4.0
 
+* fix calculation of multi-class log loss metric
+* increased minimum R version to 4.1.0
+* fix warnings pertaining to deprecated functions
 * fix reordering of SVM probability matrix
 
 # splendid 0.3.1
