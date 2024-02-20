@@ -1,3 +1,7 @@
+# splendid 0.4.1
+
+* add variable importance methods
+
 # splendid 0.4.0
 
 * add elastic net penalty for multinomial logistic regression
