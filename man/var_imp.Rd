@@ -26,6 +26,12 @@ var_imp(mod, ...)
 \description{
 Methods to calculate variable importance for different classifiers.
 }
+\examples{
+data(hgsc)
+class <- attr(hgsc, "class.true")
+mod <- classification(hgsc, class, "xgboost")
+var_imp(mod)
+}
 \author{
 Derek Chiu
 }

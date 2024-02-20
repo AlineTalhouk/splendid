@@ -1,6 +1,7 @@
 # splendid 0.4.1
 
 * add variable importance methods
+* add param `vi` to `splendid()` and `splendid_model()` to calculate variable importance
 
 # splendid 0.4.0
 

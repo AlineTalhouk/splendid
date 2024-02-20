@@ -22,6 +22,7 @@ splendid(
   threshold = 0,
   trees = 100,
   tune = FALSE,
+  vi = FALSE,
   top = 3,
   seed_rank = 1,
   sequential = FALSE
@@ -83,6 +84,10 @@ probability below which a sample will be unclassified.}
 "adaboost"}
 
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
+
+\item{vi}{logical; if \code{TRUE}, model-based variable importance scores are
+returned for each algorithm if available. Otherwise, SHAP-based VI scores
+are calculated.}
 
 \item{top}{the number of highest-performing algorithms to retain for ensemble}
 

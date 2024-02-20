@@ -13,7 +13,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
                            standardize = FALSE,
                            sampling = c("none", "up", "down", "smote"),
                            stratify = FALSE, plus = TRUE, threshold = 0,
-                           trees = 100, tune = FALSE) {
+                           trees = 100, tune = FALSE, vi = FALSE) {
 
   # Classification algorithms to use and their model function calls
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
@@ -35,17 +35,17 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 
   # Apply training sets to models and predict on the test sets
   models <- sp_mod %>%
-    purrr::invoke(c(m_args, f = classification, ova = FALSE))
+    rlang::exec(!!!c(m_args, f = classification, ova = FALSE))
   preds <- sp_pred %>%
-    purrr::invoke(c(p_args, f = prediction, model = list(models)))
+    rlang::exec(!!!c(p_args, f = prediction, model = list(models)))
 
   # Train and predict One-Vs-All models if specified
   if (ova) {
     ova_models <- sp_mod %>%
-      purrr::invoke(c(m_args, f = ova_classification, ova = TRUE)) %>%
-      purrr::set_names(paste("ova", algorithms, sep = "_"))
+      rlang::exec(!!!c(m_args, f = ova_classification, ova = TRUE)) %>%
+      rlang::set_names(paste("ova", algorithms, sep = "_"))
     ova_preds <- sp_pred %>%
-      purrr::invoke(c(p_args, f = ova_prediction, model = list(ova_models)))
+      rlang::exec(!!!c(p_args, f = ova_prediction, model = list(ova_models)))
 
     # Combine results with multiclass approach
     algorithms <- rep(algorithms, 2)
@@ -55,10 +55,16 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 
   # Add .632 estimator error rates to evaluation object as attributes
   err_632 <- purrr::map2(
-    algorithms, preds, error_632,
-    data = data, class = class, test.id = test.id, train.id = train.id,
+    algorithms,
+    preds,
+    error_632,
+    data = data,
+    class = class,
+    test.id = test.id,
+    train.id = train.id,
     plus = plus
   )
+
   # Evaluation object
   evals <- preds %>% purrr::map(
     ~ purrr::map2(test.id, ., ~ evaluation(class[.x], .y) %>%
@@ -69,7 +75,13 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
     purrr::map2(err_632, ~ `attr<-`(.x, ifelse(plus, "err_632plus", "err_632"),
                                     .y))
 
-  tibble::lst(models, preds, evals)
+  # Variable importance object optionally returned
+  if (vi) {
+    vis <- purrr::map_depth(models, 2, var_imp)
+    tibble::lst(models, preds, evals, vis)
+  } else {
+    tibble::lst(models, preds, evals)
+  }
 }
 
 #' Recursively create training set indices ensuring class representation

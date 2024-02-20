@@ -72,6 +72,9 @@
 #' @param trees number of trees to use in "rf" or boosting iterations (trees) in
 #'   "adaboost"
 #' @param tune logical; if `TRUE`, algorithms with hyperparameters are tuned
+#' @param vi logical; if `TRUE`, model-based variable importance scores are
+#'   returned for each algorithm if available. Otherwise, SHAP-based VI scores
+#'   are calculated.
 #' @param top the number of highest-performing algorithms to retain for ensemble
 #' @param seed_rank random seed used for reproducibility in rank aggregation of
 #'   ensemble algorithms
@@ -110,8 +113,8 @@ splendid <- function(data, class, algorithms = NULL, n = 1,
                      standardize = FALSE,
                      sampling = c("none", "up", "down", "smote"),
                      stratify = FALSE, plus = TRUE,
-                     threshold = 0, trees = 100, tune = FALSE, top = 3,
-                     seed_rank = 1, sequential = FALSE) {
+                     threshold = 0, trees = 100, tune = FALSE, vi = FALSE,
+                     top = 3, seed_rank = 1, sequential = FALSE) {
 
   algorithms <- algorithms %||% ALG.NAME %>% purrr::set_names()
   sp <- splendid_process(data, class, algorithms, convert, standardize, "none")
@@ -120,11 +123,11 @@ splendid <- function(data, class, algorithms = NULL, n = 1,
 
   sm_args <- tibble::lst(data, class, algorithms, n, seed_boot, seed_samp,
                          seed_alg, convert, rfe, ova, standardize, sampling,
-                         stratify, plus, threshold, trees, tune)
-  sm <- purrr::invoke(splendid_model, sm_args)
+                         stratify, plus, threshold, trees, tune, vi)
+  sm <- rlang::exec(splendid_model, !!!sm_args)
 
   se_args <- tibble::lst(sm, data, class, top, seed_rank, rfe, sequential)
-  se <- purrr::invoke(splendid_ensemble, se_args)
+  se <- rlang::exec(splendid_ensemble, !!!se_args)
 
   c(sm, se)
 }

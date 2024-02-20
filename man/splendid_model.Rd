@@ -21,7 +21,8 @@ splendid_model(
   plus = TRUE,
   threshold = 0,
   trees = 100,
-  tune = FALSE
+  tune = FALSE,
+  vi = FALSE
 )
 }
 \arguments{
@@ -80,6 +81,10 @@ probability below which a sample will be unclassified.}
 "adaboost"}
 
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
+
+\item{vi}{logical; if \code{TRUE}, model-based variable importance scores are
+returned for each algorithm if available. Otherwise, SHAP-based VI scores
+are calculated.}
 }
 \description{
 Train, predict, and evaluate classification models
