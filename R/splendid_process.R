@@ -105,7 +105,7 @@ dummify <- function(data) {
 
   desmat %>%
     purrr::map_at(names(dummy_vars), ~ .[, -1, drop = FALSE]) %>%
-    purrr::invoke(cbind, .) %>%
+    rlang::exec(cbind, !!!.) %>%
     as.data.frame() %>%
     magrittr::set_rownames(NULL) %>%
     `attr<-`("dummy_vars", dummy_vars)

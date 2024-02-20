@@ -130,7 +130,7 @@ rfe_model <- function(data, class, algorithms, rfe, sizes, tune, trees = NULL,
   }
   if (!is.null(seed_alg)) set.seed(seed_alg)
   if (tune) {
-    suppressWarnings(purrr::invoke(tune_model, tune_args, data = data))
+    suppressWarnings(rlang::exec(tune_model, !!!tune_args, data = data))
   } else {
     switch(
       algorithms,
@@ -252,9 +252,9 @@ tune_model <- function(data, class, method, trees, seed_alg) {
     tuneGrid = tune_grid
   )
   if (is.null(trees)) {
-    purrr::invoke(caret::train, tune_args)
+    rlang::exec(caret::train, !!!tune_args)
   } else {
-    purrr::invoke(caret::train, tune_args, ntree = trees)
+    rlang::exec(caret::train, !!!tune_args, ntree = trees)
   }
 }
 

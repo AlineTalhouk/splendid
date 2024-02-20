@@ -1,5 +1,6 @@
 # splendid 0.4.1
 
+* replace all instances of deprecated function `purrr::invoke()` with `rlang::exec()`
 * only show unclassified predictions in confusion matrix output if they exist
 * add variable importance methods
 * add param `vi` to `splendid()` and `splendid_model()` to calculate variable importance

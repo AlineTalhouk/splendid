@@ -11,10 +11,10 @@ ova_classification <- function(data, class, algorithms, rfe = FALSE,
                                seed_alg = NULL) {
   class %>%
     binarize() %>%
-    purrr::map(~ purrr::invoke(
-      .f = classification,
-      .x = tibble::lst(data, algorithms, rfe, ova, standardize, sampling,
-                       seed_samp, trees, tune, seed_alg),
+    purrr::map(~ rlang::exec(
+      classification,
+      !!!tibble::lst(data, algorithms, rfe, ova, standardize, sampling,
+                     seed_samp, trees, tune, seed_alg),
       class = .
     ))
 }
@@ -29,9 +29,9 @@ ova_classification <- function(data, class, algorithms, rfe = FALSE,
 ova_prediction <- function(fits, data, class, test.id = NULL, train.id = NULL,
                            threshold = 0, standardize = FALSE, ...) {
   prob <- fits %>%
-    purrr::map(~ purrr::invoke(
-      .f = prediction,
-      .x = tibble::lst(data, class, test.id, train.id, threshold, standardize),
+    purrr::map(~ rlang::exec(
+      prediction,
+      !!!tibble::lst(data, class, test.id, train.id, threshold, standardize),
       mod = .
     )) %>%
     purrr::map(`%@%`, "prob") %>%

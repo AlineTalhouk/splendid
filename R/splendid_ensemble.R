@@ -21,7 +21,7 @@ splendid_ensemble <- function(sm, data, class, top = 3, seed_rank = 1,
     purrr::map(dplyr::select, -dplyr::matches("\\.|boot")) %>%
     purrr::map(~ purrr::map(., ~ names(sm$models)[order(
       rank(-., ties.method = "random"))])) %>%
-    purrr::map(~ purrr::invoke(rbind, .)) %>%
+    purrr::map(~ rlang::exec(rbind, !!!.)) %>%
     purrr::map_chr(~ {
       if (ncol(.) > 1) {
         RankAggreg::RankAggreg(., ncol(.), method = "GA", seed = seed_rank,
