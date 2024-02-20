@@ -354,8 +354,13 @@ print.prediction <- function(x, ...) {
     cli::cat_line("No Confusion Matrix: reference class not provided")
   } else {
     cli::cat_line("Confusion Matrix")
-    print(conf_mat(attr(x, "class.true"), attr(x, "class.thres")))
+    if (attr(x, "class.prop") < 1) {
+      print(conf_mat(attr(x, "class.true"), attr(x, "class.thres")))
+    } else {
+      print(conf_mat(attr(x, "class.true"), x))
+    }
   }
   cli::cat_line("\nTotal Cases: ", length(x))
-  cli::cat_line("Proportion of Classified Predictions: ", attr(x, "class.prop"))
+  cli::cat_line("Proportion of Classified Predictions: ",
+                round(attr(x, "class.prop"), 3))
 }
