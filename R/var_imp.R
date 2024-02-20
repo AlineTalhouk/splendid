@@ -5,6 +5,11 @@
 #'
 #' @author Derek Chiu
 #' @export
+#' @examples
+#' data(hgsc)
+#' class <- attr(hgsc, "class.true")
+#' mod <- classification(hgsc, class, "xgboost")
+#' var_imp(mod)
 var_imp <- function(mod, ...) {
   UseMethod("var_imp")
 }
@@ -12,7 +17,10 @@ var_imp <- function(mod, ...) {
 #' @rdname var_imp
 #' @export
 var_imp.default <- function(mod, ...) {
-  vip::vi(mod)
+  tryCatch(
+    vip::vi(mod),
+    error = function(e) NULL
+  )
 }
 
 #' @rdname var_imp
