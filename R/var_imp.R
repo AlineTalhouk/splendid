@@ -94,7 +94,7 @@ var_imp.train <- function(mod, data, ...) {
 #' @export
 var_imp.svm <- function(mod, data, ...) {
   pfun <- function(object, newdata) {
-    predict(object, newdata = newdata, probability = TRUE) %>%
+    stats::predict(object, newdata = newdata, probability = TRUE) %>%
       attr("probabilities") %>%
       `[`(, 1)
   }
@@ -104,5 +104,5 @@ var_imp.svm <- function(mod, data, ...) {
       train = data,
       pred_wrapper = pfun
     ) %>%
-    dplyr::arrange(dplyr::desc(Importance))
+    dplyr::arrange(dplyr::desc(.data$Importance))
 }
