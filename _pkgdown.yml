@@ -1,44 +1,4 @@
-url: https://alinetalhouk.github.io/splendid
-
+url: https://alinetalhouk.github.io/splendid/
 template:
-  params:
-    bootswatch: cerulean
+  bootstrap: 5
 
-navbar:
-  title: ~
-  type: default
-  left:
-  - text: Reference
-    href: reference/index.html
-  - text: Articles
-    href: articles/index.html
-  - text: News
-    href: news/index.html
-  right:
-  - icon: fa-github
-    href: https://github.com/AlineTalhouk/splendid
-
-reference:
-- title: Functions
-  contents:
-  - classification
-  - prediction
-  - split_data
-  - evaluation
-  - ends_with("_plot")
-  - starts_with("ova_")
-  - starts_with("sequential_")
-  - splendid
-  - splendid_model
-  - starts_with("boot_")
-  - splendid_ensemble
-  - error_632
-  - splendid_process
-  - dummify
-  - subsample
-- title: Data
-  contents:
-  - hgsc
-- title: Package Documentation
-  contents:
-  - splendid-package
