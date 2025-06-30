@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/AlineTalhouk/splendid/workflows/R-CMD-check/badge.svg)](https://github.com/AlineTalhouk/splendid/actions)
-[![Coverage status](https://codecov.io/gh/AlineTalhouk/splendid/branch/master/graph/badge.svg)](https://codecov.io/github/AlineTalhouk/splendid?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/AlineTalhouk/splendid/graph/badge.svg)](https://app.codecov.io/gh/AlineTalhouk/splendid)
 <!-- badges: end -->
 
 
