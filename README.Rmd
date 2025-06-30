@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 # splendid
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/AlineTalhouk/splendid/workflows/R-CMD-check/badge.svg)](https://github.com/AlineTalhouk/splendid/actions)
+[![R-CMD-check](https://github.com/AlineTalhouk/splendid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AlineTalhouk/splendid/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/AlineTalhouk/splendid/graph/badge.svg)](https://app.codecov.io/gh/AlineTalhouk/splendid)
 <!-- badges: end -->
 
