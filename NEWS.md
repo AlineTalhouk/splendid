@@ -1,5 +1,6 @@
 # splendid 0.4.2
 
+* update all GitHub Actions
 * add additional methods for `var_imp()`: `cv.glmnet`, `svm`, `nnet`, `xgb.Booster`
 
 # splendid 0.4.1
