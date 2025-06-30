@@ -1,8 +1,8 @@
 Type: Package
 Package: splendid
 Title: SuPervised Learning ENsemble for Diagnostic IDentification
-Version: 0.4.1
-Date: 2024-02-20
+Version: 0.4.2
+Date: 2025-06-30
 Authors@R: c(
     person("Derek", "Chiu", , "dchiu@bccrc.ca", role = c("aut", "cre")),
     person("Aline", "Talhouk", , "atalhouk@bccrc.ca", role = "aut"),
@@ -50,6 +50,7 @@ Suggests:
     knitr,
     maboost,
     MASS,
+    NeuralNetTools,
     nnet,
     pamr,
     randomForest,
