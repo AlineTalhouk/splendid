@@ -46,8 +46,7 @@ applicable to the training set.}
 \item{seed_samp}{random seed used for reproducibility in subsampling
 training sets for model generation}
 
-\item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
-"adaboost"}
+\item{trees}{number of trees to use in "rf"}
 
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 

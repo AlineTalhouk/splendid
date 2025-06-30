@@ -48,7 +48,6 @@ Suggests:
     fastshap,
     glmnet,
     knitr,
-    maboost,
     MASS,
     NeuralNetTools,
     nnet,

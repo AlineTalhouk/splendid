@@ -1,5 +1,6 @@
 # splendid 0.4.2
 
+* remove algorithm `adaboost` as package `maboost` has been archived from CRAN
 * update all GitHub Actions
 * add additional methods for `var_imp()`: `cv.glmnet`, `svm`, `nnet`, `xgb.Booster`
 

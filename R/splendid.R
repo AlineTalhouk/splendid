@@ -28,7 +28,6 @@
 #'     * Neural Networks ("mlr_nnet")
 #' * Neural Networks ("nnet")
 #' * Naive Bayes ("nbayes")
-#' * Adaptive Boosting ("adaboost")
 #' * AdaBoost.M1 ("adaboost_m1")
 #' * Extreme Gradient Boosting ("xgboost")
 #' * K-Nearest Neighbours ("knn")
@@ -69,8 +68,7 @@
 #'   Otherwise, the .632 estimator is calculated.
 #' @param threshold a number between 0 and 1 indicating the lowest maximum class
 #'   probability below which a sample will be unclassified.
-#' @param trees number of trees to use in "rf" or boosting iterations (trees) in
-#'   "adaboost"
+#' @param trees number of trees to use in "rf"
 #' @param tune logical; if `TRUE`, algorithms with hyperparameters are tuned
 #' @param vi logical; if `TRUE`, model-based variable importance scores are
 #'   returned for each algorithm if available. Otherwise, SHAP-based VI scores

@@ -80,8 +80,7 @@ Otherwise, the .632 estimator is calculated.}
 \item{threshold}{a number between 0 and 1 indicating the lowest maximum class
 probability below which a sample will be unclassified.}
 
-\item{trees}{number of trees to use in "rf" or boosting iterations (trees) in
-"adaboost"}
+\item{trees}{number of trees to use in "rf"}
 
 \item{tune}{logical; if \code{TRUE}, algorithms with hyperparameters are tuned}
 
@@ -154,7 +153,6 @@ Correlation Coefficient (MCC).
 }
 \item Neural Networks ("nnet")
 \item Naive Bayes ("nbayes")
-\item Adaptive Boosting ("adaboost")
 \item AdaBoost.M1 ("adaboost_m1")
 \item Extreme Gradient Boosting ("xgboost")
 \item K-Nearest Neighbours ("knn")

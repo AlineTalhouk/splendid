@@ -66,12 +66,3 @@ test_that("lasso and ridge are reproducible", {
   expect_false(isTRUE(all.equal(ridge_1, ridge_2a)))
   expect_equal(ridge_2a, ridge_2b)
 })
-
-test_that("boosting is reproducible", {
-  boost_1 <- classification(dat, class, "adaboost", seed_alg = 1)
-  boost_2a <- classification(dat, class, "adaboost", seed_alg = 2)
-  boost_2b <- classification(dat, class, "adaboost", seed_alg = 2)
-
-  expect_false(isTRUE(all.equal(boost_1, boost_2a)))
-  expect_equal(boost_2a, boost_2b)
-})

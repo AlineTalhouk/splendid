@@ -8,10 +8,7 @@
 #' `"multinom"` and `"nnet"` use a maximum number of weights of 2000, in case
 #' `data` is high dimensional and classification is time-consuming. `"nnet"`
 #' also tunes the number of nodes (1-5) in the hidden layer. `"pam"` considers
-#' 100 thresholds when training, and uses a uniform prior. `"adaboost"` calls
-#' [maboost::maboost()] instead of [adabag::boosting()] for faster performance.
-#' As a result, we use the `"entrop"` option, which uses the KL-divergence
-#' method and mimics adaboost. However, `"adaboost_m1"` calls
+#' 100 thresholds when training, and uses a uniform prior. `"adaboost_m1"` calls
 #' [adabag::boosting()] which supports hyperparameter tuning.
 #'
 #' When `alg = "knn"`, the return value is `NULL` because [class::knn()] does
@@ -61,7 +58,6 @@ classification <- function(data, class, algorithms, rfe = FALSE, ova = FALSE,
     mlr_nnet = mlr_model(data, class, "mlr_nnet"),
     nnet = nnet_model(data, class),
     nbayes = nbayes_model(data, class),
-    adaboost = boost_model(data, class, "adaboost", trees, seed_alg),
     adaboost_m1 = rfe_model(data, class, "adaboost_m1", rfe, sizes,
                             tune, trees),
     xgboost = boost_model(data, class, "xgboost", seed_alg = seed_alg),
@@ -365,20 +361,6 @@ nbayes_model <- function(data, class) {
 boost_model <- function(data, class, algorithms, trees, seed_alg = NULL) {
   if (!is.null(seed_alg)) set.seed(seed_alg)
   switch(algorithms,
-         adaboost = {
-           if (!requireNamespace("maboost", quietly = TRUE)) {
-             stop("Package \"maboost\" is needed. Please install it.",
-                  call. = FALSE)
-           } else {
-             sink_output(maboost::maboost(
-               x = data,
-               y = class,
-               breg = "entrop",
-               iter = trees,
-               minsplit = 2
-             ))
-           }
-         },
          xgboost = {
            if (!requireNamespace("xgboost", quietly = TRUE)) {
              stop("Package \"xgboost\" is needed. Please install it.",

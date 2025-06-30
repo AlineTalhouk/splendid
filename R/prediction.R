@@ -217,24 +217,6 @@ prediction.boosting <- function(mod, data, class = NULL, test.id = NULL,
 }
 
 #' @export
-prediction.maboost <- function(mod, data, class = NULL, test.id = NULL,
-                               train.id = NULL, threshold = 0,
-                               standardize = FALSE, ...) {
-  loadNamespace("maboost")
-  names(data) <- make.names(names(data))
-  p_args <- tibble::lst(mod, data, test.id, train.id, standardize)
-  both <- rlang::exec(prediction.default, !!!p_args, type = "both", ...)
-  pred <- both$class
-  if (is.null(test.id)) {
-    rn <- rownames(data)
-  } else {
-    rn <- rownames(data[test.id, ])
-  }
-  prob <- both$probs %>% magrittr::set_rownames(rn)
-  prediction_output(pred, prob, class, test.id, threshold)
-}
-
-#' @export
 prediction.xgb.Booster <- function(mod, data, class = NULL, test.id = NULL,
                                    train.id = NULL, threshold = 0,
                                    standardize = FALSE, ...) {

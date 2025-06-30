@@ -7,7 +7,6 @@
 \alias{var_imp.cv.glmnet}
 \alias{var_imp.xgb.Booster}
 \alias{var_imp.nnet}
-\alias{var_imp.maboost}
 \alias{var_imp.train}
 \alias{var_imp.svm}
 \title{Variable Importance}
@@ -23,8 +22,6 @@ var_imp(mod, data, ...)
 \method{var_imp}{xgb.Booster}(mod, data, ...)
 
 \method{var_imp}{nnet}(mod, data, ...)
-
-\method{var_imp}{maboost}(mod, data, ...)
 
 \method{var_imp}{train}(mod, data, ...)
 
@@ -46,7 +43,6 @@ Currently, variable importance methods are implemented for these classifiers:
 \item "rf"
 \item "xgboost",
 \item "mlr_ridge", "mlr_lasso"
-\item "adaboost"
 \item "svm"
 \item "nnet"
 }

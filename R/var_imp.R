@@ -6,7 +6,6 @@
 #' * "rf"
 #' * "xgboost",
 #' * "mlr_ridge", "mlr_lasso"
-#' * "adaboost"
 #' * "svm"
 #' * "nnet"
 #'
@@ -58,17 +57,6 @@ var_imp.nnet <- function(mod, data, ...) {
   } else {
     var_imp.default(mod, type = "garson", ...)
   }
-}
-
-#' @rdname var_imp
-#' @export
-var_imp.maboost <- function(mod, data, ...) {
-  loadNamespace("maboost")
-  mod %>%
-    maboost::varplot.maboost(plot.it = FALSE,
-                             type = "scores",
-                             max.var.show = Inf) %>%
-    tibble::enframe(name = "Variable", value = "Importance")
 }
 
 #' @rdname var_imp
