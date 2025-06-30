@@ -4,27 +4,52 @@
 \alias{var_imp}
 \alias{var_imp.default}
 \alias{var_imp.randomForest}
+\alias{var_imp.cv.glmnet}
+\alias{var_imp.xgb.Booster}
+\alias{var_imp.nnet}
 \alias{var_imp.maboost}
 \alias{var_imp.train}
+\alias{var_imp.svm}
 \title{Variable Importance}
 \usage{
-var_imp(mod, ...)
+var_imp(mod, data, ...)
 
-\method{var_imp}{default}(mod, ...)
+\method{var_imp}{default}(mod, data, ...)
 
-\method{var_imp}{randomForest}(mod, ...)
+\method{var_imp}{randomForest}(mod, data, ...)
 
-\method{var_imp}{maboost}(mod, ...)
+\method{var_imp}{cv.glmnet}(mod, data, ...)
 
-\method{var_imp}{train}(mod, ...)
+\method{var_imp}{xgb.Booster}(mod, data, ...)
+
+\method{var_imp}{nnet}(mod, data, ...)
+
+\method{var_imp}{maboost}(mod, data, ...)
+
+\method{var_imp}{train}(mod, data, ...)
+
+\method{var_imp}{svm}(mod, data, ...)
 }
 \arguments{
 \item{mod}{model object from \code{\link[=classification]{classification()}}}
+
+\item{data}{data frame with rows as samples, columns as features}
 
 \item{...}{additional arguments to be passed to or from methods}
 }
 \description{
 Methods to calculate variable importance for different classifiers.
+}
+\details{
+Currently, variable importance methods are implemented for these classifiers:
+\itemize{
+\item "rf"
+\item "xgboost",
+\item "mlr_ridge", "mlr_lasso"
+\item "adaboost"
+\item "svm"
+\item "nnet"
+}
 }
 \examples{
 data(hgsc)

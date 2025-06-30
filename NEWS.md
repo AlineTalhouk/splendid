@@ -1,3 +1,7 @@
+# splendid 0.4.2
+
+* add additional methods for `var_imp()`: `cv.glmnet`, `svm`, `nnet`, `xgb.Booster`
+
 # splendid 0.4.1
 
 * replace all instances of deprecated function `purrr::invoke()` with `rlang::exec()`

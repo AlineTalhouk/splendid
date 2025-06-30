@@ -1,8 +1,16 @@
 #' Variable Importance
 #'
 #' Methods to calculate variable importance for different classifiers.
-#' @inheritParams prediction
 #'
+#' Currently, variable importance methods are implemented for these classifiers:
+#' * "rf"
+#' * "xgboost",
+#' * "mlr_ridge", "mlr_lasso"
+#' * "adaboost"
+#' * "svm"
+#' * "nnet"
+#'
+#' @inheritParams prediction
 #' @author Derek Chiu
 #' @export
 #' @examples
@@ -10,28 +18,51 @@
 #' class <- attr(hgsc, "class.true")
 #' mod <- classification(hgsc, class, "xgboost")
 #' var_imp(mod)
-var_imp <- function(mod, ...) {
+var_imp <- function(mod, data, ...) {
   UseMethod("var_imp")
 }
 
 #' @rdname var_imp
 #' @export
-var_imp.default <- function(mod, ...) {
+var_imp.default <- function(mod, data, ...) {
   tryCatch(
-    vip::vi(mod),
+    vip::vi(mod, ...),
     error = function(e) NULL
   )
 }
 
 #' @rdname var_imp
 #' @export
-var_imp.randomForest <- function(mod, ...) {
+var_imp.randomForest <- function(mod, data, ...) {
   var_imp.default(mod, ...)
 }
 
 #' @rdname var_imp
 #' @export
-var_imp.maboost <- function(mod, ...) {
+var_imp.cv.glmnet <- function(mod, data, ...) {
+  var_imp.default(mod, ...)
+}
+
+#' @rdname var_imp
+#' @export
+var_imp.xgb.Booster <- function(mod, data, ...) {
+  var_imp.default(mod, ...)
+}
+
+#' @rdname var_imp
+#' @export
+var_imp.nnet <- function(mod, data, ...) {
+  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
+    stop("Package \"NeuralNetTools\" is needed. Please install it.",
+         call. = FALSE)
+  } else {
+    var_imp.default(mod, type = "garson", ...)
+  }
+}
+
+#' @rdname var_imp
+#' @export
+var_imp.maboost <- function(mod, data, ...) {
   loadNamespace("maboost")
   mod %>%
     maboost::varplot.maboost(plot.it = FALSE,
@@ -42,7 +73,7 @@ var_imp.maboost <- function(mod, ...) {
 
 #' @rdname var_imp
 #' @export
-var_imp.train <- function(mod, ...) {
+var_imp.train <- function(mod, data, ...) {
   if (!requireNamespace("caret", quietly = TRUE)) {
     stop("Package \"caret\" is needed. Please install it.",
          call. = FALSE)
@@ -57,4 +88,21 @@ var_imp.train <- function(mod, ...) {
       vip::vi_shap(pred_wrapper = pfun) %>%
       dplyr::arrange(dplyr::desc(.data$Importance))
   }
+}
+
+#' @rdname var_imp
+#' @export
+var_imp.svm <- function(mod, data, ...) {
+  pfun <- function(object, newdata) {
+    predict(object, newdata = newdata, probability = TRUE) %>%
+      attr("probabilities") %>%
+      `[`(, 1)
+  }
+  mod %>%
+    vip::vi_shap(
+      feature_names = names(data),
+      train = data,
+      pred_wrapper = pfun
+    ) %>%
+    dplyr::arrange(dplyr::desc(Importance))
 }

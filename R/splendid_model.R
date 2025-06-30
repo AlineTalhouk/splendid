@@ -77,7 +77,7 @@ splendid_model <- function(data, class, algorithms = NULL, n = 1,
 
   # Variable importance object optionally returned
   if (vi) {
-    vis <- purrr::map_depth(models, 2, var_imp)
+    vis <- purrr::map_depth(models, 2, var_imp, data = data)
     tibble::lst(models, preds, evals, vis)
   } else {
     tibble::lst(models, preds, evals)
