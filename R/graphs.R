@@ -98,15 +98,19 @@ reliability_plot <- function(x, probs) {
     scale_color_manual(values = cols) +
     scale_x_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1)) +
     scale_y_continuous(breaks = seq(0, 1, 0.2)) +
-    labs(x = "Mean Prediction", y = "Observed Fraction",
+    labs(x = "Mean Prediction",
+         y = "Observed Fraction",
          title = "Reliability Plot") +
     theme_bw() +
-    theme(plot.title = element_text(face = "bold"),
-          panel.grid = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.box.margin = margin(5, 0, 0, 5))
+    theme(
+      plot.title = element_text(face = "bold"),
+      panel.grid = element_blank(),
+      legend.title = element_blank(),
+      legend.position = "inside",
+      legend.position.inside = c(0, 1),
+      legend.justification = c(0, 1),
+      legend.box.margin = margin(5, 0, 0, 5)
+    )
   print(p)
 }
 
@@ -133,16 +137,23 @@ roc_plot <- function(x, probs) {
   cols <- c(grDevices::rainbow(dplyr::n_distinct(x)), c("grey60", "grey80"))
   p <- ggplot(plot_roc_df, aes(1 - .data$Specificity, .data$Sensitivity)) +
     geom_path(aes(color = .data$Group), linewidth = 1) +
-    geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1),
-                 colour = "grey",
-                 linetype = "dotdash") +
+    annotate(
+      geom = "segment",
+      x = 0,
+      y = 0,
+      xend = 1,
+      yend = 1,
+      colour = "grey",
+      linetype = "dotdash"
+    ) +
     scale_color_manual(values = cols) +
     labs(title = "Multi-Class ROC Curves") +
     theme_bw() +
     theme(
       plot.title = element_text(face = "bold"),
       legend.justification = c(1, 0),
-      legend.position = c(0.95, 0.05),
+      legend.position = "inside",
+      legend.position.inside = c(0.95, 0.05),
       legend.title = element_blank(),
       legend.background = element_rect(
         linewidth = 0.5,
