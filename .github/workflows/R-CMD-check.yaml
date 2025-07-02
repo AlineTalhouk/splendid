@@ -33,7 +33,7 @@ jobs:
       - name: Install X11 dependencies on MacOS
         if: matrix.config.os == 'macos-latest'
         run: |
-          brew --cask install xquartz
+          brew install xquartz --cask
 
       - uses: actions/checkout@v4
 
